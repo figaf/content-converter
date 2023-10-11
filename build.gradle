@@ -1,0 +1,97 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+ext {
+    lombokVersion = '1.18.22'
+    integrationDirectoryApiVersion = '1.23'
+    slf4jVersion = '1.7.25'
+    gsonVersion = '2.10'
+    integrationCommonsTestVersion = '1.4'
+    assertjCoreVersion = '3.18.0'
+    mockitoCoreVersion = '3.6.0'
+    mockitoJUnitJupiterVersion = '3.6.0'
+    logbackClassicVersion = '1.2.9'
+    springWsCoreVersion = '2.1.4.RELEASE'
+    jaxbImplVersion = '2.3.3'
+    jaxbCoreVersion = '2.3.0.1'
+    commonsIoVersion = '2.14.0'
+    slf4jSimpleVersion = '1.7.30'
+    opencsvVersion = '5.8'
+    junitJupiterApiVersion = '5.8.1'
+    junitJupiterEngineVersion = '5.8.1'
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+group = 'com.github.figaf'
+version = '1.0.0'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+    maven {
+        url "$nexusUrl/content/groups/public/"
+        allowInsecureProtocol true
+        credentials {
+            username "$nexusUsername"
+            password "$nexusPassword"
+        }
+    }
+}
+
+dependencies {
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    api "com.figaf.integration:integration-directory-api:$integrationDirectoryApiVersion"
+    api "org.springframework.ws:spring-ws-core:$springWsCoreVersion"
+    api "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
+    api "com.sun.xml.bind:jaxb-core:$jaxbCoreVersion"
+    api "commons-io:commons-io:$commonsIoVersion"
+    api "org.slf4j:slf4j-api:$slf4jVersion"
+    api "com.google.code.gson:gson:$gsonVersion"
+    api "com.opencsv:opencsv:$opencsvVersion"
+
+    testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+
+    testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    testImplementation "com.github.figaf:integration-commons-test:$integrationCommonsTestVersion"
+    testImplementation "org.assertj:assertj-core:$assertjCoreVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoCoreVersion"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoJUnitJupiterVersion"
+    testImplementation "ch.qos.logback:logback-classic:$logbackClassicVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterApiVersion"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterEngineVersion"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+
+    project.properties.each { propertyName, propertyValue ->
+        if (!propertyName.startsWith("agent-test-data")) return
+
+        systemProperty propertyName, propertyValue
+    }
+
+    testLogging {
+        showStandardStreams = true
+        events "passed", "skipped", "failed"
+    }
+
+    maxHeapSize = "2G"
+}

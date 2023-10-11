@@ -1,0 +1,1428 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ns:CPIList xmlns:ns="http://figaf.com/CPILIST">
+	<row>
+		<StartTime>Start Time</StartTime>
+		<Duration>Duration</Duration>
+		<IFlow>IFlow</IFlow>
+		<MessageID>Message ID</MessageID>
+		<CorrelationID>Correlation ID</CorrelationID>
+		<ApplicationMessageID>Application Message ID</ApplicationMessageID>
+		<ApplicationMessageType>Application Message Type</ApplicationMessageType>
+		<Status>Status</Status>
+		<Sender>Sender</Sender>
+		<Receiver>Receiver</Receiver>
+		<DOC>DOC</DOC>
+		<ORDERNR>ORDERNR</ORDERNR>
+		<Vendor>Vendor</Vendor>
+	</row>
+	<row>
+		<StartTime>11/10/2022 15:12:32</StartTime>
+		<Duration>1 s 334 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGNFa8BD00KAOwctLiGjAxtPpB5t</MessageID>
+		<CorrelationID>AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax</CorrelationID>
+		<ApplicationMessageID>6188950</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>11/10/2022 15:12:29</StartTime>
+		<Duration>2 s 163 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGNFa73d5tZgqem97vMzpZ537dSk</MessageID>
+		<CorrelationID>AGNFa71CLLER0rg-BatTpOe5zU6u</CorrelationID>
+		<ApplicationMessageID>6188949</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>10/10/2022 15:27:12</StartTime>
+		<Duration>1 s 330 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGNEHbBvEL56maMnwe-LVTjPhWKR</MessageID>
+		<CorrelationID>AGNEHbBYwOzaDVkf7bxbtN9cb8Qv</CorrelationID>
+		<ApplicationMessageID>6188940</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>10/10/2022 15:27:09</StartTime>
+		<Duration>2 s 96 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGNEHa2VekzovJ5db3uS7XiMIWAT</MessageID>
+		<CorrelationID>AGNEHa3dNy2oHXrP2_e3Hadm6ptK</CorrelationID>
+		<ApplicationMessageID>6188939</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>06/10/2022 11:36:51</StartTime>
+		<Duration>1 s 670 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM-obM17v--U6ANMJa0qvrUYDDp</MessageID>
+		<CorrelationID>IRT|18c47025-e183-4ebc-8ae6-efbbe4501082|dce9924f-8a62-4fd0-b82c-f28d26a33ee7</CorrelationID>
+		<ApplicationMessageID>6188929</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>234|532|353</Vendor>
+	</row>
+	<row>
+		<StartTime>06/10/2022 11:36:48</StartTime>
+		<Duration>2 s 883 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM-obDrzHOImjfW793oWNAjSApC</MessageID>
+		<CorrelationID>IRT|03d930bb-534c-48c4-beaa-72a00f1eb19d|dce9924f-8a62-4fd0-b82c-f28d26a33ee7</CorrelationID>
+		<ApplicationMessageID>6188927</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>275|104|285</Vendor>
+	</row>
+	<row>
+		<StartTime>06/10/2022 11:36:48</StartTime>
+		<Duration>2 s 377 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM-obCYonlM10rOAmyKFHKWnprD</MessageID>
+		<CorrelationID>IRT|3ace3f04-a2e2-4a99-9bde-5fb2debfe178|dce9924f-8a62-4fd0-b82c-f28d26a33ee7</CorrelationID>
+		<ApplicationMessageID>6188928</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>425|514|547</Vendor>
+	</row>
+	<row>
+		<StartTime>06/10/2022 11:16:26</StartTime>
+		<Duration>2 s 227 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM-nOrUbmfMpkwJbmxe-KlRnD1v</MessageID>
+		<CorrelationID>IRT|92a4deb2-80a3-40df-b6e6-4032ad6e573f|e55419fb-7b88-4a7e-9307-ad7c61f0345e</CorrelationID>
+		<ApplicationMessageID>6188925</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>590|336|349</Vendor>
+	</row>
+	<row>
+		<StartTime>06/10/2022 11:13:53</StartTime>
+		<Duration>2 s 296 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM-nFG12t6BHQ_hUY4PFE3MPzef</MessageID>
+		<CorrelationID>AGM-nFGAnTQOvMxIkHU_RuKkgC7c</CorrelationID>
+		<ApplicationMessageID>6188924</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>576|174|499</Vendor>
+	</row>
+	<row>
+		<StartTime>06/10/2022 11:11:23</StartTime>
+		<Duration>1 m 4 s 160 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM-m7tJ_qg3Sg_tsbDtcZoLJkTb</MessageID>
+		<CorrelationID>AGM-m7viS6Ua_7wjEVKnAeyIQWY4</CorrelationID>
+		<ApplicationMessageID>6188922</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>FAILED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>290</Vendor>
+	</row>
+	<row>
+		<StartTime>06/10/2022 10:40:28</StartTime>
+		<Duration>1 s 670 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM-lHwLk6uj9DbY7FpFt_Yar0Sa</MessageID>
+		<CorrelationID>IRT|3ace3f04-a2e2-4a99-9bde-5fb2debfe178|b55508a9-7a44-4e50-bb3c-f09ebf9db77a</CorrelationID>
+		<ApplicationMessageID>6188921</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>237|591|109</Vendor>
+	</row>
+	<row>
+		<StartTime>06/10/2022 10:40:24</StartTime>
+		<Duration>3 s 723 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM-lHjzrZj1ab3DA3if39FEVqVE</MessageID>
+		<CorrelationID>IRT|18c47025-e183-4ebc-8ae6-efbbe4501082|b55508a9-7a44-4e50-bb3c-f09ebf9db77a</CorrelationID>
+		<ApplicationMessageID>6188919</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>163|238|514</Vendor>
+	</row>
+	<row>
+		<StartTime>06/10/2022 10:40:24</StartTime>
+		<Duration>3 s 584 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM-lHg9CQ37VNMjUug40fzCbXvO</MessageID>
+		<CorrelationID>IRT|03d930bb-534c-48c4-beaa-72a00f1eb19d|b55508a9-7a44-4e50-bb3c-f09ebf9db77a</CorrelationID>
+		<ApplicationMessageID>6188920</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>552|479|413</Vendor>
+	</row>
+	<row>
+		<StartTime>30/09/2022 14:47:28</StartTime>
+		<Duration>2 s 230 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM25WC10XY9OUDxzuFZXC-Z3Ce5</MessageID>
+		<CorrelationID>IRT|4662dd49-2166-46cc-8886-86ede5008631|d81fbf7f-e38c-4d69-9a68-534120820a61</CorrelationID>
+		<ApplicationMessageID>6188918</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>272|157|449</Vendor>
+	</row>
+	<row>
+		<StartTime>30/09/2022 14:46:08</StartTime>
+		<Duration>2 s 333 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM25RCrMQ08I8pm5cC9-cL5H5Le</MessageID>
+		<CorrelationID>AGM25RBawSdViedDpKgVoJyNP5ks</CorrelationID>
+		<ApplicationMessageID>6188917</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>339|298|592</Vendor>
+	</row>
+	<row>
+		<StartTime>30/09/2022 14:17:07</StartTime>
+		<Duration>2 s 937 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM23kMJc9K5G8flzE9q6ea9zCfs</MessageID>
+		<CorrelationID>AGM23kOR_t0jWwAfjr51l2bf5PwW</CorrelationID>
+		<ApplicationMessageID>6188916</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>536|428|105</Vendor>
+	</row>
+	<row>
+		<StartTime>30/09/2022 11:31:04</StartTime>
+		<Duration>2 s 193 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM2t1g1b9ufCpGCeTZWkdfwpTFk</MessageID>
+		<CorrelationID>IRT|2f588eb2-2f74-454a-aac6-12ee56ded322|a34e3267-b8d2-4496-9ce4-430a7e3098ed</CorrelationID>
+		<ApplicationMessageID>6188915</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>304|445|356</Vendor>
+	</row>
+	<row>
+		<StartTime>30/09/2022 11:28:06</StartTime>
+		<Duration>2 s 290 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM2tqa91-Wo7Ef3arXdvCnV5YKm</MessageID>
+		<CorrelationID>AGM2tqYIK_K0PoR-aliQlxzaKxpx</CorrelationID>
+		<ApplicationMessageID>6188914</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>417|230|463</Vendor>
+	</row>
+	<row>
+		<StartTime>30/09/2022 11:17:10</StartTime>
+		<Duration>1 s 650 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM2tBbwH9265A0m8A0tV-24bawW</MessageID>
+		<CorrelationID>IRT|18c47025-e183-4ebc-8ae6-efbbe4501082|f94d54c9-af0c-4665-81f6-90124dadb5ac</CorrelationID>
+		<ApplicationMessageID>6188913</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>182|302|337</Vendor>
+	</row>
+	<row>
+		<StartTime>30/09/2022 11:17:06</StartTime>
+		<Duration>3 s 927 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM2tBIRlSmtg2CeLojsGtirtLYc</MessageID>
+		<CorrelationID>IRT|3ace3f04-a2e2-4a99-9bde-5fb2debfe178|f94d54c9-af0c-4665-81f6-90124dadb5ac</CorrelationID>
+		<ApplicationMessageID>6188911</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>116|247|485</Vendor>
+	</row>
+	<row>
+		<StartTime>30/09/2022 11:17:06</StartTime>
+		<Duration>3 s 783 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM2tBLTjdY2Uc8N0Mq0eQgIFR-p</MessageID>
+		<CorrelationID>IRT|03d930bb-534c-48c4-beaa-72a00f1eb19d|f94d54c9-af0c-4665-81f6-90124dadb5ac</CorrelationID>
+		<ApplicationMessageID>6188912</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>352|563|117</Vendor>
+	</row>
+	<row>
+		<StartTime>30/09/2022 08:35:21</StartTime>
+		<Duration>1 s 367 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM2jinycVokXCqdDZiCJzxZzsvU</MessageID>
+		<CorrelationID>AGM2jimDtLtURJdFW1wBP7lPXrFZ</CorrelationID>
+		<ApplicationMessageID/>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>278|150|454</Vendor>
+	</row>
+	<row>
+		<StartTime>30/09/2022 08:35:08</StartTime>
+		<Duration>9 s 476 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGM2jhzcE5IDA3PgV4YV6KWIjxH6</MessageID>
+		<CorrelationID>AGM2jhxycgeJBhd_aZ3zZg5ebf2M</CorrelationID>
+		<ApplicationMessageID/>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>292|515|465</Vendor>
+	</row>
+	<row>
+		<StartTime>28/09/2022 11:20:07</StartTime>
+		<Duration>1 s 603 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGM0EcdL78vEgcjuBCrkWM8s2Zhn</MessageID>
+		<CorrelationID>IRT|558e6da5-af7b-464b-bee0-862bd8b0a438|1660f445-9a4d-48c9-b6f4-f9212c14ab9d</CorrelationID>
+		<ApplicationMessageID>6188910</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>28/09/2022 11:20:05</StartTime>
+		<Duration>2 s 130 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGM0EcUulx4zD_i7FGYEhmX8X71p</MessageID>
+		<CorrelationID>IRT|359f5602-1e14-4bcf-898e-9b784ddda82c|1660f445-9a4d-48c9-b6f4-f9212c14ab9d</CorrelationID>
+		<ApplicationMessageID>6188909</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>28/09/2022 11:20:05</StartTime>
+		<Duration>2 s 170 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGM0EcXzbsoxo76Ivm1S1Ylt-IE-</MessageID>
+		<CorrelationID>IRT|e8665092-8f4f-44ea-961c-4dbaebd5a5fa|1660f445-9a4d-48c9-b6f4-f9212c14ab9d</CorrelationID>
+		<ApplicationMessageID>6188908</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>28/09/2022 11:18:32</StartTime>
+		<Duration>1 s 760 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGM0EWgfT418k3YnIEVGgFODfSlR</MessageID>
+		<CorrelationID>AGM0EWgtovHHuF2X-WG282L3w3XJ</CorrelationID>
+		<ApplicationMessageID>6188907</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>28/09/2022 11:18:29</StartTime>
+		<Duration>1 s 520 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGM0EWU4A_VXQO2Gsn93kViozhgV</MessageID>
+		<CorrelationID>AGM0EWWpiTliO-ZN0ddOaQLinLIn</CorrelationID>
+		<ApplicationMessageID>6188906</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>28/09/2022 11:18:24</StartTime>
+		<Duration>3 s 563 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGM0EWCjxeSAdMkJsEnvsCAXbkR1</MessageID>
+		<CorrelationID>AGM0EWC4PilBLBUVH8lwQ8Rb_9cP</CorrelationID>
+		<ApplicationMessageID>6188905</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 16:52:43</StartTime>
+		<Duration>2 s </Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMzDjvNmcxN957Tz3Iw8DL_OXjI</MessageID>
+		<CorrelationID>IRT_conf|1b1d71ea-3b9c-4663-b8f9-428533e37e03|1f7172ae-32d1-4bfa-afad-6304c02c7611</CorrelationID>
+		<ApplicationMessageID>6188885</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 16:52:40</StartTime>
+		<Duration>3 s 214 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMzDjhMSsaYpqYAGSRhPxwATnMp</MessageID>
+		<CorrelationID>IRT_conf|de4816d6-e8d7-43f3-808d-4817c3ab0c2a|1f7172ae-32d1-4bfa-afad-6304c02c7611</CorrelationID>
+		<ApplicationMessageID>6188883</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 16:52:41</StartTime>
+		<Duration>2 s 646 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMzDjn8yqLfaiZZHfyI8VdlRRAY</MessageID>
+		<CorrelationID>IRT_conf|d1f9ea35-f41d-471b-bbd1-1375c7cb752c|1f7172ae-32d1-4bfa-afad-6304c02c7611</CorrelationID>
+		<ApplicationMessageID>6188884</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 16:47:16</StartTime>
+		<Duration>1 s 560 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMzDPQsi6xJF5Z8MMMx19o79rUY</MessageID>
+		<CorrelationID>IRT_conf|de4816d6-e8d7-43f3-808d-4817c3ab0c2a|346b343c-b485-4c76-a768-b5bdad001570</CorrelationID>
+		<ApplicationMessageID>6188882</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 16:47:14</StartTime>
+		<Duration>2 s 310 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMzDPKyZe4us_dqyQ9BbrxZqljU</MessageID>
+		<CorrelationID>IRT_conf|d1f9ea35-f41d-471b-bbd1-1375c7cb752c|346b343c-b485-4c76-a768-b5bdad001570</CorrelationID>
+		<ApplicationMessageID>6188881</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 16:47:14</StartTime>
+		<Duration>2 s 333 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMzDPKuxTNAPrJsFxBkchDyJDB8</MessageID>
+		<CorrelationID>IRT_conf|1b1d71ea-3b9c-4663-b8f9-428533e37e03|346b343c-b485-4c76-a768-b5bdad001570</CorrelationID>
+		<ApplicationMessageID>6188880</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 16:45:19</StartTime>
+		<Duration>1 s 554 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMzDH83XdB0iDXnMpeVdjtjlZnX</MessageID>
+		<CorrelationID>AGMzDH_bfOVKiigddafZPsZ8FJzs</CorrelationID>
+		<ApplicationMessageID>6188879</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 16:45:17</StartTime>
+		<Duration>1 s 550 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMzDH2z6gYBpMSENZH5L0-be11h</MessageID>
+		<CorrelationID>AGMzDH2ZzhzH37erOSIMGdnKdNVF</CorrelationID>
+		<ApplicationMessageID>6188878</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 16:45:13</StartTime>
+		<Duration>3 s 70 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMzDHkj0MEdta-NvVeGAv9Om8cI</MessageID>
+		<CorrelationID>AGMzDHknf-sboJ3K1se-obZCmPDp</CorrelationID>
+		<ApplicationMessageID>6188877</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 15:39:48</StartTime>
+		<Duration>1 s 677 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy_STQnVFHzzvuTrKxkT935t1r</MessageID>
+		<CorrelationID>IRT|6a3d1471-8c98-40d1-a60c-f340f4ee5b92|c556b72b-9eb2-4d7e-bda1-0d27a0a8ab3c</CorrelationID>
+		<ApplicationMessageID>6188858</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 15:39:48</StartTime>
+		<Duration>1 s 714 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy_SQi5n-XvSxuH4vn_7Owdybi</MessageID>
+		<CorrelationID>IRT|272ebc77-182f-4b44-b0dd-630e0bdc7347|ed5f693b-af4e-4c46-9b92-00151ab48ffe</CorrelationID>
+		<ApplicationMessageID>6188857</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 15:39:45</StartTime>
+		<Duration>3 s 426 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy_SHZ9Ej7vGIkyzktkLKz2Pn-</MessageID>
+		<CorrelationID>IRT|e6d7269b-a1e1-4cb3-8568-6b7835a0ae7e|ed5f693b-af4e-4c46-9b92-00151ab48ffe</CorrelationID>
+		<ApplicationMessageID>6188856</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 15:39:44</StartTime>
+		<Duration>3 s 470 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy_SBr_aETvd-JrQAt2NEhKSS-</MessageID>
+		<CorrelationID>IRT|272ebc77-182f-4b44-b0dd-630e0bdc7347|c556b72b-9eb2-4d7e-bda1-0d27a0a8ab3c</CorrelationID>
+		<ApplicationMessageID>6188853</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 15:39:44</StartTime>
+		<Duration>3 s 273 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy_SCdbcogf0t2Q3PX7HGMNJpV</MessageID>
+		<CorrelationID>IRT|e6d7269b-a1e1-4cb3-8568-6b7835a0ae7e|c556b72b-9eb2-4d7e-bda1-0d27a0a8ab3c</CorrelationID>
+		<ApplicationMessageID>6188854</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 15:39:44</StartTime>
+		<Duration>3 s 206 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy_SA4PEI2aSEgumo0Et_1Wq3A</MessageID>
+		<CorrelationID>IRT|6a3d1471-8c98-40d1-a60c-f340f4ee5b92|ed5f693b-af4e-4c46-9b92-00151ab48ffe</CorrelationID>
+		<ApplicationMessageID>6188855</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 14:25:59</StartTime>
+		<Duration>1 s 807 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy69cEp70gt18n5WEGa89FCWlq</MessageID>
+		<CorrelationID>IRT|e937e99b-26e8-4d5e-ace0-017f478b5679|08285476-5a73-4ac0-896c-a361118af19e</CorrelationID>
+		<ApplicationMessageID>6188817</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 14:25:59</StartTime>
+		<Duration>1 s 794 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy69cVAhy5opzBSsa1fZdW3h0Q</MessageID>
+		<CorrelationID>IRT|e937e99b-26e8-4d5e-ace0-017f478b5679|8f69d581-434f-4cc7-813e-b69d6b39e438</CorrelationID>
+		<ApplicationMessageID>6188816</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 14:25:56</StartTime>
+		<Duration>3 s 494 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy69TTwkg6lCaeQSlg3r2h634K</MessageID>
+		<CorrelationID>IRT|7ba0cfd4-ace9-4b93-9fbb-a39ef0b4cb48|08285476-5a73-4ac0-896c-a361118af19e</CorrelationID>
+		<ApplicationMessageID>6188812</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 14:25:56</StartTime>
+		<Duration>2 s 883 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy69SQLqVj6Zfq1qD8_N1Ysxlm</MessageID>
+		<CorrelationID>IRT|3f41aa3b-e9e9-4c7b-8757-a0f0cc1b6489|8f69d581-434f-4cc7-813e-b69d6b39e438</CorrelationID>
+		<ApplicationMessageID>6188813</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 14:25:56</StartTime>
+		<Duration>2 s 880 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy69QhJLjJ-TAiwsfXk9gbOUIw</MessageID>
+		<CorrelationID>IRT|3f41aa3b-e9e9-4c7b-8757-a0f0cc1b6489|08285476-5a73-4ac0-896c-a361118af19e</CorrelationID>
+		<ApplicationMessageID>6188815</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 14:25:56</StartTime>
+		<Duration>2 s 450 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy69SxAkZGYMA5jwdHfCXCB-K_</MessageID>
+		<CorrelationID>IRT|7ba0cfd4-ace9-4b93-9fbb-a39ef0b4cb48|8f69d581-434f-4cc7-813e-b69d6b39e438</CorrelationID>
+		<ApplicationMessageID>6188814</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 14:23:44</StartTime>
+		<Duration>1 s 534 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy61A9b0hAnRjvMp4KxrRUXB3Z</MessageID>
+		<CorrelationID>AGMy61CfvCvA_AM-jz_nk13z3D4A</CorrelationID>
+		<ApplicationMessageID>6188811</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 14:23:41</StartTime>
+		<Duration>1 s 653 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy603E3qqLe4TBtRwdG2rDJnpa</MessageID>
+		<CorrelationID>AGMy6013v19vq6RD3xqUznTJ5CCr</CorrelationID>
+		<ApplicationMessageID>6188810</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 14:23:38</StartTime>
+		<Duration>2 s 203 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy60qsaO370-ksHEjRoZUQLCg4</MessageID>
+		<CorrelationID>AGMy60om4PeGoCGNeniXVi4Iti_l</CorrelationID>
+		<ApplicationMessageID>6188809</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 13:32:04</StartTime>
+		<Duration>1 s 673 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy3zQ7Z6F_qHurdO70sFR56Xgp</MessageID>
+		<CorrelationID>AGMy3zROc6pgiOnrMjk8_Emz6WXC</CorrelationID>
+		<ApplicationMessageID>6188793</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 13:31:54</StartTime>
+		<Duration>1 s 633 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy3yoiCDZK9D9v3Epoyt3PEEA5</MessageID>
+		<CorrelationID>AGMy3ypkBf3yyasShGu5Mbeq7doZ</CorrelationID>
+		<ApplicationMessageID>6188792</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 13:31:39</StartTime>
+		<Duration>1 s 623 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy3xvipYawIS3AeIyRaRPyYvSw</MessageID>
+		<CorrelationID>AGMy3xvL_QD1DdIs3uZeoY3OTJ9e</CorrelationID>
+		<ApplicationMessageID>6188791</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 13:31:29</StartTime>
+		<Duration>1 s 344 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy3xGtPrP0FnyiFlQQ5ofctwMh</MessageID>
+		<CorrelationID>AGMy3xEkEsP8E4UmPLTvZvaV8CGF</CorrelationID>
+		<ApplicationMessageID>6188790</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>27/09/2022 13:31:21</StartTime>
+		<Duration>2 s 107 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMy3wnnnfZUiw-O4BddnZgVEjK-</MessageID>
+		<CorrelationID>AGMy3wno0HQVVV-8bufCLY0mhIO2</CorrelationID>
+		<ApplicationMessageID>6188789</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>26/09/2022 13:02:39</StartTime>
+		<Duration>2 s 284 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMxhs-BLrKo7DnhLIdlDb-DslTt</MessageID>
+		<CorrelationID>IRT|64f5c4da-67ee-4b41-8d86-a942968783f3|288eb27f-1f28-4dd2-97b9-f40c1c611a02</CorrelationID>
+		<ApplicationMessageID>6188776</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>26/09/2022 13:02:36</StartTime>
+		<Duration>2 s 883 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMxhswlrI1jJTU6oOhfYiM1tIyg</MessageID>
+		<CorrelationID>IRT|376077f7-fc16-4c35-bb48-bf1465e9e134|f125f737-6497-400e-938e-a93ab3a21e7c</CorrelationID>
+		<ApplicationMessageID>6188774</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>26/09/2022 12:54:11</StartTime>
+		<Duration>2 s 184 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMxhNP7kGB_cECIJI0iUCxy1DQ3</MessageID>
+		<CorrelationID>IRT|64f5c4da-67ee-4b41-8d86-a942968783f3|6a188806-be88-4d41-bd11-bc651cb7750b</CorrelationID>
+		<ApplicationMessageID>6188770</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>23/09/2022 17:57:45</StartTime>
+		<Duration>1 s 620 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMt13k8UQvmjJh-RivRyfrABhYq</MessageID>
+		<CorrelationID>IRT|64f5c4da-67ee-4b41-8d86-a942968783f3|ce81368e-2a77-4ad4-8a31-161f9fb8591a</CorrelationID>
+		<ApplicationMessageID>6188752</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>23/09/2022 17:57:43</StartTime>
+		<Duration>2 s 210 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMt13e5JQmj_jV9jidX4aPTsmVk</MessageID>
+		<CorrelationID>IRT|376077f7-fc16-4c35-bb48-bf1465e9e134|f47c285d-bcf6-4442-83d3-21e4ff73e163</CorrelationID>
+		<ApplicationMessageID>6188747</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>23/09/2022 17:53:53</StartTime>
+		<Duration>1 s 686 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMt1pH8y166QznBmd333wk7x8_g</MessageID>
+		<CorrelationID>IRT|64f5c4da-67ee-4b41-8d86-a942968783f3|009d6002-07ab-4bb7-b1a8-cf6e81e131c1</CorrelationID>
+		<ApplicationMessageID>6188744</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>23/09/2022 17:53:50</StartTime>
+		<Duration>2 s 343 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMt1o5ysA9H4G76rZgNaeakdrLg</MessageID>
+		<CorrelationID>IRT|376077f7-fc16-4c35-bb48-bf1465e9e134|0f31cc90-ef8f-492b-9d00-e81bb2510f7a</CorrelationID>
+		<ApplicationMessageID>6188738</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>23/09/2022 17:03:43</StartTime>
+		<Duration>1 s 716 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMtys-FZKNzuGLqz2NvY5ieClwq</MessageID>
+		<CorrelationID>IRT|64f5c4da-67ee-4b41-8d86-a942968783f3|0b27ec32-78ef-4c62-9077-e8f73db25c81</CorrelationID>
+		<ApplicationMessageID>6188737</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>23/09/2022 17:03:40</StartTime>
+		<Duration>3 s 226 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMtyswskRKma8Ao5k5QkPqO08kp</MessageID>
+		<CorrelationID>IRT|376077f7-fc16-4c35-bb48-bf1465e9e134|53226bfa-c9c2-4da1-be1e-25612234d2ea</CorrelationID>
+		<ApplicationMessageID>6188730</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>23/09/2022 16:51:59</StartTime>
+		<Duration>2 s 47 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMtyA_gKmQ-zqxYBAGCmko4hnZ0</MessageID>
+		<CorrelationID>IRT|64f5c4da-67ee-4b41-8d86-a942968783f3|e35aa9e6-d689-46a0-bcb7-face4b4e402d</CorrelationID>
+		<ApplicationMessageID>6188728</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>23/09/2022 16:51:56</StartTime>
+		<Duration>2 s 646 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMtyAzn0ew08ACazbXrXsH02jQ7</MessageID>
+		<CorrelationID>IRT|376077f7-fc16-4c35-bb48-bf1465e9e134|c485b6e0-c58a-4ea8-868c-1830a341fad2</CorrelationID>
+		<ApplicationMessageID>6188722</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>23/09/2022 16:51:13</StartTime>
+		<Duration>1 s 780 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMtx-F2NX_jHVGYZRXMeii_3Y0G</MessageID>
+		<CorrelationID>IRT|64f5c4da-67ee-4b41-8d86-a942968783f3|42c8b6c0-011d-4f53-ba30-44847ea6c39b</CorrelationID>
+		<ApplicationMessageID>6188720</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>23/09/2022 16:51:11</StartTime>
+		<Duration>2 s 193 ms</Duration>
+		<IFlow>GetCustomersOrder3_Datastore</IFlow>
+		<MessageID>AGMtx9_rcdSN0tAwevsZ1FNdIQh2</MessageID>
+		<CorrelationID>IRT|376077f7-fc16-4c35-bb48-bf1465e9e134|de96d04a-e35d-484c-8813-69095da564df</CorrelationID>
+		<ApplicationMessageID>6188719</ApplicationMessageID>
+		<ApplicationMessageType>412</ApplicationMessageType>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>23/09/2022 10:54:36</StartTime>
+		<Duration>2 s 193 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGMtdExpFuiiKVTZrC8NpK0R38BS</MessageID>
+		<CorrelationID>IRT|2a1c6669-b0b9-4ea0-af30-947c9b74a857|2aa5c8e9-1720-4d9b-b931-c5b4360342e2</CorrelationID>
+		<ApplicationMessageID/>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>141|142|432</Vendor>
+	</row>
+	<row>
+		<StartTime>23/09/2022 10:53:05</StartTime>
+		<Duration>93 ms</Duration>
+		<IFlow>GetCustomersOrder2_QA</IFlow>
+		<MessageID>AGMtc_HlOqdj361YshvpDTUTtPq0</MessageID>
+		<CorrelationID>IRT|2a1c6669-b0b9-4ea0-af30-947c9b74a857|5e54337b-1c76-4a41-80d1-9fdafb63cc26</CorrelationID>
+		<ApplicationMessageID>6188667</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>23/09/2022 10:51:56</StartTime>
+		<Duration>2 s 180 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGMtc6ySp8YZhzv3wyYEPT0ZH-_V</MessageID>
+		<CorrelationID>AGMtc6yunNzlf0bwYMGYObk7sTB5</CorrelationID>
+		<ApplicationMessageID/>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>547|550|174</Vendor>
+	</row>
+	<row>
+		<StartTime>20/09/2022 10:40:25</StartTime>
+		<Duration>1 s 544 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGMpfHkG0T1MZxOCRWmZP2BhTXpf</MessageID>
+		<CorrelationID>IRT|18c47025-e183-4ebc-8ae6-efbbe4501082|63c9e3ac-8a36-4d7d-a424-8edcdda449c1</CorrelationID>
+		<ApplicationMessageID>222918</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>288|393|122</Vendor>
+	</row>
+	<row>
+		<StartTime>20/09/2022 10:40:22</StartTime>
+		<Duration>3 s 287 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGMpfHZzPXcR5t0C0VH9MJ8W8Z2Y</MessageID>
+		<CorrelationID>IRT|3ace3f04-a2e2-4a99-9bde-5fb2debfe178|63c9e3ac-8a36-4d7d-a424-8edcdda449c1</CorrelationID>
+		<ApplicationMessageID>222916</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>486|226|162</Vendor>
+	</row>
+	<row>
+		<StartTime>20/09/2022 10:40:22</StartTime>
+		<Duration>3 s 120 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGMpfHY2Jtt0CR4hJuchDdGgCTsT</MessageID>
+		<CorrelationID>IRT|03d930bb-534c-48c4-beaa-72a00f1eb19d|63c9e3ac-8a36-4d7d-a424-8edcdda449c1</CorrelationID>
+		<ApplicationMessageID>222917</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>168|377|302</Vendor>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:52:26</StartTime>
+		<Duration>1 s 644 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMogipe9bdsEgCaEC_bluxgrba2</MessageID>
+		<CorrelationID>IRT|2e8141f8-4a62-494b-b5e4-932f6563b4b1|1b34e870-fc0b-465a-9c1a-45c3e21812c4</CorrelationID>
+		<ApplicationMessageID>6188652</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:52:26</StartTime>
+		<Duration>1 s 570 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMogiorXFI5EqXZ-1Kfq0EWyh0I</MessageID>
+		<CorrelationID>IRT|0cfdff35-9841-47d7-83b2-023763dcff36|08257112-03d2-4efa-bb9f-1aca7bf27950</CorrelationID>
+		<ApplicationMessageID>6188651</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:52:23</StartTime>
+		<Duration>4 s 204 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMogiftg9rtlUpDrLcFRZcvoNRV</MessageID>
+		<CorrelationID>IRT|84c95c8a-9749-4d88-8bb1-3ad295c350bc|08257112-03d2-4efa-bb9f-1aca7bf27950</CorrelationID>
+		<ApplicationMessageID>6188650</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:52:23</StartTime>
+		<Duration>3 s 760 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMogifcIWGO9l0UqDbBjMJz31Ya</MessageID>
+		<CorrelationID>IRT|84c95c8a-9749-4d88-8bb1-3ad295c350bc|1b34e870-fc0b-465a-9c1a-45c3e21812c4</CorrelationID>
+		<ApplicationMessageID>6188649</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:52:22</StartTime>
+		<Duration>3 s 644 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMogiaSC18D0-89qs2nmr4Q1WVV</MessageID>
+		<CorrelationID>IRT|0cfdff35-9841-47d7-83b2-023763dcff36|1b34e870-fc0b-465a-9c1a-45c3e21812c4</CorrelationID>
+		<ApplicationMessageID>6188647</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:52:23</StartTime>
+		<Duration>3 s 304 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMogicZXMrlaDpW1bMgCf04mBaV</MessageID>
+		<CorrelationID>IRT|2e8141f8-4a62-494b-b5e4-932f6563b4b1|08257112-03d2-4efa-bb9f-1aca7bf27950</CorrelationID>
+		<ApplicationMessageID>6188648</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:42:46</StartTime>
+		<Duration>1 s 550 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMof-YdSXjx_cID7v5FspmkBGTq</MessageID>
+		<CorrelationID>IRT|0cfdff35-9841-47d7-83b2-023763dcff36|dde213cb-74a1-4c8f-92c7-40583f678b59</CorrelationID>
+		<ApplicationMessageID>6188646</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:42:46</StartTime>
+		<Duration>1 s 630 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMof-YSJIa1zATguF4Ubhjyk4xa</MessageID>
+		<CorrelationID>IRT|0cfdff35-9841-47d7-83b2-023763dcff36|0a1caf30-ef1e-4bc5-af80-2f3b8924ce6b</CorrelationID>
+		<ApplicationMessageID>6188645</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:42:44</StartTime>
+		<Duration>2 s 514 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMof-QsnHmVwBsX95WBTWs27LFN</MessageID>
+		<CorrelationID>IRT|84c95c8a-9749-4d88-8bb1-3ad295c350bc|dde213cb-74a1-4c8f-92c7-40583f678b59</CorrelationID>
+		<ApplicationMessageID>6188644</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:42:44</StartTime>
+		<Duration>2 s 354 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMof-SbQeQt9Kzx25ecJiQJYx3R</MessageID>
+		<CorrelationID>IRT|2e8141f8-4a62-494b-b5e4-932f6563b4b1|0a1caf30-ef1e-4bc5-af80-2f3b8924ce6b</CorrelationID>
+		<ApplicationMessageID>6188643</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:42:44</StartTime>
+		<Duration>2 s 330 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMof-SSCzC07qj4b5vpGOxGlQvN</MessageID>
+		<CorrelationID>IRT|84c95c8a-9749-4d88-8bb1-3ad295c350bc|0a1caf30-ef1e-4bc5-af80-2f3b8924ce6b</CorrelationID>
+		<ApplicationMessageID>6188642</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:42:44</StartTime>
+		<Duration>2 s 257 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMof-Qaf3Rf5jxt1MPuZHlmkgw-</MessageID>
+		<CorrelationID>IRT|2e8141f8-4a62-494b-b5e4-932f6563b4b1|dde213cb-74a1-4c8f-92c7-40583f678b59</CorrelationID>
+		<ApplicationMessageID>6188641</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:41:32</StartTime>
+		<Duration>1 s 600 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMof5y610czfV4aRcvCSpmwLgDq</MessageID>
+		<CorrelationID>AGMof5wshRcU-PXKkSaZujTnMgDv</CorrelationID>
+		<ApplicationMessageID>6188640</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:41:29</StartTime>
+		<Duration>1 s 987 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMof5mk9wgm4gLucle6GPaMUTWQ</MessageID>
+		<CorrelationID>AGMof5mGve8Ys4kYkYzmboPYPcCT</CorrelationID>
+		<ApplicationMessageID>6188639</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 16:41:24</StartTime>
+		<Duration>2 s 980 ms</Duration>
+		<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+		<MessageID>AGMof5QaAltuydgbcHxwwZWPW6Ie</MessageID>
+		<CorrelationID>AGMof5RkO2cdGTfjqmzoOhSwW3lZ</CorrelationID>
+		<ApplicationMessageID>6188638</ApplicationMessageID>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC/>
+		<ORDERNR/>
+		<Vendor/>
+	</row>
+	<row>
+		<StartTime>19/09/2022 15:52:51</StartTime>
+		<Duration>2 s 186 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGModDNiqCAHUwXFie8U8qFDA3KA</MessageID>
+		<CorrelationID>IRT|9f36858b-6555-40a2-ab47-95724f31863b|4282811a-1e57-43f9-8d3a-cc76555dd9c9</CorrelationID>
+		<ApplicationMessageID/>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>238|114|537</Vendor>
+	</row>
+	<row>
+		<StartTime>19/09/2022 15:51:19</StartTime>
+		<Duration>3 s 697 ms</Duration>
+		<IFlow>GetCustomersOrder2</IFlow>
+		<MessageID>AGMoc9f0E3SDmTd8I2ml5TcOyrvk</MessageID>
+		<CorrelationID>AGMoc9eIGi49K2fAN1lhqDJ5ajiV</CorrelationID>
+		<ApplicationMessageID/>
+		<ApplicationMessageType/>
+		<Status>COMPLETED</Status>
+		<Sender>sender2</Sender>
+		<Receiver>receiver2</Receiver>
+		<DOC>124566</DOC>
+		<ORDERNR>155</ORDERNR>
+		<Vendor>484|445|373</Vendor>
+	</row>
+</ns:CPIList>

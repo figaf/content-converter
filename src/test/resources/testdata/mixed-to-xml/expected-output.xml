@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ns:CPIListFixed xmlns:ns="http://figaf.com/CPIListFixed">
+	<Recordset>
+		<HR>
+			<KEY>HD</KEY>
+			<ID1>213</ID1>
+			<Doc>0003</Doc>
+		</HR>
+		<PR>
+			<KEY>PR</KEY>
+			<TYPE>AG</TYPE>
+			<ID>12353</ID>
+			<NAME>2DANIE</NAME>
+		</PR>
+		<PR>
+			<KEY>PR</KEY>
+			<TYPE>BE</TYPE>
+			<ID>21431</ID>
+			<NAME>2SAP</NAME>
+		</PR>
+		<LI>
+			<KEY>LI</KEY>
+			<LINE>42</LINE>
+			<AMOUNT>003.9</AMOUNT>
+		</LI>
+		<LI>
+			<KEY>LI</KEY>
+			<LINE>41</LINE>
+			<AMOUNT>003.1</AMOUNT>
+		</LI>
+		<LI>
+			<KEY>LI</KEY>
+			<LINE>49</LINE>
+			<AMOUNT>023.2</AMOUNT>
+		</LI>
+		<KK>
+			<KEY>KK</KEY>
+			<StartTime>11/10/2022 15:12:32</StartTime>
+			<Duration>1 s 334 ms</Duration>
+			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+			<MessageID>AGNFa8BD00KAOwctLiGjAxtPpB5t</MessageID>
+			<CorrelationID>AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax</CorrelationID>
+			<ApplicationMessageID>6188950</ApplicationMessageID>
+			<ApplicationMessageType/>
+			<Status>COMPLETED</Status>
+			<Sender>sender2</Sender>
+			<Receiver>receiver2</Receiver>
+			<DOC/>
+			<ORDERNR/>
+			<Vendor/>
+		</KK>
+		<KK>
+			<KEY>KK</KEY>
+			<StartTime>11/10/2022 15:12:29</StartTime>
+			<Duration>2 s 163 ms</Duration>
+			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+			<MessageID>AGNFa73d5tZgqem97vMzpZ537dSk</MessageID>
+			<CorrelationID>AGNFa71CLLER0rg-BatTpOe5zU6u</CorrelationID>
+			<ApplicationMessageID>6188949</ApplicationMessageID>
+			<ApplicationMessageType/>
+			<Status>COMPLETED</Status>
+			<Sender>sender2</Sender>
+			<Receiver>receiver2</Receiver>
+			<DOC/>
+			<ORDERNR/>
+			<Vendor/>
+		</KK>
+		<KK>
+			<KEY>KK</KEY>
+			<StartTime>10/10/2022 15:27:12</StartTime>
+			<Duration>1 s 330 ms</Duration>
+			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+			<MessageID>AGNEHbBvEL56maMnwe-LVTjPhWKR</MessageID>
+			<CorrelationID>AGNEHbBYwOzaDVkf7bxbtN9cb8Qv</CorrelationID>
+			<ApplicationMessageID>6188940</ApplicationMessageID>
+			<ApplicationMessageType/>
+			<Status>COMPLETED</Status>
+			<Sender>sender2</Sender>
+			<Receiver>receiver2</Receiver>
+			<DOC/>
+			<ORDERNR/>
+			<Vendor/>
+		</KK>
+		<KK>
+			<KEY>KK</KEY>
+			<StartTime>10/10/2022 15:27:09</StartTime>
+			<Duration>2 s 96 ms</Duration>
+			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+			<MessageID>AGNEHa2VekzovJ5db3uS7XiMIWAT</MessageID>
+			<CorrelationID>AGNEHa3dNy2oHXrP2_e3Hadm6ptK</CorrelationID>
+			<ApplicationMessageID>6188939</ApplicationMessageID>
+			<ApplicationMessageType/>
+			<Status>COMPLETED</Status>
+			<Sender>sender2</Sender>
+			<Receiver>receiver2</Receiver>
+			<DOC/>
+			<ORDERNR/>
+			<Vendor/>
+		</KK>
+	</Recordset>
+</ns:CPIListFixed>
