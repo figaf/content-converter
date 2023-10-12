@@ -17,12 +17,12 @@ import java.nio.file.Files;
 @Slf4j
 public class FileContentWriter {
 
-    public static byte[] creatXmlOutputFile(
+    public static byte[] createXmlOutputFile(
             Document document,
             String testDataFolderName,
             Document xmlDocument
     ) throws TransformerException, IOException {
-        log.debug("#writeXMLToFile: document={}, testDataFolderName={}", document, testDataFolderName);
+        log.debug("#createXmlOutputFile: document={}, testDataFolderName={}, xmlDocument={}", document, testDataFolderName, xmlDocument);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
         Transformer transformer = transformerFactory.newTransformer();
@@ -39,5 +39,4 @@ public class FileContentWriter {
             return bytes;
         }
     }
-
 }

@@ -2,13 +2,12 @@ package com.figaf.content.converter.domain.converter;
 
 import com.figaf.content.converter.domain.file.FileContentWriter;
 import com.figaf.content.converter.dto.ConversionConfigDto;
+import com.figaf.content.converter.utils.XMLUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
@@ -21,18 +20,14 @@ public class XmlContentConverter implements ContentConverter {
     public byte[] createConvertedFile(ConversionConfigDto conversionConfigDto, List<String> parsedInputFileLines, String testDataFolderName) throws ParserConfigurationException, IOException, TransformerException {
         log.debug("#createConvertedFile: conversionConfigDto={}, parsedInputFileLines={}, testDataFolderName={}", conversionConfigDto, parsedInputFileLines, testDataFolderName);
         Document xmlDocument = createXMLDocumentFromFlattenedInput(parsedInputFileLines, conversionConfigDto);
-        return FileContentWriter.creatXmlOutputFile(xmlDocument, testDataFolderName, xmlDocument);
+        return FileContentWriter.createXmlOutputFile(xmlDocument, testDataFolderName, xmlDocument);
     }
 
     private Document createXMLDocumentFromFlattenedInput(List<String> fileInputLines, ConversionConfigDto conversionConfigDto) throws ParserConfigurationException {
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        docFactory.setNamespaceAware(true);
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-        Document document = docBuilder.newDocument();
+        Document document = XMLUtils.createDocument();
         String namespace = conversionConfigDto.getDocumentNamespace();
         String rootElement = conversionConfigDto.getDocumentName();
-
-        Element root = document.createElementNS(namespace, "ns:" + rootElement);
+        Element root = XMLUtils.createElement(document, namespace, rootElement);
         document.appendChild(root);
 
         Map<String, String> keyRecordToFrequency = parseRecordsetStructure(conversionConfigDto.getRecordsetStructure());
@@ -40,10 +35,10 @@ public class XmlContentConverter implements ContentConverter {
         boolean singleKeyMapping = keyRecordToFrequency.size() == 1;
         Element recordSetTag = null;
 
-        String recordSetName = StringUtils.isEmpty(conversionConfigDto.getRecordsetName()) ? "Recordset" : "ns:" + conversionConfigDto.getRecordsetName();
+        String recordSetName = StringUtils.isEmpty(conversionConfigDto.getRecordsetName()) ? "Recordset" : conversionConfigDto.getRecordsetName();
         String recordsetNamespace = StringUtils.isEmpty(conversionConfigDto.getRecordsetNamespace()) ? "" : conversionConfigDto.getRecordsetNamespace();
         if (!singleKeyMapping && !conversionConfigDto.isIgnoreRecordsetName()) {
-            recordSetTag = StringUtils.isEmpty(recordsetNamespace) ? document.createElement(recordSetName) : document.createElementNS(conversionConfigDto.getRecordsetNamespace(), recordSetName);
+            recordSetTag = XMLUtils.createElement(document, recordsetNamespace, recordSetName);
             root.appendChild(recordSetTag);
         }
         boolean isFirstKeyRecordEncounter = true;
@@ -58,7 +53,7 @@ public class XmlContentConverter implements ContentConverter {
                 if (isFirstKeyRecordEncounter) {
                     isFirstKeyRecordEncounter = false;
                 } else {
-                    recordSetTag = StringUtils.isEmpty(recordsetNamespace) ? document.createElement(recordSetName) : document.createElementNS(conversionConfigDto.getRecordsetNamespace(), recordSetName);
+                    recordSetTag = XMLUtils.createElement(document, recordsetNamespace, recordSetName);
                     root.appendChild(recordSetTag);
                 }
             }
@@ -127,7 +122,7 @@ public class XmlContentConverter implements ContentConverter {
             String inputFileLine,
             Map.Entry<String, ConversionConfigDto.SectionParameters> sectionParameters
     ) {
-        Element element = document.createElement(sectionParameters.getKey());
+        Element element = XMLUtils.createElement(document, null, sectionParameters.getKey());
         String[] fieldNames = sectionParameters.getValue().getFieldNames().split(",");
         String fieldSeparator = sectionParameters.getValue().getFieldSeparator();
 
@@ -149,7 +144,7 @@ public class XmlContentConverter implements ContentConverter {
             fieldValues = processSplitValues(fieldValues, fieldSeparator.charAt(0));
         }
         for (int i = 0; i < fieldNames.length; i++) {
-            Element fieldElement = doc.createElement(sanitizeTagName(fieldNames[i]));
+            Element fieldElement = XMLUtils.createElement(doc, null, sanitizeTagName(fieldNames[i]));
             String value = (i < fieldValues.length) ? fieldValues[i] : "";
             fieldElement.appendChild(doc.createTextNode(value));
             recordElement.appendChild(fieldElement);
@@ -169,7 +164,7 @@ public class XmlContentConverter implements ContentConverter {
             String fieldValue = line.substring(currentPos, Math.min(endPos, line.length()));
 
             // Create the XML node with the field name and value
-            Element fieldElement = doc.createElement(sanitizeTagName(fieldNames[i]));
+            Element fieldElement = XMLUtils.createElement(doc, null, sanitizeTagName(fieldNames[i]));
             fieldElement.appendChild(doc.createTextNode(fieldValue));
             recordElement.appendChild(fieldElement);
 
