@@ -30,12 +30,19 @@ public class FileContentWriter {
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         File outputFile = FileCreator.createOutputFile(testDataFolderName);
         DOMSource source = new DOMSource(xmlDocument);
-        StreamResult result = new StreamResult(outputFile);
-        transformer.transform(source, result);
+        StreamResult streamResult = new StreamResult(outputFile);
+        transformer.transform(source, streamResult);
 
         try (BufferedInputStream bufferedInputStream = new BufferedInputStream(Files.newInputStream(outputFile.toPath()))) {
             byte[] bytes = new byte[(int) outputFile.length()];
-            bufferedInputStream.read(bytes);
+            int bytesRead = 0;
+            while (bytesRead < bytes.length) {
+                int result = bufferedInputStream.read(bytes, bytesRead, bytes.length - bytesRead);
+                if (result == -1) {
+                    break;
+                }
+                bytesRead += result;
+            }
             return bytes;
         }
     }

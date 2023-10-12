@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,11 +22,26 @@ public class XMLUtils {
         return docBuilder.newDocument();
     }
 
+    public static Element createElement(Document document, String tagName) {
+        return document.createElement(tagName);
+    }
+
     public static Element createElement(Document document, String namespace, String tagName) {
-        if (namespace == null || namespace.isEmpty()) {
-            return document.createElement(tagName);
-        } else {
-            return document.createElementNS(namespace, "ns:" + tagName);
-        }
+        return (namespace == null || namespace.isEmpty())
+                ? createElement(document, tagName)
+                : document.createElementNS(namespace, "ns:" + tagName);
+    }
+
+
+    public static void appendChild(Document document, Element element) {
+        document.appendChild(element);
+    }
+
+    public static void appendChild(Element parent, Element child) {
+        parent.appendChild(child);
+    }
+
+    public static void appendChild(Element parent, Text child) {
+        parent.appendChild(child);
     }
 }

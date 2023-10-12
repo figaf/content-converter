@@ -2,8 +2,10 @@ package com.figaf.content.converter.domain.converter;
 
 import com.figaf.content.converter.domain.file.FileContentWriter;
 import com.figaf.content.converter.dto.ConversionConfigDto;
+import com.figaf.content.converter.exception.ApplicationException;
 import com.figaf.content.converter.utils.XMLUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -19,16 +21,15 @@ public class XmlContentConverter implements ContentConverter {
     @Override
     public byte[] createConvertedFile(ConversionConfigDto conversionConfigDto, List<String> parsedInputFileLines, String testDataFolderName) throws ParserConfigurationException, IOException, TransformerException {
         log.debug("#createConvertedFile: conversionConfigDto={}, parsedInputFileLines={}, testDataFolderName={}", conversionConfigDto, parsedInputFileLines, testDataFolderName);
+        ensureValidConversionArgs(conversionConfigDto, parsedInputFileLines);
         Document xmlDocument = createXMLDocumentFromFlattenedInput(parsedInputFileLines, conversionConfigDto);
         return FileContentWriter.createXmlOutputFile(xmlDocument, testDataFolderName, xmlDocument);
     }
 
     private Document createXMLDocumentFromFlattenedInput(List<String> fileInputLines, ConversionConfigDto conversionConfigDto) throws ParserConfigurationException {
         Document document = XMLUtils.createDocument();
-        String namespace = conversionConfigDto.getDocumentNamespace();
-        String rootElement = conversionConfigDto.getDocumentName();
-        Element root = XMLUtils.createElement(document, namespace, rootElement);
-        document.appendChild(root);
+        Element root = XMLUtils.createElement(document, conversionConfigDto.getDocumentNamespace(), conversionConfigDto.getDocumentName());
+        XMLUtils.appendChild(document, root);
 
         Map<String, String> keyRecordToFrequency = parseRecordsetStructure(conversionConfigDto.getRecordsetStructure());
         String firstKeyRecord = keyRecordToFrequency.keySet().iterator().next();
@@ -37,24 +38,29 @@ public class XmlContentConverter implements ContentConverter {
 
         String recordSetName = StringUtils.isEmpty(conversionConfigDto.getRecordsetName()) ? "Recordset" : conversionConfigDto.getRecordsetName();
         String recordsetNamespace = StringUtils.isEmpty(conversionConfigDto.getRecordsetNamespace()) ? "" : conversionConfigDto.getRecordsetNamespace();
-        if (!singleKeyMapping && !conversionConfigDto.isIgnoreRecordsetName()) {
+        log.debug("#createXMLDocumentFromFlattenedInput: singleKeyMapping={}, isIgnoreRecordsetName={}", singleKeyMapping, conversionConfigDto.isIgnoreRecordsetName());
+
+        if (shouldNotSkipRecordsetCreation(conversionConfigDto, singleKeyMapping)) {
             recordSetTag = XMLUtils.createElement(document, recordsetNamespace, recordSetName);
-            root.appendChild(recordSetTag);
+            XMLUtils.appendChild(root, recordSetTag);
         }
         boolean isFirstKeyRecordEncounter = true;
 
         for (String inputLine : fileInputLines) {
             Map<String, ConversionConfigDto.SectionParameters> keyRecordToSectionParameters = determineKeyRecordToSectionParameters(inputLine, conversionConfigDto, singleKeyMapping);
 
-            if (!conversionConfigDto.isIgnoreRecordsetName() && !singleKeyMapping && keyRecordToSectionParameters
-                    .keySet()
-                    .iterator()
-                    .next().equals(firstKeyRecord)) {
+            if (shouldCreateNewRecordsetForMultipleKeyRecords(
+                    conversionConfigDto,
+                    singleKeyMapping,
+                    keyRecordToSectionParameters,
+                    firstKeyRecord
+            )) {
                 if (isFirstKeyRecordEncounter) {
                     isFirstKeyRecordEncounter = false;
                 } else {
                     recordSetTag = XMLUtils.createElement(document, recordsetNamespace, recordSetName);
-                    root.appendChild(recordSetTag);
+                    log.debug("proceed to append recordSetTag: recordSetTag={}", recordSetTag);
+                    XMLUtils.appendChild(root, recordSetTag);
                 }
             }
 
@@ -69,6 +75,21 @@ public class XmlContentConverter implements ContentConverter {
         }
 
         return document;
+    }
+
+    private boolean shouldNotSkipRecordsetCreation(ConversionConfigDto conversionConfigDto, boolean singleKeyMapping) {
+        return !singleKeyMapping && !conversionConfigDto.isIgnoreRecordsetName();
+    }
+
+    private boolean shouldCreateNewRecordsetForMultipleKeyRecords(
+            ConversionConfigDto conversionConfigDto,
+            boolean singleKeyMapping,
+            Map<String, ConversionConfigDto.SectionParameters> keyRecordToSectionParameters,
+            String firstKeyRecord
+    ) {
+        return !conversionConfigDto.isIgnoreRecordsetName() &&
+                !singleKeyMapping &&
+                keyRecordToSectionParameters.keySet().iterator().next().equals(firstKeyRecord);
     }
 
     private Map<String, ConversionConfigDto.SectionParameters> determineKeyRecordToSectionParameters(String inputFileLine, ConversionConfigDto conversionConfigDto, boolean singleKeyMapping) {
@@ -110,9 +131,9 @@ public class XmlContentConverter implements ContentConverter {
         for (Map.Entry<String, ConversionConfigDto.SectionParameters> sectionParameters : keyRecordToSectionParameters.entrySet()) {
             Element node = createNodeFromSectionParameters(document, inputLine, sectionParameters);
             if (!singleKeyMapping && recordSetTag != null) {
-                recordSetTag.appendChild(node);
+                XMLUtils.appendChild(recordSetTag, node);
             } else {
-                root.appendChild(node);
+                XMLUtils.appendChild(root, node);
             }
         }
     }
@@ -146,8 +167,8 @@ public class XmlContentConverter implements ContentConverter {
         for (int i = 0; i < fieldNames.length; i++) {
             Element fieldElement = XMLUtils.createElement(doc, null, sanitizeTagName(fieldNames[i]));
             String value = (i < fieldValues.length) ? fieldValues[i] : "";
-            fieldElement.appendChild(doc.createTextNode(value));
-            recordElement.appendChild(fieldElement);
+            XMLUtils.appendChild(fieldElement, doc.createTextNode(value));
+            XMLUtils.appendChild(recordElement, fieldElement);
         }
     }
 
@@ -165,8 +186,8 @@ public class XmlContentConverter implements ContentConverter {
 
             // Create the XML node with the field name and value
             Element fieldElement = XMLUtils.createElement(doc, null, sanitizeTagName(fieldNames[i]));
-            fieldElement.appendChild(doc.createTextNode(fieldValue));
-            recordElement.appendChild(fieldElement);
+            XMLUtils.appendChild(fieldElement, doc.createTextNode(fieldValue));
+            XMLUtils.appendChild(recordElement, fieldElement);
 
             // Update the current position
             currentPos = endPos;
@@ -213,6 +234,26 @@ public class XmlContentConverter implements ContentConverter {
         }
 
         return resultList.toArray(new String[0]);
+    }
+
+    private void ensureValidConversionArgs(ConversionConfigDto conversionConfigDto, List<String> parsedInputFileLines) {
+        List<String> errorMessages = new ArrayList<>();
+
+        if (StringUtils.isEmpty(conversionConfigDto.getRecordsetStructure())) {
+            errorMessages.add("Recordset structure is missing.");
+        }
+        if (CollectionUtils.isEmpty(conversionConfigDto.getSectionParameters())) {
+            errorMessages.add("No section parameters provided.");
+        }
+        if (CollectionUtils.isEmpty(parsedInputFileLines)) {
+            errorMessages.add("No valid input lines found.");
+        }
+
+        if (!errorMessages.isEmpty()) {
+            String combinedErrorMessage = String.join(" ", errorMessages);
+            log.error("#ensureValidConversionArgs: combinedErrorMessage={}", combinedErrorMessage);
+            throw new ApplicationException(combinedErrorMessage);
+        }
     }
 }
 
