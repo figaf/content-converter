@@ -21,11 +21,11 @@ public class XmlProcessor {
     public byte[] processXmlDocument(Document xmlDocument, String testDataFolderName)
             throws TransformerException, IOException {
         log.debug("#processXmlDocument: xmlDocument={}, testDataFolderName={}", xmlDocument, testDataFolderName);
-        File outputFile = writeXmlToFile(xmlDocument, testDataFolderName);
-        return readFileToByteArray(outputFile);
+        File outputFile = writeXmlContentToFile(xmlDocument, testDataFolderName);
+        return loadFile(outputFile);
     }
 
-    private File writeXmlToFile(Document xmlDocument, String testDataFolderName)
+    private File writeXmlContentToFile(Document xmlDocument, String testDataFolderName)
             throws TransformerException, IOException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
@@ -40,7 +40,7 @@ public class XmlProcessor {
         return outputFile;
     }
 
-    private byte[] readFileToByteArray(File file) throws IOException {
+    private byte[] loadFile(File file) throws IOException {
         try (BufferedInputStream bufferedInputStream = new BufferedInputStream(Files.newInputStream(file.toPath()))) {
             byte[] bytes = new byte[(int) file.length()];
             int bytesRead = 0;
