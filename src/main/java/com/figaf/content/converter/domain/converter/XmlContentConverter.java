@@ -1,6 +1,6 @@
 package com.figaf.content.converter.domain.converter;
 
-import com.figaf.content.converter.domain.file.FileContentWriter;
+import com.figaf.content.converter.domain.processor.XmlProcessor;
 import com.figaf.content.converter.domain.strategy.NodeCreationStrategy;
 import com.figaf.content.converter.dto.ConversionConfigDto;
 import com.figaf.content.converter.exception.ApplicationException;
@@ -24,7 +24,8 @@ public class XmlContentConverter implements ContentConverter {
         log.debug("#createConvertedFile: conversionConfigDto={}, parsedInputFileLines={}, testDataFolderName={}", conversionConfigDto, parsedInputFileLines, testDataFolderName);
         ensureValidConversionArgs(conversionConfigDto, parsedInputFileLines);
         Document xmlDocument = createXMLDocumentFromFlattenedInput(parsedInputFileLines, conversionConfigDto);
-        return FileContentWriter.createXmlOutputFile(xmlDocument, testDataFolderName, xmlDocument);
+        XmlProcessor xmlProcessor = new XmlProcessor();
+        return xmlProcessor.processXmlDocument(xmlDocument, testDataFolderName);
     }
 
     private Document createXMLDocumentFromFlattenedInput(List<String> fileInputLines, ConversionConfigDto conversionConfigDto) throws ParserConfigurationException {

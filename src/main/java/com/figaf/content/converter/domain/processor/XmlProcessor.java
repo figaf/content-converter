@@ -1,5 +1,6 @@
-package com.figaf.content.converter.domain.file;
+package com.figaf.content.converter.domain.processor;
 
+import com.figaf.content.converter.domain.file.FileCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
 
@@ -15,26 +16,33 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 @Slf4j
-public class FileContentWriter {
+public class XmlProcessor {
 
-    public static byte[] createXmlOutputFile(
-            Document document,
-            String testDataFolderName,
-            Document xmlDocument
-    ) throws TransformerException, IOException {
-        log.debug("#createXmlOutputFile: document={}, testDataFolderName={}, xmlDocument={}", document, testDataFolderName, xmlDocument);
+    public byte[] processXmlDocument(Document xmlDocument, String testDataFolderName)
+            throws TransformerException, IOException {
+        log.debug("#processXmlDocument: xmlDocument={}, testDataFolderName={}", xmlDocument, testDataFolderName);
+        File outputFile = writeXmlToFile(xmlDocument, testDataFolderName);
+        return readFileToByteArray(outputFile);
+    }
+
+    private File writeXmlToFile(Document xmlDocument, String testDataFolderName)
+            throws TransformerException, IOException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
-
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
         File outputFile = FileCreator.createOutputFile(testDataFolderName);
         DOMSource source = new DOMSource(xmlDocument);
         StreamResult streamResult = new StreamResult(outputFile);
         transformer.transform(source, streamResult);
 
-        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(Files.newInputStream(outputFile.toPath()))) {
-            byte[] bytes = new byte[(int) outputFile.length()];
+        return outputFile;
+    }
+
+    private byte[] readFileToByteArray(File file) throws IOException {
+        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(Files.newInputStream(file.toPath()))) {
+            byte[] bytes = new byte[(int) file.length()];
             int bytesRead = 0;
             while (bytesRead < bytes.length) {
                 int result = bufferedInputStream.read(bytes, bytesRead, bytes.length - bytesRead);
