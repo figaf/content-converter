@@ -3,6 +3,9 @@ plugins {
     id 'maven-publish'
 }
 
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
 ext {
     lombokVersion = '1.18.22'
     integrationDirectoryApiVersion = '1.23'

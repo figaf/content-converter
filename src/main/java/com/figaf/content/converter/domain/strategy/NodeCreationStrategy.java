@@ -14,11 +14,11 @@ import java.util.Map;
 @Slf4j
 public class NodeCreationStrategy {
 
-    public  boolean shouldNotSkipRecordsetCreation(ConversionConfigDto conversionConfigDto, boolean singleKeyMapping) {
+    public boolean shouldNotSkipRecordsetCreation(ConversionConfigDto conversionConfigDto, boolean singleKeyMapping) {
         return !singleKeyMapping && !conversionConfigDto.isIgnoreRecordsetName();
     }
 
-    public  boolean shouldCreateNewRecordsetForMultipleKeyRecords(
+    public boolean shouldCreateNewRecordsetForMultipleKeyRecords(
             ConversionConfigDto conversionConfigDto,
             boolean singleKeyMapping,
             Map<String, ConversionConfigDto.SectionParameters> keyRecordToSectionParameters,
@@ -72,7 +72,7 @@ public class NodeCreationStrategy {
         boolean anyElementContainsQuotes = Arrays.stream(fieldValues)
                 .anyMatch(value -> value.contains("\""));
         if (anyElementContainsQuotes) {
-            fieldValues = processSplitValues(fieldValues, fieldSeparator.charAt(0));
+            fieldValues = processSplitValues(fieldValues, fieldSeparator);
         }
         for (int i = 0; i < fieldNames.length; i++) {
             Element fieldElement = XMLUtils.createElement(doc, null, sanitizeTagName(fieldNames[i]));
@@ -108,28 +108,29 @@ public class NodeCreationStrategy {
         return input.trim().replaceAll(" ", "");
     }
 
-    private static String[] processSplitValues(String[] splitValues, char fieldSeparator) {
+    private static String[] processSplitValues(String[] splitValues, String fieldSeparator) {
         List<String> resultList = new ArrayList<>();
-
-        StringBuilder combinedValue = new StringBuilder();
         boolean insideQuotes = false;
-
-        for (String value : splitValues) {
+        StringBuilder combinedValue = new StringBuilder();
+        for (String splitValue : splitValues) {
             if (insideQuotes) {
-                combinedValue.append(fieldSeparator).append(value);
-            } else {
-                combinedValue = new StringBuilder(value);
+                combinedValue.append(fieldSeparator);
             }
 
-            if (value.startsWith("\"")) {
+            String clearedFromQuotesValue = splitValue.replaceAll("\"", "");
+            combinedValue.append(clearedFromQuotesValue);
+
+            if (splitValue.startsWith("\"") && !insideQuotes) {
                 insideQuotes = true;
             }
 
-            if (value.endsWith("\"") && insideQuotes) {
+            if (splitValue.endsWith("\"") && insideQuotes) {
+                resultList.add(combinedValue.toString());
+                combinedValue.setLength(0);
                 insideQuotes = false;
-                resultList.add(combinedValue.toString().replaceAll("\"", ""));
             } else if (!insideQuotes) {
-                resultList.add(value.replaceAll("\"", ""));
+                resultList.add(clearedFromQuotesValue);
+                combinedValue.setLength(0);
             }
         }
 

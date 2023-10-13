@@ -14,6 +14,9 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.ByteArrayOutputStream;
 
 @Slf4j
 public class XmlProcessor {
@@ -21,8 +24,13 @@ public class XmlProcessor {
     public byte[] processXmlDocument(Document xmlDocument, String testDataFolderName)
             throws TransformerException, IOException {
         log.debug("#processXmlDocument: xmlDocument={}, testDataFolderName={}", xmlDocument, testDataFolderName);
-        File outputFile = writeXmlContentToFile(xmlDocument, testDataFolderName);
-        return loadFile(outputFile);
+        Path testDataFolderDir = Paths.get(testDataFolderName);
+        if (Files.exists(testDataFolderDir) && Files.isDirectory(testDataFolderDir)) {
+            File outputFile = writeXmlContentToFile(xmlDocument, testDataFolderName);
+            return loadFile(outputFile);
+        } else {
+            return loadFromDomSource(xmlDocument);
+        }
     }
 
     private File writeXmlContentToFile(Document xmlDocument, String testDataFolderName)
@@ -39,6 +47,20 @@ public class XmlProcessor {
 
         return outputFile;
     }
+
+    private byte[] loadFromDomSource(Document xmlDocument) throws TransformerException {
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        StreamResult streamResult = new StreamResult(byteArrayOutputStream);
+        DOMSource domSource = new DOMSource(xmlDocument);
+        transformer.transform(domSource, streamResult);
+        return byteArrayOutputStream.toByteArray();
+    }
+
 
     private byte[] loadFile(File file) throws IOException {
         try (BufferedInputStream bufferedInputStream = new BufferedInputStream(Files.newInputStream(file.toPath()))) {
