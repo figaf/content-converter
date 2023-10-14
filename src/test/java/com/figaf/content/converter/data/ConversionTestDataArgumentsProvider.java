@@ -20,28 +20,28 @@ public class ConversionTestDataArgumentsProvider implements ArgumentsProvider {
     @Override
     public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
         return Stream.of(
-                Arguments.of(buildConversionData(
+                Arguments.of(buildConversionTestData(
                         Paths.get("csv-to-xml")
                 )),
-                Arguments.of(buildConversionData(
+                Arguments.of(buildConversionTestData(
                         Paths.get("mixed-to-xml")
                 )),
-                Arguments.of(buildConversionData(
+                Arguments.of(buildConversionTestData(
                         Paths.get("txt-to-xml-fixed")
                 )),
-                Arguments.of(buildConversionData(
+                Arguments.of(buildConversionTestData(
                         Paths.get("txt-to-xml-fixed-no-recordset")
                 )),
-                Arguments.of(buildConversionData(
+                Arguments.of(buildConversionTestData(
                         Paths.get("more-than-one-recordset-to-xml")
                 )),
-                Arguments.of(buildConversionData(
+                Arguments.of(buildConversionTestData(
                         Paths.get("csv-with-quotes")
                 ))
         );
     }
 
-    public static ConversionTestData buildConversionData(Path folderPath) {
+    public static ConversionTestData buildConversionTestData(Path folderPath) {
         Path testDataFolder = Paths.get(TEST_DATA + folderPath);
         return ConversionTestData.parseFolder(testDataFolder);
     }

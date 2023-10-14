@@ -14,6 +14,9 @@ import java.util.Map;
 @Slf4j
 public class NodeCreationStrategy {
 
+    private static final String DOUBLE_QUOTE = "\"";
+    private static final String COMMA = ",";
+
     public boolean shouldNotSkipRecordsetCreation(ConversionConfigDto conversionConfigDto, boolean singleKeyMapping) {
         return !singleKeyMapping && !conversionConfigDto.isIgnoreRecordsetName();
     }
@@ -54,7 +57,7 @@ public class NodeCreationStrategy {
             Map.Entry<String, ConversionConfigDto.SectionParameters> sectionParameters
     ) {
         Element element = XMLUtils.createElement(document, null, sectionParameters.getKey());
-        String[] fieldNames = sectionParameters.getValue().getFieldNames().split(",");
+        String[] fieldNames = sectionParameters.getValue().getFieldNames().split(COMMA);
         String fieldSeparator = sectionParameters.getValue().getFieldSeparator();
 
         if (fieldSeparator != null) {
@@ -70,7 +73,7 @@ public class NodeCreationStrategy {
     private void populateElementWithSeparator(Document doc, Element recordElement, String line, String[] fieldNames, String fieldSeparator) {
         String[] fieldValues = line.split(fieldSeparator);
         boolean anyElementContainsQuotes = Arrays.stream(fieldValues)
-                .anyMatch(value -> value.contains("\""));
+                .anyMatch(value -> value.contains(DOUBLE_QUOTE));
         if (anyElementContainsQuotes) {
             fieldValues = processSplitValues(fieldValues, fieldSeparator);
         }
@@ -84,7 +87,7 @@ public class NodeCreationStrategy {
 
     private void populateElementWithFixedLengthContent(Document doc, Element recordElement, String line, String[] fieldNames, String fieldFixedLengths) {
         // Split the fieldFixedLengths to get an array of integers
-        int[] lengths = Arrays.stream(fieldFixedLengths.split(","))
+        int[] lengths = Arrays.stream(fieldFixedLengths.split(COMMA))
                 .mapToInt(Integer::parseInt)
                 .toArray();
 
@@ -117,14 +120,14 @@ public class NodeCreationStrategy {
                 combinedValue.append(fieldSeparator);
             }
 
-            String clearedFromQuotesValue = splitValue.replaceAll("\"", "");
+            String clearedFromQuotesValue = splitValue.replaceAll(DOUBLE_QUOTE, "");
             combinedValue.append(clearedFromQuotesValue);
 
-            if (splitValue.startsWith("\"") && !insideQuotes) {
+            if (splitValue.startsWith(DOUBLE_QUOTE) && !insideQuotes) {
                 insideQuotes = true;
             }
 
-            if (splitValue.endsWith("\"") && insideQuotes) {
+            if (splitValue.endsWith(DOUBLE_QUOTE) && insideQuotes) {
                 resultList.add(combinedValue.toString());
                 combinedValue.setLength(0);
                 insideQuotes = false;

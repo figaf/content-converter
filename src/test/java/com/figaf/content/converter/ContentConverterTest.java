@@ -28,7 +28,11 @@ public class ContentConverterTest {
         MixedContentParser mixedContentParser = new MixedContentParser();
         List<String> parsedInputFileLines = mixedContentParser.parseMixedContent(conversionTestData.getInputFileBytes());
         ContentConverter contentConverter = new XmlContentConverter(new NodeCreationStrategy());
-        byte[] xmlConvertedFile = contentConverter.createConvertedFile(conversionTestData.getConversionConfigDto(), parsedInputFileLines, conversionTestData.getTestDataFolderName());
+        byte[] xmlConvertedFile = contentConverter.createConvertedFile(
+                conversionTestData.getConversionConfigDto(),
+                parsedInputFileLines,
+                conversionTestData.getTestDataFolderName()
+        );
 
         assertArrayEquals(conversionTestData.getExpectedOutboundFileBytes(), xmlConvertedFile, "The converted file does not match the expected output.");
     }

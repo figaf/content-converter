@@ -20,6 +20,7 @@ public class MixedContentParser {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
+        log.debug("#parseMixedContent produced lines count={}", lines.size());
         return lines;
     }
 }

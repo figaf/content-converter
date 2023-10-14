@@ -39,7 +39,7 @@ public class ConversionTestData {
                     .filter(Files::isRegularFile)
                     .collect(Collectors.toList());
             ConversionTestData conversionTestData = new ConversionTestData();
-            conversionTestData.setTestDataFolderName(folderPath.getFileName().toString());
+            conversionTestData.setTestDataFolderName(folderPath.toString());
             return createConversionTestData(testFiles, conversionTestData);
         } catch (Exception e) {
             log.error("Error trying to parse folder: {}", e.getMessage(), e);

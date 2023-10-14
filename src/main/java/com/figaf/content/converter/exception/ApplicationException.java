@@ -2,7 +2,6 @@ package com.figaf.content.converter.exception;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * @author Kostas Charalambous

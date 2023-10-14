@@ -3,7 +3,6 @@ package com.figaf.content.converter.domain.converter;
 import com.figaf.content.converter.domain.processor.XmlProcessor;
 import com.figaf.content.converter.domain.strategy.NodeCreationStrategy;
 import com.figaf.content.converter.dto.ConversionConfigDto;
-import com.figaf.content.converter.exception.ApplicationException;
 import com.figaf.content.converter.utils.XMLUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
@@ -19,7 +18,7 @@ import java.util.*;
 @Slf4j
 public class XmlContentConverter implements ContentConverter {
 
-    private NodeCreationStrategy nodeCreationStrategy;
+    private final NodeCreationStrategy nodeCreationStrategy;
 
     public XmlContentConverter(NodeCreationStrategy nodeCreationStrategy) {
         this.nodeCreationStrategy = nodeCreationStrategy;
@@ -87,7 +86,13 @@ public class XmlContentConverter implements ContentConverter {
         for (String inputLine : fileInputLines) {
             Map<String, ConversionConfigDto.SectionParameters> keyRecordToSectionParameters = determineKeyRecordToSectionParameters(inputLine, conversionConfigDto, singleKeyMapping);
 
-            if (nodeCreationStrategy.shouldCreateNewRecordsetForMultipleKeyRecords(conversionConfigDto, singleKeyMapping, keyRecordToSectionParameters, firstKeyRecord) && !isFirstKeyRecordEncounter) {
+            if (nodeCreationStrategy.shouldCreateNewRecordsetForMultipleKeyRecords(
+                    conversionConfigDto,
+                    singleKeyMapping,
+                    keyRecordToSectionParameters,
+                    firstKeyRecord
+            ) && !isFirstKeyRecordEncounter) {
+
                 String recordsetNamespace = StringUtils.isEmpty(conversionConfigDto.getRecordsetNamespace()) ? "" : conversionConfigDto.getRecordsetNamespace();
                 String recordSetName = StringUtils.isEmpty(conversionConfigDto.getRecordsetName()) ? "Recordset" : conversionConfigDto.getRecordsetName();
                 recordSetTag = XMLUtils.createElement(document, recordsetNamespace, recordSetName);
@@ -104,9 +109,9 @@ public class XmlContentConverter implements ContentConverter {
             return conversionConfigDto.getSectionParameters();
         }
 
-        for (Map.Entry<String, ConversionConfigDto.SectionParameters> entry : conversionConfigDto.getSectionParameters().entrySet()) {
-            if (inputFileLine.startsWith(entry.getKey()) || inputFileLine.startsWith(entry.getValue().getKeyFieldValue())) {
-                return Collections.singletonMap(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, ConversionConfigDto.SectionParameters> keyToSectionParameters : conversionConfigDto.getSectionParameters().entrySet()) {
+            if (inputFileLine.startsWith(keyToSectionParameters.getKey()) || inputFileLine.startsWith(keyToSectionParameters.getValue().getKeyFieldValue())) {
+                return Collections.singletonMap(keyToSectionParameters.getKey(), keyToSectionParameters.getValue());
             }
         }
 
@@ -120,7 +125,7 @@ public class XmlContentConverter implements ContentConverter {
         //ensure even number of tokens
         if (tokens.length % 2 != 0) {
             log.error("Improperly formatted recordsetStructure={}", recordsetStructure);
-            throw new ApplicationException("Improperly formatted recordsetStructure");
+            throw new IllegalArgumentException(String.join("Improperly formatted recordsetStructure=%s", recordsetStructure));
         }
 
         for (int i = 0; i < tokens.length; i += 2) {
@@ -146,7 +151,7 @@ public class XmlContentConverter implements ContentConverter {
         if (!errorMessages.isEmpty()) {
             String combinedErrorMessage = String.join(" ", errorMessages);
             log.error("#ensureValidConversionArgs: combinedErrorMessage={}", combinedErrorMessage);
-            throw new ApplicationException(combinedErrorMessage);
+            throw new IllegalArgumentException(combinedErrorMessage);
         }
     }
 }
