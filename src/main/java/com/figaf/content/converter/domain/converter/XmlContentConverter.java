@@ -19,6 +19,12 @@ import java.util.*;
 @Slf4j
 public class XmlContentConverter implements ContentConverter {
 
+    private NodeCreationStrategy nodeCreationStrategy;
+
+    public XmlContentConverter(NodeCreationStrategy nodeCreationStrategy) {
+        this.nodeCreationStrategy = nodeCreationStrategy;
+    }
+
     @Override
     public byte[] createConvertedFile(ConversionConfigDto conversionConfigDto, List<String> parsedInputFileLines, String testDataFolderName) throws ParserConfigurationException, IOException, TransformerException {
         log.debug("#createConvertedFile: conversionConfigDto={}, parsedInputFileLines={}, testDataFolderName={}", conversionConfigDto, parsedInputFileLines, testDataFolderName);
@@ -29,55 +35,68 @@ public class XmlContentConverter implements ContentConverter {
     }
 
     private Document createXMLDocumentFromFlattenedInput(List<String> fileInputLines, ConversionConfigDto conversionConfigDto) throws ParserConfigurationException {
+        Document document = initializeDocument(conversionConfigDto);
+        Element root = document.getDocumentElement();
+        Map<String, String> parseRecordsetStructure = parseRecordsetStructure(conversionConfigDto.getRecordsetStructure());
+        Element recordSetTag = determineRecordSetTag(document, conversionConfigDto, parseRecordsetStructure.size() == 1);
+
+        if (recordSetTag != null) {
+            XMLUtils.appendChild(root, recordSetTag);
+        }
+
+        processInputLines(
+                fileInputLines,
+                document,
+                root,
+                conversionConfigDto,
+                parseRecordsetStructure,
+                recordSetTag
+        );
+
+        return document;
+    }
+
+    private Document initializeDocument(ConversionConfigDto conversionConfigDto) throws ParserConfigurationException {
         Document document = XMLUtils.createDocument();
         Element root = XMLUtils.createElement(document, conversionConfigDto.getDocumentNamespace(), conversionConfigDto.getDocumentName());
         XMLUtils.appendChild(document, root);
+        return document;
+    }
 
-        Map<String, String> keyRecordToFrequency = parseRecordsetStructure(conversionConfigDto.getRecordsetStructure());
-        String firstKeyRecord = keyRecordToFrequency.keySet().iterator().next();
-        boolean singleKeyMapping = keyRecordToFrequency.size() == 1;
-        Element recordSetTag = null;
-
-        String recordSetName = StringUtils.isEmpty(conversionConfigDto.getRecordsetName()) ? "Recordset" : conversionConfigDto.getRecordsetName();
-        String recordsetNamespace = StringUtils.isEmpty(conversionConfigDto.getRecordsetNamespace()) ? "" : conversionConfigDto.getRecordsetNamespace();
-        log.debug("#createXMLDocumentFromFlattenedInput: singleKeyMapping={}, isIgnoreRecordsetName={}", singleKeyMapping, conversionConfigDto.isIgnoreRecordsetName());
-
-        NodeCreationStrategy nodeCreationStrategy = new NodeCreationStrategy();
+    private Element determineRecordSetTag(Document document, ConversionConfigDto conversionConfigDto, boolean singleKeyMapping) {
         if (nodeCreationStrategy.shouldNotSkipRecordsetCreation(conversionConfigDto, singleKeyMapping)) {
-            recordSetTag = XMLUtils.createElement(document, recordsetNamespace, recordSetName);
-            XMLUtils.appendChild(root, recordSetTag);
+            String recordSetName = StringUtils.isEmpty(conversionConfigDto.getRecordsetName()) ? "Recordset" : conversionConfigDto.getRecordsetName();
+            String recordsetNamespace = StringUtils.isEmpty(conversionConfigDto.getRecordsetNamespace()) ? "" : conversionConfigDto.getRecordsetNamespace();
+            return XMLUtils.createElement(document, recordsetNamespace, recordSetName);
         }
+        return null;
+    }
+
+    private void processInputLines(
+            List<String> fileInputLines,
+            Document document,
+            Element root,
+            ConversionConfigDto conversionConfigDto,
+            Map<String, String> parseRecordsetStructure,
+            Element recordSetTag
+    ) {
+        String firstKeyRecord = parseRecordsetStructure.keySet().iterator().next();
         boolean isFirstKeyRecordEncounter = true;
+        boolean singleKeyMapping = parseRecordsetStructure.size() == 1;
 
         for (String inputLine : fileInputLines) {
             Map<String, ConversionConfigDto.SectionParameters> keyRecordToSectionParameters = determineKeyRecordToSectionParameters(inputLine, conversionConfigDto, singleKeyMapping);
 
-            if (nodeCreationStrategy.shouldCreateNewRecordsetForMultipleKeyRecords(
-                    conversionConfigDto,
-                    singleKeyMapping,
-                    keyRecordToSectionParameters,
-                    firstKeyRecord
-            )) {
-                if (isFirstKeyRecordEncounter) {
-                    isFirstKeyRecordEncounter = false;
-                } else {
-                    recordSetTag = XMLUtils.createElement(document, recordsetNamespace, recordSetName);
-                    log.debug("proceed to append recordSetTag: recordSetTag={}", recordSetTag);
-                    XMLUtils.appendChild(root, recordSetTag);
-                }
+            if (nodeCreationStrategy.shouldCreateNewRecordsetForMultipleKeyRecords(conversionConfigDto, singleKeyMapping, keyRecordToSectionParameters, firstKeyRecord) && !isFirstKeyRecordEncounter) {
+                String recordsetNamespace = StringUtils.isEmpty(conversionConfigDto.getRecordsetNamespace()) ? "" : conversionConfigDto.getRecordsetNamespace();
+                String recordSetName = StringUtils.isEmpty(conversionConfigDto.getRecordsetName()) ? "Recordset" : conversionConfigDto.getRecordsetName();
+                recordSetTag = XMLUtils.createElement(document, recordsetNamespace, recordSetName);
+                XMLUtils.appendChild(root, recordSetTag);
             }
+            isFirstKeyRecordEncounter = false;
 
-            nodeCreationStrategy.createNodesFromInputLine(
-                    inputLine,
-                    document,
-                    root,
-                    keyRecordToSectionParameters,
-                    recordSetTag,
-                    singleKeyMapping
-            );
+            nodeCreationStrategy.createNodesFromInputLine(inputLine, document, root, keyRecordToSectionParameters, recordSetTag, singleKeyMapping);
         }
-
-        return document;
     }
 
     private Map<String, ConversionConfigDto.SectionParameters> determineKeyRecordToSectionParameters(String inputFileLine, ConversionConfigDto conversionConfigDto, boolean singleKeyMapping) {
@@ -85,35 +104,29 @@ public class XmlContentConverter implements ContentConverter {
             return conversionConfigDto.getSectionParameters();
         }
 
-        Optional<Map.Entry<String, ConversionConfigDto.SectionParameters>> keyRecordMatch = conversionConfigDto.getSectionParameters()
-                .entrySet()
-                .stream()
-                .filter(entry -> inputFileLine.startsWith(entry.getKey()))
-                .findFirst();
-
-        if (keyRecordMatch.isPresent()) {
-            return Collections.singletonMap(keyRecordMatch.get().getKey(), keyRecordMatch.get().getValue());
+        for (Map.Entry<String, ConversionConfigDto.SectionParameters> entry : conversionConfigDto.getSectionParameters().entrySet()) {
+            if (inputFileLine.startsWith(entry.getKey()) || inputFileLine.startsWith(entry.getValue().getKeyFieldValue())) {
+                return Collections.singletonMap(entry.getKey(), entry.getValue());
+            }
         }
 
-        Optional<Map.Entry<String, ConversionConfigDto.SectionParameters>> keyFieldValueMatch = conversionConfigDto.getSectionParameters()
-                .entrySet()
-                .stream()
-                .filter(entry -> inputFileLine.startsWith(entry.getValue().getKeyFieldValue()))
-                .findFirst();
-
-        return keyFieldValueMatch
-                .map(sectionParametersEntry ->
-                        Collections.singletonMap(sectionParametersEntry.getKey(), sectionParametersEntry.getValue()))
-                .orElse(Collections.emptyMap());
+        return Collections.emptyMap();
     }
 
     public Map<String, String> parseRecordsetStructure(String recordsetStructure) {
         Map<String, String> tagToOccurrence = new LinkedHashMap<>();
         String[] tokens = recordsetStructure.split(",");
-        //proceed to next record element and occurrence (KEY1,2) -> (KEY2,*)
+
+        //ensure even number of tokens
+        if (tokens.length % 2 != 0) {
+            log.error("Improperly formatted recordsetStructure={}", recordsetStructure);
+            throw new ApplicationException("Improperly formatted recordsetStructure");
+        }
+
         for (int i = 0; i < tokens.length; i += 2) {
             tagToOccurrence.put(tokens[i], tokens[i + 1]);
         }
+
         return tagToOccurrence;
     }
 

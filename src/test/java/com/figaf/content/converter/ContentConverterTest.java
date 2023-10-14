@@ -5,6 +5,7 @@ import com.figaf.content.converter.data.ConversionTestDataArgumentsProvider;
 import com.figaf.content.converter.domain.converter.ContentConverter;
 import com.figaf.content.converter.domain.converter.XmlContentConverter;
 import com.figaf.content.converter.domain.parser.MixedContentParser;
+import com.figaf.content.converter.domain.strategy.NodeCreationStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
@@ -26,7 +27,7 @@ public class ContentConverterTest {
         log.debug("#testMessageMappingConverter: conversionTestData={}", conversionTestData);
         MixedContentParser mixedContentParser = new MixedContentParser();
         List<String> parsedInputFileLines = mixedContentParser.parseMixedContent(conversionTestData.getInputFileBytes());
-        ContentConverter contentConverter = new XmlContentConverter();
+        ContentConverter contentConverter = new XmlContentConverter(new NodeCreationStrategy());
         byte[] xmlConvertedFile = contentConverter.createConvertedFile(conversionTestData.getConversionConfigDto(), parsedInputFileLines, conversionTestData.getTestDataFolderName());
 
         assertArrayEquals(conversionTestData.getExpectedOutboundFileBytes(), xmlConvertedFile, "The converted file does not match the expected output.");
