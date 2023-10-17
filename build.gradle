@@ -51,7 +51,6 @@ dependencies {
     compileOnly "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
-    api "com.figaf.integration:integration-directory-api:$integrationDirectoryApiVersion"
     api "org.springframework.ws:spring-ws-core:$springWsCoreVersion"
     api "com.sun.xml.bind:jaxb-impl:$jaxbImplVersion"
     api "com.sun.xml.bind:jaxb-core:$jaxbCoreVersion"
@@ -64,6 +63,7 @@ dependencies {
 
     testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
+    testImplementation "com.figaf.integration:integration-directory-api:$integrationDirectoryApiVersion"
     testImplementation "com.github.figaf:integration-commons-test:$integrationCommonsTestVersion"
     testImplementation "org.assertj:assertj-core:$assertjCoreVersion"
     testImplementation "org.mockito:mockito-core:$mockitoCoreVersion"
