@@ -6,6 +6,7 @@ import com.figaf.content.converter.ConversionConfig;
 import com.figaf.content.converter.parser.FlatDocumentParser;
 import com.figaf.content.converter.utils.XMLUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static com.figaf.content.converter.utils.XMLUtils.writeDocumentToByteArray;
@@ -35,22 +37,44 @@ public class FlatToXmlContentConverter implements ContentConverter {
     public byte[] convert(
         byte[] flatDocument,
         ConversionConfig conversionConfig
-    ) throws ContentConversionException {
-        log.debug("#convert: conversionConfig={}", conversionConfig);
+    ) {
         try {
-            validateInputArgs(flatDocument, conversionConfig);
-            Document xmlDocument = createXMLDocumentFromFlattenedInput(flatDocument, conversionConfig);
+            Document xmlDocument = convert(FlatDocumentParser.splitToLines(flatDocument), conversionConfig);
             return writeDocumentToByteArray(xmlDocument, conversionConfig.isBeautifyOutput());
         } catch (Exception ex) {
             throw new ContentConversionException("Couldn't convert flat file to XML", ex);
         }
     }
 
-    private Document createXMLDocumentFromFlattenedInput(
-        byte[] flatDocument,
+    @Override
+    public String convert(
+        String flatDocument,
+        ConversionConfig conversionConfig
+    ) {
+        try {
+            Document xmlDocument = convert(FlatDocumentParser.splitToLines(flatDocument), conversionConfig);
+            return new String(
+                writeDocumentToByteArray(xmlDocument, conversionConfig.isBeautifyOutput()),
+                StandardCharsets.UTF_8
+            );
+        } catch (Exception ex) {
+            throw new ContentConversionException("Couldn't convert flat file to XML", ex);
+        }
+    }
+
+    private Document convert(
+        List<String> flatFileLines,
         ConversionConfig conversionConfig
     ) throws ParserConfigurationException {
-        List<String> flatDocumentLines = FlatDocumentParser.readLines(flatDocument);
+        log.debug("#convert: conversionConfig={}", conversionConfig);
+        validateInputArgs(flatFileLines, conversionConfig);
+        return createXMLDocumentFromFlattenedInput(flatFileLines, conversionConfig);
+    }
+
+    private Document createXMLDocumentFromFlattenedInput(
+        List<String> flatFileLines,
+        ConversionConfig conversionConfig
+    ) throws ParserConfigurationException {
         Document document = initializeDocument(conversionConfig);
         Element root = document.getDocumentElement();
         Map<String, String> parseRecordsetStructure = parseRecordsetStructure(conversionConfig.getRecordsetStructure());
@@ -61,7 +85,7 @@ public class FlatToXmlContentConverter implements ContentConverter {
         }
 
         processInputLines(
-            flatDocumentLines,
+            flatFileLines,
             document,
             root,
             conversionConfig,
@@ -152,7 +176,7 @@ public class FlatToXmlContentConverter implements ContentConverter {
         return tagToOccurrence;
     }
 
-    private void validateInputArgs(byte[] document, ConversionConfig conversionConfig) {
+    private void validateInputArgs(List<String> flatFileLines, ConversionConfig conversionConfig) {
         List<String> errorMessages = new ArrayList<>();
 
         if (StringUtils.isEmpty(conversionConfig.getRecordsetStructure())) {
@@ -161,7 +185,7 @@ public class FlatToXmlContentConverter implements ContentConverter {
         if (MapUtils.isEmpty(conversionConfig.getSectionParameters())) {
             errorMessages.add("No section parameters provided.");
         }
-        if (ArrayUtils.isEmpty(document)) {
+        if (CollectionUtils.isEmpty(flatFileLines)) {
             errorMessages.add("Provided document must be not empty");
         }
 

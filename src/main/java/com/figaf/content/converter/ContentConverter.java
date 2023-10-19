@@ -6,6 +6,11 @@ public interface ContentConverter {
     byte[] convert(
         byte[] document,
         ConversionConfig conversionConfig
-    ) throws ContentConversionException;
+    );
+
+    String convert(
+        String document,
+        ConversionConfig conversionConfig
+    );
 }
 
