@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
 @Slf4j

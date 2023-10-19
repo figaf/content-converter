@@ -28,5 +28,4 @@ public class FlatDocumentParser {
     public static List<String> splitToLines(String flatDocument) {
         return new ArrayList<>(Arrays.asList(flatDocument.split("\\r?\\n")));
     }
-
 }

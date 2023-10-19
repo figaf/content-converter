@@ -20,6 +20,18 @@ import java.util.*;
 import static com.figaf.content.converter.utils.XMLUtils.writeDocumentToByteArray;
 import static java.lang.String.format;
 
+/**
+ * Supported Data Conversion Scenarios to XML:
+ * <ul>
+ *   <li>CSV with Headers to XML: Transforms CSV data, preserving headers, into standard XML format.</li>
+ *   <li>CSV with Headers to Minified XML: Converts CSV data, maintaining headers, into a XML format.</li>
+ *   <li>Structured Text to XML: Adapts text with specific markers (e.g., H, D, T) enclosed in double quotes to XML.</li>
+ *   <li>Mixed Content to XML: Processes content combining structured text and CSV-like data, identifying keys such as (HD, PR, LI, KK) into a XML format.</li>
+ *   <li>Multiple Recordsets to XML: Transforms mixed content with several recordsets into an organized XML structure.</li>
+ *   <li>Text-Based Data to XML: Standardizes pure text inputs into XML format.</li>
+ *   <li>Plain Text to XML (No Recordset): Converts straightforward text into structured XML, even without recordset elements.</li>
+ * </ul>
+ */
 @Slf4j
 public class FlatToXmlContentConverter implements ContentConverter {
 
