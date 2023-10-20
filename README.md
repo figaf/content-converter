@@ -55,6 +55,37 @@ transition, mitigating the need for additional development efforts.
 - ORDERNR
 - Vendor
 
+Java Configuration Object:
+```java 
+
+package com.figaf.content.converter;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ConversionConfigUtil {
+
+    public static ConversionConfig createConversionConfig() {
+        ConversionConfig config = new ConversionConfig();
+        config.setDocumentName("CPIList");
+        config.setDocumentNamespace("http://figaf.com/CPILIST");
+        config.setRecordsetName("row");
+        config.setRecordsetNamespace(""); 
+        config.setRecordsetStructure("row,*");
+        
+        Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+        ConversionConfig.SectionParameters section = new ConversionConfig.SectionParameters();
+        section.setFieldNames("StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
+        section.setKeyFieldValue("");
+        section.setFieldSeparator(",");
+        sections.put("row", section);
+        config.setSectionParameters(sections);
+
+        return config;
+    }
+}
+  ```
+
   ```xml
   <ns:CPIList xmlns:ns="http://figaf.com/CPILIST">
   <row>
@@ -135,9 +166,52 @@ transition, mitigating the need for additional development efforts.
     - T:
         - Field Separator: ';'
         - Field Names: TYPE, Status
+      
+Java Configuration Object:
+```java
+package com.figaf.content.converter;
 
-  ```xml
-  <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+import java.util.HashMap;
+import java.util.Map;
+
+public class ConversionConfigUtil {
+
+    public static ConversionConfig createConversionConfig() {
+        ConversionConfig config = new ConversionConfig();
+        config.setDocumentName("Employees");
+        config.setDocumentNamespace("http://figaf.com/2");
+        config.setRecordsetName("Employee");
+        config.setRecordsetNamespace("http://figaf.com/daniel");
+        config.setRecordsetStructure("H,1,D,*,T,1");
+        
+        Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+        
+        // Section for H
+        ConversionConfig.SectionParameters sectionH = new ConversionConfig.SectionParameters();
+        sectionH.setFieldNames("TYPE,Dummy,Name,FullName");
+        sections.put("H", sectionH);
+
+        // Section for D
+        ConversionConfig.SectionParameters sectionD = new ConversionConfig.SectionParameters();
+        sectionD.setFieldNames("TYPE,Qualifier,Num");
+        sections.put("D", sectionD);
+
+        // Section for T
+        ConversionConfig.SectionParameters sectionT = new ConversionConfig.SectionParameters();
+        sectionT.setFieldNames("TYPE,Status");
+        sectionT.setFieldSeparator(";");
+        sections.put("T", sectionT);
+
+        config.setSectionParameters(sections);
+
+        return config;
+    }
+}
+
+  ```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
   <ns:Employees xmlns:ns="http://figaf.com/2">
   <ns:Employee xmlns:ns="http://figaf.com/daniel">
     <H>
@@ -188,12 +262,10 @@ transition, mitigating the need for additional development efforts.
 - **Document Namespace**: http://figaf.com/CPIListFixed
 - **Recordset Structure**: HR,1,PR,\*,LI,\*,KK,\*
     - HR:
-        - Field Fixed Lengths (2,3,4)
-            - Note: The first 2 characters of text data map to the KEY tag, the next 3 map to ID1, the next 4 map to Doc.
+        - Field Fixed Lengths 2,3,4 (#Note: The first 2 characters of text data map to the KEY tag, the next 3 map to ID1, the next 4 map to Doc.)
         - Field Names: KEY, ID1, Doc
     - PR:
-        - Field Fixed Lengths (2,2,5,6)
-            - Note: The first 2 characters of text data map to the KEY tag, the next 2 map to TYPE, the next 5 map to ID and the last 6 map to NAME.
+        - Field Fixed Lengths 2,2,5,6 (#Note: The first 2 characters of text data map to the KEY tag, the next 2 map to TYPE, the next 5 map to ID and the last 6 map to NAME.)
         - Field Names: KEY, TYPE, ID, NAME
     - LI:
         - Field Names: KEY, LINE, AMOUNT
@@ -212,7 +284,55 @@ transition, mitigating the need for additional development efforts.
         - DOC
         - ORDERNR
         - Vendor
+       
+Java Configuration Object:
+```java
+package com.figaf.content.converter;
 
+import java.util.HashMap;
+import java.util.Map;
+
+public class ConversionConfigUtil {
+
+    public static ConversionConfig createConversionConfig() {
+        ConversionConfig config = new ConversionConfig();
+        // Set the main attributes of the config
+        config.setDocumentName("CPIListFixed");
+        config.setDocumentNamespace("http://figaf.com/CPIListFixed");
+        config.setRecordsetStructure("HR,1,PR,*,LI,*,KK,*");
+
+        // Create and set the section parameters
+        Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+
+        // Section for HR
+        ConversionConfig.SectionParameters sectionHR = new ConversionConfig.SectionParameters();
+        sectionHR.setFieldNames("KEY,ID1,Doc");
+        sectionHR.setFieldFixedLengths("2,3,4");
+        sections.put("HR", sectionHR);
+
+        // Section for PR
+        ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
+        sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
+        sectionPR.setFieldFixedLengths("2,2,5,6");
+        sections.put("PR", sectionPR);
+
+        // Section for LI
+        ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
+        sectionLI.setFieldNames("KEY,LINE,AMOUNT");
+        sections.put("LI", sectionLI);
+
+        // Section for KK
+        ConversionConfig.SectionParameters sectionKK = new ConversionConfig.SectionParameters();
+        sectionKK.setFieldSperator(";");
+        sectionKK.setFieldNames("KEY,StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
+        sections.put("KK", sectionKK);
+
+        config.setSectionParameters(sections);
+
+        return config;
+    }
+}
+ ```
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ns:CPIListFixed xmlns:ns="http://figaf.com/CPIListFixed">
@@ -292,8 +412,7 @@ transition, mitigating the need for additional development efforts.
 </ns:CPIListFixed>
 ```
 
-4.**Multiple Recordsets to XML**:Transforms mixed content with several recordsets into an XML structure
-format.
+4.**Multiple Recordsets to XML**:Transforms mixed content with several recordsets into an XML structure format.
 
 - Example:
 
@@ -326,8 +445,7 @@ format.
 - **Recordset Structure**: HR,1,PR,\*,LI,\*,KK,\*
     - HR:
         - Field Names: KEY, ID1, Doc
-        - Field Fixed Lengths: 2,3,4
-            - Note: The first 2 characters of text data map to the KEY tag, the next 3 map to ID1 and last 4 map to Doc.
+        - Field Fixed Lengths: 2,3,4 (#Note: The first 2 characters of text data map to the KEY tag, the next 3 map to ID1 and last 4 map to Doc.)
         - Key Field Value: HD key identifies HR recordset structure
     - PR:
         - Field Names: KEY, TYPE, ID, NAME
@@ -352,11 +470,61 @@ format.
 
 ---
 
+Java Configuration Object:
+```java
+package com.figaf.content.converter;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ConversionConfigUtil {
+
+    public static ConversionConfig createConversionConfig() {
+        ConversionConfig config = new ConversionConfig();
+        // Set the main attributes of the config
+        config.setDocumentName("CPIListFixed");
+        config.setDocumentNamespace("http://figaf.com/daniel");
+        config.setRecordsetName("DANIELRecordSEt");
+        config.setRecordsetStructure("HR,1,PR,*,LI,*,KK,*");
+        config.setIgnoreRecordsetName(false);
+
+        // Create and set the section parameters
+        Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+
+        // Section for HR
+        ConversionConfig.SectionParameters sectionHR = new ConversionConfig.SectionParameters();
+        sectionHR.setFieldNames("KEY,ID1,Doc");
+        sectionHR.setFieldFixedLengths("2,3,4");
+        sectionHR.setKeyFieldValue("HD"); // HD key identifies HR recordset structure
+        sections.put("HR", sectionHR);
+
+        // Section for PR
+        ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
+        sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
+        sections.put("PR", sectionPR);
+
+        // Section for LI
+        ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
+        sectionLI.setFieldNames("KEY,LINE,AMOUNT");
+        sections.put("LI", sectionLI);
+
+        // Section for KK
+        ConversionConfig.SectionParameters sectionKK = new ConversionConfig.SectionParameters();
+        sectionKK.setFieldNames("KEY,StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
+        sections.put("KK", sectionKK);
+
+        config.setSectionParameters(sections);
+
+        return config;
+    }
+
+}
+ ```
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ns:CPIListFixed xmlns:ns="http://figaf.com/CPIListFixed">
 	<ns:DANIELRecordSEt xmlns:ns="http://figaf.com/daniel">
-		<HR>
+		<HR>x
 			<KEY>HD</KEY>
 			<ID1>213</ID1>
 			<Doc>0003</Doc>
@@ -561,8 +729,7 @@ format.
 - **Recordset Structure**: HR,1,PR,\*,LI,\*
     - HR:
       - Field Names: KEY, ID1, Doc
-      - Field Fixed Lengths: 2,3,4
-        - Note: The first 2 characters of text data map to the KEY tag, the next 3 map to ID1 and last 4 map to Doc.
+      - Field Fixed Lengths: 2,3,4 (#Note: The first 2 characters of text data map to the KEY tag, the next 3 map to ID1 and last 4 map to Doc.)
       - Key Field Value: HD key identifies HR recordset structure
     - PR:
       - Field Names: KEY, TYPE, ID, NAME
@@ -571,6 +738,45 @@ format.
       - Field Names: KEY, LINE, AMOUNT
 ---
 
+Java Configuration Object:
+```java
+package com.figaf.content.converter;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ConversionConfigUtil {
+
+    public static ConversionConfig createConversionConfig() {
+        ConversionConfig config = new ConversionConfig();
+        config.setDocumentName("CPIListFixed");
+        config.setDocumentNamespace("http://figaf.com/CPIListFixed");
+        config.setRecordsetStructure("HR,1,PR,*,LI,*");
+        config.setIgnoreRecordsetName(false); 
+        
+        Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+        ConversionConfig.SectionParameters sectionHR = new ConversionConfig.SectionParameters();
+        sectionHR.setFieldNames("KEY,ID1,Doc");
+        sectionHR.setFieldFixedLengths("2,3,4");
+        sectionHR.setKeyFieldValue("HD");
+        sections.put("HR", sectionHR);
+       
+        ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
+        sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
+        sectionPR.setFieldFixedLengths("2,2,5,6");
+        sections.put("PR", sectionPR);
+        
+        ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
+        sectionLI.setFieldNames("KEY,LINE,AMOUNT");
+        sections.put("LI", sectionLI);
+
+        config.setSectionParameters(sections);
+
+        return config;
+    }
+
+}
+ ```
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ns:CPIListFixed xmlns:ns="http://figaf.com/CPIListFixed">

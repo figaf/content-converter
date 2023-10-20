@@ -104,6 +104,7 @@ public class ConversionTestData {
                     break;
                 case "xml.recordsetStructure":
                     conversionConfig.setRecordsetStructure(property.getPropertyValue().getValue());
+                    break;
                 case "xml.recordsetName":
                     conversionConfig.setRecordsetName(property.getPropertyValue().getValue());
                     break;
