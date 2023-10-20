@@ -755,20 +755,20 @@ public class ConversionConfigUtil {
         config.setDocumentName("CPIListFixed");
         config.setDocumentNamespace("http://figaf.com/CPIListFixed");
         config.setRecordsetStructure("HR,1,PR,*,LI,*");
-        config.setIgnoreRecordsetName(false); 
-        
+        config.setIgnoreRecordsetName(false);
+
         Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
         ConversionConfig.SectionParameters sectionHR = new ConversionConfig.SectionParameters();
         sectionHR.setFieldNames("KEY,ID1,Doc");
         sectionHR.setFieldFixedLengths("2,3,4");
         sectionHR.setKeyFieldValue("HD");
         sections.put("HR", sectionHR);
-       
+
         ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
         sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
         sectionPR.setFieldFixedLengths("2,2,5,6");
         sections.put("PR", sectionPR);
-        
+
         ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
         sectionLI.setFieldNames("KEY,LINE,AMOUNT");
         sectionLI.setFieldFixedLengths("2,2,6");
