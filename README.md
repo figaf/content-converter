@@ -189,11 +189,11 @@ transition, mitigating the need for additional development efforts.
 - **Recordset Structure**: HR,1,PR,\*,LI,\*,KK,\*
     - HR:
         - Field Fixed Lengths (2,3,4)
-            - Note The first 2 characters of text data map to the KEY tag, the next 3 map to ID1, the next 4 map to Doc.
+            - Note: The first 2 characters of text data map to the KEY tag, the next 3 map to ID1, the next 4 map to Doc.
         - Field Names: KEY, ID1, Doc
     - PR:
         - Field Fixed Lengths (2,2,5,6)
-            - Note The first 2 characters of text data map to the KEY tag, the next 2 map to TYPE, the next 5 map to ID and the last 6 map to NAME.
+            - Note: The first 2 characters of text data map to the KEY tag, the next 2 map to TYPE, the next 5 map to ID and the last 6 map to NAME.
         - Field Names: KEY, TYPE, ID, NAME
     - LI:
         - Field Names: KEY, LINE, AMOUNT
