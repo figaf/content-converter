@@ -69,15 +69,12 @@ public class ConversionConfigUtil {
         ConversionConfig config = new ConversionConfig();
         config.setDocumentName("CPIList");
         config.setDocumentNamespace("http://figaf.com/CPILIST");
-        config.setRecordsetName("row");
-        config.setRecordsetNamespace(""); 
         config.setRecordsetStructure("row,*");
         
         Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
         ConversionConfig.SectionParameters section = new ConversionConfig.SectionParameters();
         section.setFieldNames("StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
-        section.setKeyFieldValue("");
-        section.setFieldSeparator(",");
+        section.setFieldSeparator(";");
         sections.put("row", section);
         config.setSectionParameters(sections);
 
@@ -189,17 +186,19 @@ public class ConversionConfigUtil {
         // Section for H
         ConversionConfig.SectionParameters sectionH = new ConversionConfig.SectionParameters();
         sectionH.setFieldNames("TYPE,Dummy,Name,FullName");
+        sectionH.setFieldSeparator(",");
         sections.put("H", sectionH);
 
         // Section for D
         ConversionConfig.SectionParameters sectionD = new ConversionConfig.SectionParameters();
         sectionD.setFieldNames("TYPE,Qualifier,Num");
+        sectionD.setFieldSeparator(",");
         sections.put("D", sectionD);
 
         // Section for T
         ConversionConfig.SectionParameters sectionT = new ConversionConfig.SectionParameters();
         sectionT.setFieldNames("TYPE,Status");
-        sectionT.setFieldSeparator(";");
+        sectionT.setFieldSeparator(",");
         sections.put("T", sectionT);
 
         config.setSectionParameters(sections);
@@ -319,6 +318,7 @@ public class ConversionConfigUtil {
         // Section for LI
         ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
         sectionLI.setFieldNames("KEY,LINE,AMOUNT");
+        sectionLI.setFieldFixedLengths("2,2,6");
         sections.put("LI", sectionLI);
 
         // Section for KK
@@ -501,15 +501,18 @@ public class ConversionConfigUtil {
         // Section for PR
         ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
         sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
+        sectionPR.setFieldFixedLengths("2,2,5,6");
         sections.put("PR", sectionPR);
 
         // Section for LI
         ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
         sectionLI.setFieldNames("KEY,LINE,AMOUNT");
+        sectionLI.setFieldFixedLengths("2,2,6");
         sections.put("LI", sectionLI);
 
         // Section for KK
         ConversionConfig.SectionParameters sectionKK = new ConversionConfig.SectionParameters();
+        sectionKK.setFieldSperator(";");
         sectionKK.setFieldNames("KEY,StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
         sections.put("KK", sectionKK);
 
@@ -524,7 +527,7 @@ public class ConversionConfigUtil {
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ns:CPIListFixed xmlns:ns="http://figaf.com/CPIListFixed">
 	<ns:DANIELRecordSEt xmlns:ns="http://figaf.com/daniel">
-		<HR>x
+		<HR>
 			<KEY>HD</KEY>
 			<ID1>213</ID1>
 			<Doc>0003</Doc>
@@ -768,6 +771,7 @@ public class ConversionConfigUtil {
         
         ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
         sectionLI.setFieldNames("KEY,LINE,AMOUNT");
+        sectionLI.setFieldFixedLengths("2,2,6");
         sections.put("LI", sectionLI);
 
         config.setSectionParameters(sections);
