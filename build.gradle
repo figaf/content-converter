@@ -19,6 +19,7 @@ ext {
     slf4jSimpleVersion = '1.7.30'
     opencsvVersion = '5.8'
     junitJupiterVersion = '5.8.1'
+    commonsLang = '3.13.0'
 }
 
 configurations.all {
@@ -41,16 +42,15 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
     api "javax.xml.bind:jaxb-api:$jaxbApi"
-    api "commons-io:commons-io:$commonsIoVersion"
     api "org.slf4j:slf4j-api:$slf4jVersion"
-    api "com.google.code.gson:gson:$gsonVersion"
-    api "com.opencsv:opencsv:$opencsvVersion"
 
+    testImplementation "org.apache.commons:commons-lang3:$commonsLang"
     testImplementation "org.assertj:assertj-core:$assertjCoreVersion"
     testImplementation "org.mockito:mockito-core:$mockitoCoreVersion"
     testImplementation "org.mockito:mockito-junit-jupiter:$mockitoJUnitJupiterVersion"
     testImplementation "ch.qos.logback:logback-classic:$logbackClassicVersion"
     testImplementation "org.junit.jupiter:junit-jupiter:$junitJupiterVersion"
+    testImplementation  "commons-io:commons-io:$commonsIoVersion"
 }
 
 publishing {

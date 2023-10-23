@@ -4,12 +4,9 @@ import com.figaf.content.converter.ContentConversionException;
 import com.figaf.content.converter.ContentConverter;
 import com.figaf.content.converter.ConversionConfig;
 import com.figaf.content.converter.parser.FlatDocumentParser;
+import com.figaf.content.converter.utils.CommonUtils;
 import com.figaf.content.converter.utils.XMLUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -117,8 +114,8 @@ public class FlatToXmlContentConverter implements ContentConverter {
 
     private Element determineRecordSetTag(Document document, ConversionConfig conversionConfig, boolean singleKeyMapping) {
         if (nodeCreationStrategy.shouldNotSkipRecordsetCreation(conversionConfig, singleKeyMapping)) {
-            String recordSetName = StringUtils.isEmpty(conversionConfig.getRecordsetName()) ? "Recordset" : conversionConfig.getRecordsetName();
-            String recordsetNamespace = StringUtils.isEmpty(conversionConfig.getRecordsetNamespace()) ? "" : conversionConfig.getRecordsetNamespace();
+            String recordSetName = CommonUtils.isEmpty(conversionConfig.getRecordsetName()) ? "Recordset" : conversionConfig.getRecordsetName();
+            String recordsetNamespace = CommonUtils.isEmpty(conversionConfig.getRecordsetNamespace()) ? "" : conversionConfig.getRecordsetNamespace();
             return XMLUtils.createElement(document, recordsetNamespace, recordSetName);
         }
         return null;
@@ -146,8 +143,8 @@ public class FlatToXmlContentConverter implements ContentConverter {
                 firstKeyRecord
             ) && !isFirstKeyRecordEncounter) {
 
-                String recordsetNamespace = StringUtils.isEmpty(conversionConfig.getRecordsetNamespace()) ? "" : conversionConfig.getRecordsetNamespace();
-                String recordSetName = StringUtils.isEmpty(conversionConfig.getRecordsetName()) ? "Recordset" : conversionConfig.getRecordsetName();
+                String recordsetNamespace = CommonUtils.isEmpty(conversionConfig.getRecordsetNamespace()) ? "" : conversionConfig.getRecordsetNamespace();
+                String recordSetName = CommonUtils.isEmpty(conversionConfig.getRecordsetName()) ? "Recordset" : conversionConfig.getRecordsetName();
                 recordSetTag = XMLUtils.createElement(document, recordsetNamespace, recordSetName);
                 XMLUtils.appendChild(root, recordSetTag);
             }
@@ -191,13 +188,13 @@ public class FlatToXmlContentConverter implements ContentConverter {
     private void validateInputArgs(List<String> flatFileLines, ConversionConfig conversionConfig) {
         List<String> errorMessages = new ArrayList<>();
 
-        if (StringUtils.isEmpty(conversionConfig.getRecordsetStructure())) {
+        if (CommonUtils.isEmpty(conversionConfig.getRecordsetStructure())) {
             errorMessages.add("Recordset structure is missing.");
         }
-        if (MapUtils.isEmpty(conversionConfig.getSectionParameters())) {
+        if (CommonUtils.isEmpty(conversionConfig.getSectionParameters())) {
             errorMessages.add("No section parameters provided.");
         }
-        if (CollectionUtils.isEmpty(flatFileLines)) {
+        if (CommonUtils.isEmpty(flatFileLines)) {
             errorMessages.add("Provided document must be not empty");
         }
 
