@@ -3,11 +3,13 @@ package com.figaf.content.converter.data;
 import com.figaf.content.converter.ConversionConfig;
 import com.figaf.content.converter.directory.IntegrationDirectoryUtils;
 import com.figaf.content.converter.directory.dto.*;
+import com.figaf.content.converter.utils.CommonUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -49,7 +51,7 @@ public class ConversionTestData {
                             conversionTestData.setInputDocument(Files.readAllBytes(testFile));
                         } else if (fileName.contains("expected-output")) {
                             conversionTestData.setExpectedConvertedDocument(Files.readAllBytes((testFile)));
-                        } else if (fileName.equals("channel.xml")){
+                        } else if (fileName.equals("channel.xml")) {
                             CommunicationChannel communicationChannel = IntegrationDirectoryUtils.deserializeCommunicationChannel(Files.readAllBytes((testFile)));
                             conversionTestData.setConversionConfig(createConversionConfigDto(communicationChannel));
                         }
@@ -73,10 +75,10 @@ public class ConversionTestData {
                     for (GenericTableRowTableCell cell : genericTableRow.getValueTableCell()) {
                         columnNameToValue.put(cell.getColumnName(), cell.getValue());
                     }
-                    String paramPrefix = columnNameToValue.get("file.addConvParamName").split("\\.")[0];
+                    String addConvParamNameValue = CommonUtils.isBlank(columnNameToValue.get("file.addConvParamName")) ? "" : columnNameToValue.get("file.addConvParamName").trim();
+                    String paramPrefix = addConvParamNameValue.split("\\.")[0];
                     ConversionConfig.SectionParameters sectionParameters = sectionParametersMap.getOrDefault(paramPrefix, new ConversionConfig.SectionParameters());
-                    String addConvParamNameValue = columnNameToValue.get("file.addConvParamName");
-                    String addConvParamValue = columnNameToValue.get("file.addConvParamValue");
+                    String addConvParamValue = CommonUtils.isBlank(columnNameToValue.get("file.addConvParamValue")) ? "" : columnNameToValue.get("file.addConvParamValue").trim();
 
                     Map<String, BiConsumer<ConversionConfig.SectionParameters, String>> parameterSetters = new HashMap<>();
                     parameterSetters.put(paramPrefix + ".fieldFixedLengths", ConversionConfig.SectionParameters::setFieldFixedLengths);
@@ -95,25 +97,33 @@ public class ConversionTestData {
         }
 
         for (GenericProperty property : communicationChannel.getAdapterSpecificAttribute()) {
+            String trimmedPropertyValue = CommonUtils.isBlank(property.getPropertyValue().getValue()) ? "" : property.getPropertyValue().getValue().trim();
             switch (property.getName()) {
                 case "xml.documentName":
-                    conversionConfig.setDocumentName(property.getPropertyValue().getValue());
+                    conversionConfig.setDocumentName(trimmedPropertyValue);
                     break;
                 case "xml.documentNamespace":
-                    conversionConfig.setDocumentNamespace(property.getPropertyValue().getValue());
+                    conversionConfig.setDocumentNamespace(trimmedPropertyValue);
                     break;
                 case "xml.recordsetStructure":
-                    conversionConfig.setRecordsetStructure(property.getPropertyValue().getValue());
+                    validateRecordsetStructure(trimmedPropertyValue);
+                    conversionConfig.setRecordsetStructure(trimmedPropertyValue);
                     break;
                 case "xml.recordsetName":
-                    conversionConfig.setRecordsetName(property.getPropertyValue().getValue());
+                    conversionConfig.setRecordsetName(trimmedPropertyValue);
                     break;
                 case "xml.recordsetNamespace":
-                    conversionConfig.setRecordsetNamespace(property.getPropertyValue().getValue());
+                    conversionConfig.setRecordsetNamespace(trimmedPropertyValue);
                     break;
             }
         }
 
         return conversionConfig;
+    }
+
+    private static void validateRecordsetStructure(String value) {
+        if (CommonUtils.isBlank(value)) {
+            throw new IllegalArgumentException("recordsetStructure shouldn't be empty");
+        }
     }
 }

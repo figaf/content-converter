@@ -9,6 +9,10 @@ public class CommonUtils {
         return str == null || str.isEmpty();
     }
 
+    public static boolean isBlank(String str) {
+        return (str == null || str.trim().isEmpty());
+    }
+
     public static boolean isEmpty(Collection<?> collection) {
         return collection == null || collection.isEmpty();
     }
