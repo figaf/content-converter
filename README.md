@@ -1,39 +1,44 @@
-# Flat File to XML Converter Library for SAP Integration
+# Flat File to XML Conversion Library
 
-Transform your flat files effortlessly to XML within SAP environments.
+Transforms flat files to XML with support of options similar to content conversion on SAP PI.
 
-## Why Use This Library?
+## Why To Use This Library?
 
-Migrating from SAP PI/PO to SAP Cloud Integration (CPI) can be a challenge. This library aims to smoothen the
+Migration from SAP PI/PO to SAP Cloud Integration (CPI) has many challenges. 
+One of them is when PI File channel has a content conversion configured, 
+it's expected to have the same behavior after migration to CPI. This library aims to smoothen the
 transition, mitigating the need for additional development efforts.
 
-## Key Features 🌟
+## How To Use This Library on SAP CPI platform
+1. Add a library to classpath by adding it as resource to IFlow and create a groovy script that executes conversion
+2. In the groovy script create and configure `ConversionConfig` (see examples below)
+3. Initialize the instance of `ContentConverter` and execute conversion of the flat document:
+```
+ConversionConfig config = ...; // configure conversion config
 
-- **Dynamic Conversion** 🔄: Convert any flat file data (like CSV or TXT) into XML seamlessly.
+// for documents as byte arrays
+byte[] flatDocument = ...; // take it from message
+ContentConverter converter = new FlatToXmlContentConverter();
+byte[] convertedXml = converter.convert(flatDocument, config);
 
-- **Tailored for SAP** 🖥️: Crafted with SAP PI/PO to CPI migrations in mind, ensuring a perfect fit for your SAP needs.
+// for documents as strings
+String flatDocument = ...; // take it from message
+ContentConverter converter = new FlatToXmlContentConverter();
+String convertedXml = converter.convert(flatDocument, config);
+```
 
-- **Adapter-Level Precision** ⚙️: The library's intricate focus ensures a hassle-free SAP migration experience.
+## Supported Content Conversion Use Cases
 
-## Usage in SAP Context
+1. **CSV with Headers to XML**: Transforms CSV data, preserving headers, into standard XML format. 
 
-1. **Initialization**: Integrate the library within your SAP project.
-2. **SAP Configuration**: Set up your PI adapter configurations, ensuring alignment with the library's capabilities.
-3. **Execution**: Utilize the conversion functions to translate flat files to XML based on the predefined
-   configurations.
+**Example:**
 
-## Supported Data Conversion Scenarios
-
-1. **CSV with Headers to XML**: Transforms CSV data, preserving headers, into standard XML format.
-
-- Example:
-
-  ```csv
-  Start Time;Duration;IFlow;Message ID;Correlation ID;Application Message ID;Application Message Type;Status;Sender;Receiver;DOC;ORDERNR;Vendor
-  11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;
-  11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2;;;
-  ```
-
+Input flat document:
+```csv
+Start Time;Duration;IFlow;Message ID;Correlation ID;Application Message ID;Application Message Type;Status;Sender;Receiver;DOC;ORDERNR;Vendor
+11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;
+11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2;;;
+```
 **The above CSV is transformed into xml using the below configuration:**
 
 **Document Name**: CPIList  
@@ -57,97 +62,89 @@ transition, mitigating the need for additional development efforts.
 
 Java Configuration Object:
 ```java 
+public ConversionConfig createConversionConfig() {
+    ConversionConfig config = new ConversionConfig();
+    config.setDocumentName("CPIList");
+    config.setDocumentNamespace("http://figaf.com/CPILIST");
+    config.setRecordsetStructure("row,*");
+    
+    Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+    ConversionConfig.SectionParameters section = new ConversionConfig.SectionParameters();
+    section.setFieldNames("StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
+    section.setFieldSeparator(";");
+    sections.put("row", section);
+    config.setSectionParameters(sections);
 
-package com.figaf.content.converter;
-
-import java.util.HashMap;
-import java.util.Map;
-
-public class ConversionConfigUtil {
-
-    public static ConversionConfig createConversionConfig() {
-        ConversionConfig config = new ConversionConfig();
-        config.setDocumentName("CPIList");
-        config.setDocumentNamespace("http://figaf.com/CPILIST");
-        config.setRecordsetStructure("row,*");
-        
-        Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
-        ConversionConfig.SectionParameters section = new ConversionConfig.SectionParameters();
-        section.setFieldNames("StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
-        section.setFieldSeparator(";");
-        sections.put("row", section);
-        config.setSectionParameters(sections);
-
-        return config;
-    }
+    return config;
 }
-  ```
-
-  ```xml
-  <ns:CPIList xmlns:ns="http://figaf.com/CPILIST">
-  <row>
-    <StartTime>Start Time</StartTime>
-    <Duration>Duration</Duration>
-    <IFlow>IFlow</IFlow>
-    <MessageID>Message ID</MessageID>
-    <CorrelationID>Correlation ID</CorrelationID>
-    <ApplicationMessageID>Application Message ID</ApplicationMessageID>
-    <ApplicationMessageType>Application Message Type</ApplicationMessageType>
-    <Status>Status</Status>
-    <Sender>Sender</Sender>
-    <Receiver>Receiver</Receiver>
-    <DOC>DOC</DOC>
-    <ORDERNR>ORDERNR</ORDERNR>
-    <Vendor>Vendor</Vendor>
-  </row>
-  <row>
-    <StartTime>11/10/2022 15:12:32</StartTime>
-    <Duration>1 s 334 ms</Duration>
-    <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
-    <MessageID>AGNFa8BD00KAOwctLiGjAxtPpB5t</MessageID>
-    <CorrelationID>AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax</CorrelationID>
-    <ApplicationMessageID>6188950</ApplicationMessageID>
-    <ApplicationMessageType/>
-    <Status>COMPLETED</Status>
-    <Sender>sender2</Sender>
-    <Receiver>receiver2</Receiver>
-    <DOC/>
-    <ORDERNR/>
-    <Vendor/>
-  </row>
-  <row>
-    <StartTime>11/10/2022 15:12:29</StartTime>
-    <Duration>2 s 163 ms</Duration>
-    <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
-    <MessageID>AGNFa73d5tZgqem97vMzpZ537dSk</MessageID>
-    <CorrelationID>AGNFa71CLLER0rg-BatTpOe5zU6u</CorrelationID>
-    <ApplicationMessageID>6188949</ApplicationMessageID>
-    <ApplicationMessageType/>
-    <Status>COMPLETED</Status>
-    <Sender>sender2</Sender>
-    <Receiver>receiver2</Receiver>
-    <DOC/>
-    <ORDERNR/>
-    <Vendor/>
-  </row>
-  </ns:CPIList>
-  ```
+```
+Result:
+```xml
+<ns:CPIList xmlns:ns="http://figaf.com/CPILIST">
+    <row>
+        <StartTime>Start Time</StartTime>
+        <Duration>Duration</Duration>
+        <IFlow>IFlow</IFlow>
+        <MessageID>Message ID</MessageID>
+        <CorrelationID>Correlation ID</CorrelationID>
+        <ApplicationMessageID>Application Message ID</ApplicationMessageID>
+        <ApplicationMessageType>Application Message Type</ApplicationMessageType>
+        <Status>Status</Status>
+        <Sender>Sender</Sender>
+        <Receiver>Receiver</Receiver>
+        <DOC>DOC</DOC>
+        <ORDERNR>ORDERNR</ORDERNR>
+        <Vendor>Vendor</Vendor>
+    </row>
+    <row>
+        <StartTime>11/10/2022 15:12:32</StartTime>
+        <Duration>1 s 334 ms</Duration>
+        <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+        <MessageID>AGNFa8BD00KAOwctLiGjAxtPpB5t</MessageID>
+        <CorrelationID>AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax</CorrelationID>
+        <ApplicationMessageID>6188950</ApplicationMessageID>
+        <ApplicationMessageType/>
+        <Status>COMPLETED</Status>
+        <Sender>sender2</Sender>
+        <Receiver>receiver2</Receiver>
+        <DOC/>
+        <ORDERNR/>
+        <Vendor/>
+    </row>
+    <row>
+        <StartTime>11/10/2022 15:12:29</StartTime>
+        <Duration>2 s 163 ms</Duration>
+        <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+        <MessageID>AGNFa73d5tZgqem97vMzpZ537dSk</MessageID>
+        <CorrelationID>AGNFa71CLLER0rg-BatTpOe5zU6u</CorrelationID>
+        <ApplicationMessageID>6188949</ApplicationMessageID>
+        <ApplicationMessageType/>
+        <Status>COMPLETED</Status>
+        <Sender>sender2</Sender>
+        <Receiver>receiver2</Receiver>
+        <DOC/>
+        <ORDERNR/>
+        <Vendor/>
+    </row>
+</ns:CPIList>
+```
 
 2. **Structured Text to XML**: Adapts text with specific markers (e.g., H, D, T) enclosed in double quotes to XML.
 
-- Example:
+**Example:**
 
-  ```
-  "H","","DANIEL","Graversen,Daniel"
-  "D","birthday","0802"
-  "D","shoe","43"
-  T;1
-  "H","","Hans","John,Hans"
-  "D","bir,thday","10,06"
-  "D","shoe","10,06"
-  T;1
-  ...
-  ```
+Input flat document:
+```
+"H","","DANIEL","Graversen,Daniel"
+"D","birthday","0802"
+"D","shoe","43"
+T;1
+"H","","Hans","John,Hans"
+"D","bir,thday","10,06"
+"D","shoe","10,06"
+T;1
+...
+```
 
 **The above Structured Text is transformed into xml using the below configuration:**
 
@@ -166,94 +163,84 @@ public class ConversionConfigUtil {
       
 Java Configuration Object:
 ```java
-package com.figaf.content.converter;
+public ConversionConfig createConversionConfig() {
+    ConversionConfig config = new ConversionConfig();
+    config.setDocumentName("Employees");
+    config.setDocumentNamespace("http://figaf.com/2");
+    config.setRecordsetName("Employee");
+    config.setRecordsetNamespace("http://figaf.com/daniel");
+    config.setRecordsetStructure("H,1,D,*,T,1");
+    
+    Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+    
+    // Section for H
+    ConversionConfig.SectionParameters sectionH = new ConversionConfig.SectionParameters();
+    sectionH.setFieldNames("TYPE,Dummy,Name,FullName");
+    sectionH.setFieldSeparator(",");
+    sections.put("H", sectionH);
 
-import java.util.HashMap;
-import java.util.Map;
+    // Section for D
+    ConversionConfig.SectionParameters sectionD = new ConversionConfig.SectionParameters();
+    sectionD.setFieldNames("TYPE,Qualifier,Num");
+    sectionD.setFieldSeparator(",");
+    sections.put("D", sectionD);
 
-public class ConversionConfigUtil {
+    // Section for T
+    ConversionConfig.SectionParameters sectionT = new ConversionConfig.SectionParameters();
+    sectionT.setFieldNames("TYPE,Status");
+    sectionT.setFieldSeparator(",");
+    sections.put("T", sectionT);
 
-    public static ConversionConfig createConversionConfig() {
-        ConversionConfig config = new ConversionConfig();
-        config.setDocumentName("Employees");
-        config.setDocumentNamespace("http://figaf.com/2");
-        config.setRecordsetName("Employee");
-        config.setRecordsetNamespace("http://figaf.com/daniel");
-        config.setRecordsetStructure("H,1,D,*,T,1");
-        
-        Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
-        
-        // Section for H
-        ConversionConfig.SectionParameters sectionH = new ConversionConfig.SectionParameters();
-        sectionH.setFieldNames("TYPE,Dummy,Name,FullName");
-        sectionH.setFieldSeparator(",");
-        sections.put("H", sectionH);
+    config.setSectionParameters(sections);
 
-        // Section for D
-        ConversionConfig.SectionParameters sectionD = new ConversionConfig.SectionParameters();
-        sectionD.setFieldNames("TYPE,Qualifier,Num");
-        sectionD.setFieldSeparator(",");
-        sections.put("D", sectionD);
-
-        // Section for T
-        ConversionConfig.SectionParameters sectionT = new ConversionConfig.SectionParameters();
-        sectionT.setFieldNames("TYPE,Status");
-        sectionT.setFieldSeparator(",");
-        sections.put("T", sectionT);
-
-        config.setSectionParameters(sections);
-
-        return config;
-    }
+    return config;
 }
-
-  ```
-
+```
+Result:
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-  <ns:Employees xmlns:ns="http://figaf.com/2">
-  <ns:Employee xmlns:ns="http://figaf.com/daniel">
-    <H>
-      <TYPE>H</TYPE>
-      <Dummy/>
-      <Name>DANIEL</Name>
-      <FullName>Graversen,Daniel</FullName>
-    </H>
-    <D>
-      <TYPE>D</TYPE>
-      <Qualifier>birthday</Qualifier>
-      <Num>0802</Num>
-    </D>
-    <D>
-      <TYPE>D</TYPE>
-      <Qualifier>shoe</Qualifier>
-      <Num>43</Num>
-    </D>
-    <T>
-      <TYPE>T</TYPE>
-      <Status>1</Status>
-    </T>
-  </ns:Employee>
-  ...
-  </ns:Employees>
-  ```
+<ns:Employees xmlns:ns="http://figaf.com/2">
+    <ns:Employee xmlns:ns="http://figaf.com/daniel">
+        <H>
+            <TYPE>H</TYPE>
+            <Dummy/>
+            <Name>DANIEL</Name>
+            <FullName>Graversen,Daniel</FullName>
+        </H>
+        <D>
+            <TYPE>D</TYPE>
+            <Qualifier>birthday</Qualifier>
+            <Num>0802</Num>
+        </D>
+        <D>
+            <TYPE>D</TYPE>
+            <Qualifier>shoe</Qualifier>
+            <Num>43</Num>
+        </D>
+        <T>
+            <TYPE>T</TYPE>
+            <Status>1</Status>
+        </T>
+    </ns:Employee>
+</ns:Employees>
+```
 
 3. **Mixed Content to XML**: Processes content combining structured text and CSV-like data, identifying keys into a XML
    format.
 
-- Example:
+**Example:**
 
-  ```
-  "HD2130003"
-  "PRAG123532DANIEL"
-  "PRBE214312SAP"
-  "LI42003.9"
-  "LI41003.1"
-  "LI49023.2"
-  "KK;11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;"
-  "KK;11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2;;;"
-  ...
-  ```
+Input flat document:
+```
+"HD2130003"
+"PRAG123532DANIEL"
+"PRBE214312SAP"
+"LI42003.9"
+"LI41003.1"
+"LI49023.2"
+"KK;11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;"
+"KK;11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2;;;"
+ ```
 
 **The above Mixed Content is transformed into xml using the below configuration:**
 
@@ -286,156 +273,149 @@ public class ConversionConfigUtil {
        
 Java Configuration Object:
 ```java
-package com.figaf.content.converter;
+public ConversionConfig createConversionConfig() {
+    ConversionConfig config = new ConversionConfig();
+    // Set the main attributes of the config
+    config.setDocumentName("CPIListFixed");
+    config.setDocumentNamespace("http://figaf.com/CPIListFixed");
+    config.setRecordsetStructure("HR,1,PR,*,LI,*,KK,*");
 
-import java.util.HashMap;
-import java.util.Map;
+    // Create and set the section parameters
+    Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
 
-public class ConversionConfigUtil {
+    // Section for HR
+    ConversionConfig.SectionParameters sectionHR = new ConversionConfig.SectionParameters();
+    sectionHR.setFieldNames("KEY,ID1,Doc");
+    sectionHR.setFieldFixedLengths("2,3,4");
+    sections.put("HR", sectionHR);
 
-    public static ConversionConfig createConversionConfig() {
-        ConversionConfig config = new ConversionConfig();
-        // Set the main attributes of the config
-        config.setDocumentName("CPIListFixed");
-        config.setDocumentNamespace("http://figaf.com/CPIListFixed");
-        config.setRecordsetStructure("HR,1,PR,*,LI,*,KK,*");
+    // Section for PR
+    ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
+    sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
+    sectionPR.setFieldFixedLengths("2,2,5,6");
+    sections.put("PR", sectionPR);
 
-        // Create and set the section parameters
-        Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+    // Section for LI
+    ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
+    sectionLI.setFieldNames("KEY,LINE,AMOUNT");
+    sectionLI.setFieldFixedLengths("2,2,6");
+    sections.put("LI", sectionLI);
 
-        // Section for HR
-        ConversionConfig.SectionParameters sectionHR = new ConversionConfig.SectionParameters();
-        sectionHR.setFieldNames("KEY,ID1,Doc");
-        sectionHR.setFieldFixedLengths("2,3,4");
-        sections.put("HR", sectionHR);
+    // Section for KK
+    ConversionConfig.SectionParameters sectionKK = new ConversionConfig.SectionParameters();
+    sectionKK.setFieldSperator(";");
+    sectionKK.setFieldNames("KEY,StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
+    sections.put("KK", sectionKK);
 
-        // Section for PR
-        ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
-        sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
-        sectionPR.setFieldFixedLengths("2,2,5,6");
-        sections.put("PR", sectionPR);
+    config.setSectionParameters(sections);
 
-        // Section for LI
-        ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
-        sectionLI.setFieldNames("KEY,LINE,AMOUNT");
-        sectionLI.setFieldFixedLengths("2,2,6");
-        sections.put("LI", sectionLI);
-
-        // Section for KK
-        ConversionConfig.SectionParameters sectionKK = new ConversionConfig.SectionParameters();
-        sectionKK.setFieldSperator(";");
-        sectionKK.setFieldNames("KEY,StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
-        sections.put("KK", sectionKK);
-
-        config.setSectionParameters(sections);
-
-        return config;
-    }
+    return config;
 }
  ```
+Result:
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ns:CPIListFixed xmlns:ns="http://figaf.com/CPIListFixed">
-	<Recordset>
-		<!-- HR Section -->
-		<HR>
-			<KEY>HD</KEY>
-			<ID1>213</ID1>
-			<Doc>0003</Doc>
-		</HR>
+    <Recordset>
+        <!-- HR Section -->
+        <HR>
+            <KEY>HD</KEY>
+            <ID1>213</ID1>
+            <Doc>0003</Doc>
+        </HR>
 
-		<!-- PR Section -->
-		<PR>
-			<KEY>PR</KEY>
-			<TYPE>AG</TYPE>
-			<ID>12353</ID>
-			<NAME>2DANIE</NAME>
-		</PR>
-		<PR>
-			<KEY>PR</KEY>
-			<TYPE>BE</TYPE>
-			<ID>21431</ID>
-			<NAME>2SAP</NAME>
-		</PR>
+        <!-- PR Section -->
+        <PR>
+            <KEY>PR</KEY>
+            <TYPE>AG</TYPE>
+            <ID>12353</ID>
+            <NAME>2DANIE</NAME>
+        </PR>
+        <PR>
+            <KEY>PR</KEY>
+            <TYPE>BE</TYPE>
+            <ID>21431</ID>
+            <NAME>2SAP</NAME>
+        </PR>
 
-		<!-- LI Section -->
-		<LI>
-			<KEY>LI</KEY>
-			<LINE>42</LINE>
-			<AMOUNT>003.9</AMOUNT>
-		</LI>
-		<LI>
-			<KEY>LI</KEY>
-			<LINE>41</LINE>
-			<AMOUNT>003.1</AMOUNT>
-		</LI>
-		<LI>
-			<KEY>LI</KEY>
-			<LINE>49</LINE>
-			<AMOUNT>023.2</AMOUNT>
-		</LI>
+        <!-- LI Section -->
+        <LI>
+            <KEY>LI</KEY>
+            <LINE>42</LINE>
+            <AMOUNT>003.9</AMOUNT>
+        </LI>
+        <LI>
+            <KEY>LI</KEY>
+            <LINE>41</LINE>
+            <AMOUNT>003.1</AMOUNT>
+        </LI>
+        <LI>
+            <KEY>LI</KEY>
+            <LINE>49</LINE>
+            <AMOUNT>023.2</AMOUNT>
+        </LI>
 
-		<!-- KK Section -->
-		<KK>
-			<KEY>KK</KEY>
-			<StartTime>11/10/2022 15:12:32</StartTime>
-			<Duration>1 s 334 ms</Duration>
-			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
-			<MessageID>AGNFa8BD00KAOwctLiGjAxtPpB5t</MessageID>
-			<CorrelationID>AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax</CorrelationID>
-			<ApplicationMessageID>6188950</ApplicationMessageID>
-			<ApplicationMessageType/>
-			<Status>COMPLETED</Status>
-			<Sender>sender2</Sender>
-			<Receiver>receiver2</Receiver>
-			<DOC/>
-			<ORDERNR/>
-			<Vendor/>
-		</KK>
-		<KK>
-			<KEY>KK</KEY>
-			<StartTime>11/10/2022 15:12:29</StartTime>
-			<Duration>2 s 163 ms</Duration>
-			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
-			<MessageID>AGNFa73d5tZgqem97vMzpZ537dSk</MessageID>
-			<CorrelationID>AGNFa71CLLER0rg-BatTpOe5zU6u</CorrelationID>
-			<ApplicationMessageID>6188949</ApplicationMessageID>
-			<ApplicationMessageType/>
-			<Status>COMPLETED</Status>
-			<Sender>sender2</Sender>
-			<Receiver>receiver2</Receiver>
-			<DOC/>
-			<ORDERNR/>
-			<Vendor/>
-		</KK>
-	</Recordset>
+        <!-- KK Section -->
+        <KK>
+            <KEY>KK</KEY>
+            <StartTime>11/10/2022 15:12:32</StartTime>
+            <Duration>1 s 334 ms</Duration>
+            <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+            <MessageID>AGNFa8BD00KAOwctLiGjAxtPpB5t</MessageID>
+            <CorrelationID>AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax</CorrelationID>
+            <ApplicationMessageID>6188950</ApplicationMessageID>
+            <ApplicationMessageType/>
+            <Status>COMPLETED</Status>
+            <Sender>sender2</Sender>
+            <Receiver>receiver2</Receiver>
+            <DOC/>
+            <ORDERNR/>
+            <Vendor/>
+        </KK>
+        <KK>
+            <KEY>KK</KEY>
+            <StartTime>11/10/2022 15:12:29</StartTime>
+            <Duration>2 s 163 ms</Duration>
+            <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+            <MessageID>AGNFa73d5tZgqem97vMzpZ537dSk</MessageID>
+            <CorrelationID>AGNFa71CLLER0rg-BatTpOe5zU6u</CorrelationID>
+            <ApplicationMessageID>6188949</ApplicationMessageID>
+            <ApplicationMessageType/>
+            <Status>COMPLETED</Status>
+            <Sender>sender2</Sender>
+            <Receiver>receiver2</Receiver>
+            <DOC/>
+            <ORDERNR/>
+            <Vendor/>
+        </KK>
+    </Recordset>
 </ns:CPIListFixed>
 ```
 
 4.**Multiple Recordsets to XML**:Transforms mixed content with several recordsets into an XML structure format.
 
-- Example:
+**Example:**
 
-  ```
-    HD2130003  ------ 1 iteration of recordsetStructure
-    PRAG123532DANIEL
-    PRBE214312SAP
-    LI42003.9
-    LI41003.1
-    LI49023.2
-    KK;11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;
-    KK;11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2
-    KK;10/10/2022 15:27:12;1 s 330 ms;GetCustomersOrder2_Uiveri5;AGNEHbBvEL56maMnwe-LVTjPhWKR;AGNEHbBYwOzaDVkf7bxbtN9cb8Qv;6188940;;COMPLETED;sender2;receiver2;;;
-    KK;10/10/2022 15:27:09;2 s 96 ms;GetCustomersOrder2_Uiveri5;AGNEHa2VekzovJ5db3uS7XiMIWAT;AGNEHa3dNy2oHXrP2_e3Hadm6ptK;6188939;;COMPLETED;sender2;receiver2;;;
-    HD2130003 ------ 2 iteration of recordsetStructure
-    PRAG123532DANIEL
-    PRBE214312SAP
-    KK;11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;
-    KK;11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2;;;
-    KK;10/10/2022 15:27:12;1 s 330 ms;GetCustomersOrder2_Uiveri5;AGNEHbBvEL56maMnwe-LVTjPhWKR;AGNEHbBYwOzaDVkf7bxbtN9cb8Qv;6188940;;COMPLETED;sender2;receiver2;;;
-    KK;10/10/2022 15:27:09;2 s 96 ms;GetCustomersOrder2_Uiveri5;AGNEHa2VekzovJ5db3uS7XiMIWAT;AGNEHa3dNy2oHXrP2_e3Hadm6ptK;6188939;;COMPLETED;sender2;receiver2;;;
-  ...
-  ```
+Input flat document:
+```
+  HD2130003  ------ 1 iteration of recordsetStructure
+  PRAG123532DANIEL
+  PRBE214312SAP
+  LI42003.9
+  LI41003.1
+  LI49023.2
+  KK;11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;
+  KK;11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2
+  KK;10/10/2022 15:27:12;1 s 330 ms;GetCustomersOrder2_Uiveri5;AGNEHbBvEL56maMnwe-LVTjPhWKR;AGNEHbBYwOzaDVkf7bxbtN9cb8Qv;6188940;;COMPLETED;sender2;receiver2;;;
+  KK;10/10/2022 15:27:09;2 s 96 ms;GetCustomersOrder2_Uiveri5;AGNEHa2VekzovJ5db3uS7XiMIWAT;AGNEHa3dNy2oHXrP2_e3Hadm6ptK;6188939;;COMPLETED;sender2;receiver2;;;
+  HD2130003 ------ 2 iteration of recordsetStructure
+  PRAG123532DANIEL
+  PRBE214312SAP
+  KK;11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;
+  KK;11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2;;;
+  KK;10/10/2022 15:27:12;1 s 330 ms;GetCustomersOrder2_Uiveri5;AGNEHbBvEL56maMnwe-LVTjPhWKR;AGNEHbBYwOzaDVkf7bxbtN9cb8Qv;6188940;;COMPLETED;sender2;receiver2;;;
+  KK;10/10/2022 15:27:09;2 s 96 ms;GetCustomersOrder2_Uiveri5;AGNEHa2VekzovJ5db3uS7XiMIWAT;AGNEHa3dNy2oHXrP2_e3Hadm6ptK;6188939;;COMPLETED;sender2;receiver2;;;
+```
 
 **The mixed content transformed into XML using the following configuration:**
 
@@ -472,258 +452,249 @@ public class ConversionConfigUtil {
 
 Java Configuration Object:
 ```java
-package com.figaf.content.converter;
+public ConversionConfig createConversionConfig() {
+    ConversionConfig config = new ConversionConfig();
+    // Set the main attributes of the config
+    config.setDocumentName("CPIListFixed");
+    config.setDocumentNamespace("http://figaf.com/daniel");
+    config.setRecordsetName("DANIELRecordSEt");
+    config.setRecordsetStructure("HR,1,PR,*,LI,*,KK,*");
+    config.setIgnoreRecordsetName(false);
 
-import java.util.HashMap;
-import java.util.Map;
+    // Create and set the section parameters
+    Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
 
-public class ConversionConfigUtil {
+    // Section for HR
+    ConversionConfig.SectionParameters sectionHR = new ConversionConfig.SectionParameters();
+    sectionHR.setFieldNames("KEY,ID1,Doc");
+    sectionHR.setFieldFixedLengths("2,3,4");
+    sectionHR.setKeyFieldValue("HD"); // HD key identifies HR recordset structure
+    sections.put("HR", sectionHR);
 
-    public static ConversionConfig createConversionConfig() {
-        ConversionConfig config = new ConversionConfig();
-        // Set the main attributes of the config
-        config.setDocumentName("CPIListFixed");
-        config.setDocumentNamespace("http://figaf.com/daniel");
-        config.setRecordsetName("DANIELRecordSEt");
-        config.setRecordsetStructure("HR,1,PR,*,LI,*,KK,*");
-        config.setIgnoreRecordsetName(false);
+    // Section for PR
+    ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
+    sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
+    sectionPR.setFieldFixedLengths("2,2,5,6");
+    sections.put("PR", sectionPR);
 
-        // Create and set the section parameters
-        Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+    // Section for LI
+    ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
+    sectionLI.setFieldNames("KEY,LINE,AMOUNT");
+    sectionLI.setFieldFixedLengths("2,2,6");
+    sections.put("LI", sectionLI);
 
-        // Section for HR
-        ConversionConfig.SectionParameters sectionHR = new ConversionConfig.SectionParameters();
-        sectionHR.setFieldNames("KEY,ID1,Doc");
-        sectionHR.setFieldFixedLengths("2,3,4");
-        sectionHR.setKeyFieldValue("HD"); // HD key identifies HR recordset structure
-        sections.put("HR", sectionHR);
+    // Section for KK
+    ConversionConfig.SectionParameters sectionKK = new ConversionConfig.SectionParameters();
+    sectionKK.setFieldSperator(";");
+    sectionKK.setFieldNames("KEY,StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
+    sections.put("KK", sectionKK);
 
-        // Section for PR
-        ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
-        sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
-        sectionPR.setFieldFixedLengths("2,2,5,6");
-        sections.put("PR", sectionPR);
+    config.setSectionParameters(sections);
 
-        // Section for LI
-        ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
-        sectionLI.setFieldNames("KEY,LINE,AMOUNT");
-        sectionLI.setFieldFixedLengths("2,2,6");
-        sections.put("LI", sectionLI);
-
-        // Section for KK
-        ConversionConfig.SectionParameters sectionKK = new ConversionConfig.SectionParameters();
-        sectionKK.setFieldSperator(";");
-        sectionKK.setFieldNames("KEY,StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
-        sections.put("KK", sectionKK);
-
-        config.setSectionParameters(sections);
-
-        return config;
-    }
-
+    return config;
 }
  ```
+Result:
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ns:CPIListFixed xmlns:ns="http://figaf.com/CPIListFixed">
-	<ns:DANIELRecordSEt xmlns:ns="http://figaf.com/daniel">
-		<HR>
-			<KEY>HD</KEY>
-			<ID1>213</ID1>
-			<Doc>0003</Doc>
-		</HR>
-		<PR>
-			<KEY>PR</KEY>
-			<TYPE>AG</TYPE>
-			<ID>12353</ID>
-			<NAME>2DANIE</NAME>
-		</PR>
-		<PR>
-			<KEY>PR</KEY>
-			<TYPE>BE</TYPE>
-			<ID>21431</ID>
-			<NAME>2SAP</NAME>
-		</PR>
-		<LI>
-			<KEY>LI</KEY>
-			<LINE>42</LINE>
-			<AMOUNT>003.9</AMOUNT>
-		</LI>
-		<LI>
-			<KEY>LI</KEY>
-			<LINE>41</LINE>
-			<AMOUNT>003.1</AMOUNT>
-		</LI>
-		<LI>
-			<KEY>LI</KEY>
-			<LINE>49</LINE>
-			<AMOUNT>023.2</AMOUNT>
-		</LI>
-		<KK>
-			<KEY>KK</KEY>
-			<StartTime>11/10/2022 15:12:32</StartTime>
-			<Duration>1 s 334 ms</Duration>
-			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
-			<MessageID>AGNFa8BD00KAOwctLiGjAxtPpB5t</MessageID>
-			<CorrelationID>AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax</CorrelationID>
-			<ApplicationMessageID>6188950</ApplicationMessageID>
-			<ApplicationMessageType/>
-			<Status>COMPLETED</Status>
-			<Sender>sender2</Sender>
-			<Receiver>receiver2</Receiver>
-			<DOC/>
-			<ORDERNR/>
-			<Vendor/>
-		</KK>
-		<KK>
-			<KEY>KK</KEY>
-			<StartTime>11/10/2022 15:12:29</StartTime>
-			<Duration>2 s 163 ms</Duration>
-			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
-			<MessageID>AGNFa73d5tZgqem97vMzpZ537dSk</MessageID>
-			<CorrelationID>AGNFa71CLLER0rg-BatTpOe5zU6u</CorrelationID>
-			<ApplicationMessageID>6188949</ApplicationMessageID>
-			<ApplicationMessageType/>
-			<Status>COMPLETED</Status>
-			<Sender>sender2</Sender>
-			<Receiver>receiver2</Receiver>
-			<DOC/>
-			<ORDERNR/>
-			<Vendor/>
-		</KK>
-		<KK>
-			<KEY>KK</KEY>
-			<StartTime>10/10/2022 15:27:12</StartTime>
-			<Duration>1 s 330 ms</Duration>
-			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
-			<MessageID>AGNEHbBvEL56maMnwe-LVTjPhWKR</MessageID>
-			<CorrelationID>AGNEHbBYwOzaDVkf7bxbtN9cb8Qv</CorrelationID>
-			<ApplicationMessageID>6188940</ApplicationMessageID>
-			<ApplicationMessageType/>
-			<Status>COMPLETED</Status>
-			<Sender>sender2</Sender>
-			<Receiver>receiver2</Receiver>
-			<DOC/>
-			<ORDERNR/>
-			<Vendor/>
-		</KK>
-		<KK>
-			<KEY>KK</KEY>
-			<StartTime>10/10/2022 15:27:09</StartTime>
-			<Duration>2 s 96 ms</Duration>
-			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
-			<MessageID>AGNEHa2VekzovJ5db3uS7XiMIWAT</MessageID>
-			<CorrelationID>AGNEHa3dNy2oHXrP2_e3Hadm6ptK</CorrelationID>
-			<ApplicationMessageID>6188939</ApplicationMessageID>
-			<ApplicationMessageType/>
-			<Status>COMPLETED</Status>
-			<Sender>sender2</Sender>
-			<Receiver>receiver2</Receiver>
-			<DOC/>
-			<ORDERNR/>
-			<Vendor/>
-		</KK>
-	</ns:DANIELRecordSEt>
-	<ns:DANIELRecordSEt xmlns:ns="http://figaf.com/daniel">
-		<HR>
-			<KEY>HD</KEY>
-			<ID1>213</ID1>
-			<Doc>0003</Doc>
-		</HR>
-		<PR>
-			<KEY>PR</KEY>
-			<TYPE>AG</TYPE>
-			<ID>12353</ID>
-			<NAME>2DANIE</NAME>
-		</PR>
-		<PR>
-			<KEY>PR</KEY>
-			<TYPE>BE</TYPE>
-			<ID>21431</ID>
-			<NAME>2SAP</NAME>
-		</PR>
-		<KK>
-			<KEY>KK</KEY>
-			<StartTime>11/10/2022 15:12:32</StartTime>
-			<Duration>1 s 334 ms</Duration>
-			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
-			<MessageID>AGNFa8BD00KAOwctLiGjAxtPpB5t</MessageID>
-			<CorrelationID>AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax</CorrelationID>
-			<ApplicationMessageID>6188950</ApplicationMessageID>
-			<ApplicationMessageType/>
-			<Status>COMPLETED</Status>
-			<Sender>sender2</Sender>
-			<Receiver>receiver2</Receiver>
-			<DOC/>
-			<ORDERNR/>
-			<Vendor/>
-		</KK>
-		<KK>
-			<KEY>KK</KEY>
-			<StartTime>11/10/2022 15:12:29</StartTime>
-			<Duration>2 s 163 ms</Duration>
-			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
-			<MessageID>AGNFa73d5tZgqem97vMzpZ537dSk</MessageID>
-			<CorrelationID>AGNFa71CLLER0rg-BatTpOe5zU6u</CorrelationID>
-			<ApplicationMessageID>6188949</ApplicationMessageID>
-			<ApplicationMessageType/>
-			<Status>COMPLETED</Status>
-			<Sender>sender2</Sender>
-			<Receiver>receiver2</Receiver>
-			<DOC/>
-			<ORDERNR/>
-			<Vendor/>
-		</KK>
-		<KK>
-			<KEY>KK</KEY>
-			<StartTime>10/10/2022 15:27:12</StartTime>
-			<Duration>1 s 330 ms</Duration>
-			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
-			<MessageID>AGNEHbBvEL56maMnwe-LVTjPhWKR</MessageID>
-			<CorrelationID>AGNEHbBYwOzaDVkf7bxbtN9cb8Qv</CorrelationID>
-			<ApplicationMessageID>6188940</ApplicationMessageID>
-			<ApplicationMessageType/>
-			<Status>COMPLETED</Status>
-			<Sender>sender2</Sender>
-			<Receiver>receiver2</Receiver>
-			<DOC/>
-			<ORDERNR/>
-			<Vendor/>
-		</KK>
-		<KK>
-			<KEY>KK</KEY>
-			<StartTime>10/10/2022 15:27:09</StartTime>
-			<Duration>2 s 96 ms</Duration>
-			<IFlow>GetCustomersOrder2_Uiveri5</IFlow>
-			<MessageID>AGNEHa2VekzovJ5db3uS7XiMIWAT</MessageID>
-			<CorrelationID>AGNEHa3dNy2oHXrP2_e3Hadm6ptK</CorrelationID>
-			<ApplicationMessageID>6188939</ApplicationMessageID>
-			<ApplicationMessageType/>
-			<Status>COMPLETED</Status>
-			<Sender>sender2</Sender>
-			<Receiver>receiver2</Receiver>
-			<DOC/>
-			<ORDERNR/>
-			<Vendor/>
-		</KK>
-	</ns:DANIELRecordSEt>
+    <ns:DANIELRecordSEt xmlns:ns="http://figaf.com/daniel">
+        <HR>
+            <KEY>HD</KEY>
+            <ID1>213</ID1>
+            <Doc>0003</Doc>
+        </HR>
+        <PR>
+            <KEY>PR</KEY>
+            <TYPE>AG</TYPE>
+            <ID>12353</ID>
+            <NAME>2DANIE</NAME>
+        </PR>
+        <PR>
+            <KEY>PR</KEY>
+            <TYPE>BE</TYPE>
+            <ID>21431</ID>
+            <NAME>2SAP</NAME>
+        </PR>
+        <LI>
+            <KEY>LI</KEY>
+            <LINE>42</LINE>
+            <AMOUNT>003.9</AMOUNT>
+        </LI>
+        <LI>
+            <KEY>LI</KEY>
+            <LINE>41</LINE>
+            <AMOUNT>003.1</AMOUNT>
+        </LI>
+        <LI>
+            <KEY>LI</KEY>
+            <LINE>49</LINE>
+            <AMOUNT>023.2</AMOUNT>
+        </LI>
+        <KK>
+            <KEY>KK</KEY>
+            <StartTime>11/10/2022 15:12:32</StartTime>
+            <Duration>1 s 334 ms</Duration>
+            <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+            <MessageID>AGNFa8BD00KAOwctLiGjAxtPpB5t</MessageID>
+            <CorrelationID>AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax</CorrelationID>
+            <ApplicationMessageID>6188950</ApplicationMessageID>
+            <ApplicationMessageType/>
+            <Status>COMPLETED</Status>
+            <Sender>sender2</Sender>
+            <Receiver>receiver2</Receiver>
+            <DOC/>
+            <ORDERNR/>
+            <Vendor/>
+        </KK>
+        <KK>
+            <KEY>KK</KEY>
+            <StartTime>11/10/2022 15:12:29</StartTime>
+            <Duration>2 s 163 ms</Duration>
+            <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+            <MessageID>AGNFa73d5tZgqem97vMzpZ537dSk</MessageID>
+            <CorrelationID>AGNFa71CLLER0rg-BatTpOe5zU6u</CorrelationID>
+            <ApplicationMessageID>6188949</ApplicationMessageID>
+            <ApplicationMessageType/>
+            <Status>COMPLETED</Status>
+            <Sender>sender2</Sender>
+            <Receiver>receiver2</Receiver>
+            <DOC/>
+            <ORDERNR/>
+            <Vendor/>
+        </KK>
+        <KK>
+            <KEY>KK</KEY>
+            <StartTime>10/10/2022 15:27:12</StartTime>
+            <Duration>1 s 330 ms</Duration>
+            <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+            <MessageID>AGNEHbBvEL56maMnwe-LVTjPhWKR</MessageID>
+            <CorrelationID>AGNEHbBYwOzaDVkf7bxbtN9cb8Qv</CorrelationID>
+            <ApplicationMessageID>6188940</ApplicationMessageID>
+            <ApplicationMessageType/>
+            <Status>COMPLETED</Status>
+            <Sender>sender2</Sender>
+            <Receiver>receiver2</Receiver>
+            <DOC/>
+            <ORDERNR/>
+            <Vendor/>
+        </KK>
+        <KK>
+            <KEY>KK</KEY>
+            <StartTime>10/10/2022 15:27:09</StartTime>
+            <Duration>2 s 96 ms</Duration>
+            <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+            <MessageID>AGNEHa2VekzovJ5db3uS7XiMIWAT</MessageID>
+            <CorrelationID>AGNEHa3dNy2oHXrP2_e3Hadm6ptK</CorrelationID>
+            <ApplicationMessageID>6188939</ApplicationMessageID>
+            <ApplicationMessageType/>
+            <Status>COMPLETED</Status>
+            <Sender>sender2</Sender>
+            <Receiver>receiver2</Receiver>
+            <DOC/>
+            <ORDERNR/>
+            <Vendor/>
+        </KK>
+    </ns:DANIELRecordSEt>
+    <ns:DANIELRecordSEt xmlns:ns="http://figaf.com/daniel">
+        <HR>
+            <KEY>HD</KEY>
+            <ID1>213</ID1>
+            <Doc>0003</Doc>
+        </HR>
+        <PR>
+            <KEY>PR</KEY>
+            <TYPE>AG</TYPE>
+            <ID>12353</ID>
+            <NAME>2DANIE</NAME>
+        </PR>
+        <PR>
+            <KEY>PR</KEY>
+            <TYPE>BE</TYPE>
+            <ID>21431</ID>
+            <NAME>2SAP</NAME>
+        </PR>
+        <KK>
+            <KEY>KK</KEY>
+            <StartTime>11/10/2022 15:12:32</StartTime>
+            <Duration>1 s 334 ms</Duration>
+            <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+            <MessageID>AGNFa8BD00KAOwctLiGjAxtPpB5t</MessageID>
+            <CorrelationID>AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax</CorrelationID>
+            <ApplicationMessageID>6188950</ApplicationMessageID>
+            <ApplicationMessageType/>
+            <Status>COMPLETED</Status>
+            <Sender>sender2</Sender>
+            <Receiver>receiver2</Receiver>
+            <DOC/>
+            <ORDERNR/>
+            <Vendor/>
+        </KK>
+        <KK>
+            <KEY>KK</KEY>
+            <StartTime>11/10/2022 15:12:29</StartTime>
+            <Duration>2 s 163 ms</Duration>
+            <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+            <MessageID>AGNFa73d5tZgqem97vMzpZ537dSk</MessageID>
+            <CorrelationID>AGNFa71CLLER0rg-BatTpOe5zU6u</CorrelationID>
+            <ApplicationMessageID>6188949</ApplicationMessageID>
+            <ApplicationMessageType/>
+            <Status>COMPLETED</Status>
+            <Sender>sender2</Sender>
+            <Receiver>receiver2</Receiver>
+            <DOC/>
+            <ORDERNR/>
+            <Vendor/>
+        </KK>
+        <KK>
+            <KEY>KK</KEY>
+            <StartTime>10/10/2022 15:27:12</StartTime>
+            <Duration>1 s 330 ms</Duration>
+            <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+            <MessageID>AGNEHbBvEL56maMnwe-LVTjPhWKR</MessageID>
+            <CorrelationID>AGNEHbBYwOzaDVkf7bxbtN9cb8Qv</CorrelationID>
+            <ApplicationMessageID>6188940</ApplicationMessageID>
+            <ApplicationMessageType/>
+            <Status>COMPLETED</Status>
+            <Sender>sender2</Sender>
+            <Receiver>receiver2</Receiver>
+            <DOC/>
+            <ORDERNR/>
+            <Vendor/>
+        </KK>
+        <KK>
+            <KEY>KK</KEY>
+            <StartTime>10/10/2022 15:27:09</StartTime>
+            <Duration>2 s 96 ms</Duration>
+            <IFlow>GetCustomersOrder2_Uiveri5</IFlow>
+            <MessageID>AGNEHa2VekzovJ5db3uS7XiMIWAT</MessageID>
+            <CorrelationID>AGNEHa3dNy2oHXrP2_e3Hadm6ptK</CorrelationID>
+            <ApplicationMessageID>6188939</ApplicationMessageID>
+            <ApplicationMessageType/>
+            <Status>COMPLETED</Status>
+            <Sender>sender2</Sender>
+            <Receiver>receiver2</Receiver>
+            <DOC/>
+            <ORDERNR/>
+            <Vendor/>
+        </KK>
+    </ns:DANIELRecordSEt>
 </ns:CPIListFixed>
-
 ```
 
 5.**Text-Based Data to XML**:Transforms pure text inputs into XML format.
 
-- Example:
+**Example:**
 
-  ```
-  HD2130003
-  PRAG123532DANIEL
-  PRBE214312SAP
-  LI42003.9
-  LI41003.1
-  LI49023.2
-  ...
-  ```
+Input flat document:
+```
+HD2130003
+PRAG123532DANIEL
+PRBE214312SAP
+LI42003.9
+LI41003.1
+LI49023.2
+```
 
 **The above Text-Based data is transformed into XML using the following configuration:**
 
@@ -743,44 +714,36 @@ public class ConversionConfigUtil {
 
 Java Configuration Object:
 ```java
-package com.figaf.content.converter;
+public ConversionConfig createConversionConfig() {
+    ConversionConfig config = new ConversionConfig();
+    config.setDocumentName("CPIListFixed");
+    config.setDocumentNamespace("http://figaf.com/CPIListFixed");
+    config.setRecordsetStructure("HR,1,PR,*,LI,*");
+    config.setIgnoreRecordsetName(false);
 
-import java.util.HashMap;
-import java.util.Map;
+    Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+    ConversionConfig.SectionParameters sectionHR = new ConversionConfig.SectionParameters();
+    sectionHR.setFieldNames("KEY,ID1,Doc");
+    sectionHR.setFieldFixedLengths("2,3,4");
+    sectionHR.setKeyFieldValue("HD");
+    sections.put("HR", sectionHR);
 
-public class ConversionConfigUtil {
+    ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
+    sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
+    sectionPR.setFieldFixedLengths("2,2,5,6");
+    sections.put("PR", sectionPR);
 
-    public static ConversionConfig createConversionConfig() {
-        ConversionConfig config = new ConversionConfig();
-        config.setDocumentName("CPIListFixed");
-        config.setDocumentNamespace("http://figaf.com/CPIListFixed");
-        config.setRecordsetStructure("HR,1,PR,*,LI,*");
-        config.setIgnoreRecordsetName(false);
+    ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
+    sectionLI.setFieldNames("KEY,LINE,AMOUNT");
+    sectionLI.setFieldFixedLengths("2,2,6");
+    sections.put("LI", sectionLI);
 
-        Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
-        ConversionConfig.SectionParameters sectionHR = new ConversionConfig.SectionParameters();
-        sectionHR.setFieldNames("KEY,ID1,Doc");
-        sectionHR.setFieldFixedLengths("2,3,4");
-        sectionHR.setKeyFieldValue("HD");
-        sections.put("HR", sectionHR);
+    config.setSectionParameters(sections);
 
-        ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
-        sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
-        sectionPR.setFieldFixedLengths("2,2,5,6");
-        sections.put("PR", sectionPR);
-
-        ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
-        sectionLI.setFieldNames("KEY,LINE,AMOUNT");
-        sectionLI.setFieldFixedLengths("2,2,6");
-        sections.put("LI", sectionLI);
-
-        config.setSectionParameters(sections);
-
-        return config;
-    }
-
+    return config;
 }
  ```
+Result:
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ns:CPIListFixed xmlns:ns="http://figaf.com/CPIListFixed">
@@ -819,5 +782,4 @@ public class ConversionConfigUtil {
         </LI>
     </Recordset>
 </ns:CPIListFixed>
-
 ```
