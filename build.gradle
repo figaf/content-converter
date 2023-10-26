@@ -1,0 +1,79 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+ext {
+    lombokVersion = '1.18.22'
+    slf4jVersion = '1.7.25'
+    gsonVersion = '2.10'
+    assertjCoreVersion = '3.18.0'
+    mockitoCoreVersion = '3.6.0'
+    mockitoJUnitJupiterVersion = '3.6.0'
+    logbackClassicVersion = '1.2.9'
+    jaxbApi = '2.3.1'
+    commonsIoVersion = '2.14.0'
+    slf4jSimpleVersion = '1.7.30'
+    opencsvVersion = '5.8'
+    junitJupiterVersion = '5.8.1'
+    commonsLang = '3.13.0'
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+group = 'com.github.figaf'
+version = '1.0'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+    testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    api "javax.xml.bind:jaxb-api:$jaxbApi"
+    api "org.slf4j:slf4j-api:$slf4jVersion"
+
+    testImplementation "org.apache.commons:commons-lang3:$commonsLang"
+    testImplementation "org.assertj:assertj-core:$assertjCoreVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoCoreVersion"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoJUnitJupiterVersion"
+    testImplementation "ch.qos.logback:logback-classic:$logbackClassicVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitJupiterVersion"
+    testImplementation  "commons-io:commons-io:$commonsIoVersion"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+
+    project.properties.each { propertyName, propertyValue ->
+        if (!propertyName.startsWith("agent-test-data")) return
+
+        systemProperty propertyName, propertyValue
+    }
+
+    testLogging {
+        showStandardStreams = true
+        events "passed", "skipped", "failed"
+    }
+
+    maxHeapSize = "2G"
+}
