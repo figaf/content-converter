@@ -1,6 +1,6 @@
-package com.figaf.content.converter.directory;
+package com.figaf.content.converter.transformer.directory;
 
-import com.figaf.content.converter.directory.dto.CommunicationChannel;
+import com.figaf.content.converter.transformer.directory.dto.CommunicationChannel;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,5 +34,4 @@ public class IntegrationDirectoryUtils {
         JAXBContext jc = JAXBContext.newInstance(type);
         return jc.createUnmarshaller();
     }
-
 }

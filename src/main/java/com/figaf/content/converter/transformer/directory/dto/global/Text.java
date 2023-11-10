@@ -6,7 +6,7 @@
 //
 
 
-package com.figaf.content.converter.directory.dto.global;
+package com.figaf.content.converter.transformer.directory.dto.global;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;

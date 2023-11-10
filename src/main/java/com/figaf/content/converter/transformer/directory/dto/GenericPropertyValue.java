@@ -1,4 +1,4 @@
-package com.figaf.content.converter.directory.dto;
+package com.figaf.content.converter.transformer.directory.dto;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;

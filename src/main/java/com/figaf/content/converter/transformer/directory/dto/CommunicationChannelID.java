@@ -1,4 +1,6 @@
-package com.figaf.content.converter.directory.dto;
+package com.figaf.content.converter.transformer.directory.dto;
+
+
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -7,7 +9,7 @@ import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import static com.figaf.content.converter.directory.IntegrationDirectoryUtils.normalize;
+import static com.figaf.content.converter.transformer.directory.IntegrationDirectoryUtils.normalize;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
