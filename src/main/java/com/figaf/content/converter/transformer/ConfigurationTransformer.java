@@ -4,8 +4,8 @@ package com.figaf.content.converter.transformer;
 import com.figaf.content.converter.ConversionConfig;
 import com.figaf.content.converter.transformer.directory.IntegrationDirectoryUtils;
 import com.figaf.content.converter.transformer.directory.dto.*;
-import com.figaf.content.converter.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,10 +30,10 @@ public class ConfigurationTransformer {
                     for (GenericTableRowTableCell cell : genericTableRow.getValueTableCell()) {
                         columnNameToValue.put(cell.getColumnName(), cell.getValue());
                     }
-                    String addConvParamNameValue = CommonUtils.isBlank(columnNameToValue.get("file.addConvParamName")) ? "" : columnNameToValue.get("file.addConvParamName").trim();
+                    String addConvParamNameValue = StringUtils.isBlank(columnNameToValue.get("file.addConvParamName")) ? "" : columnNameToValue.get("file.addConvParamName").trim();
                     String paramPrefix = addConvParamNameValue.split("\\.")[0];
                     ConversionConfig.SectionParameters sectionParameters = sectionParametersMap.getOrDefault(paramPrefix, new ConversionConfig.SectionParameters());
-                    String addConvParamValue = CommonUtils.isBlank(columnNameToValue.get("file.addConvParamValue")) ? "" : columnNameToValue.get("file.addConvParamValue").trim();
+                    String addConvParamValue = StringUtils.isBlank(columnNameToValue.get("file.addConvParamValue")) ? "" : columnNameToValue.get("file.addConvParamValue").trim();
 
                     Map<String, BiConsumer<ConversionConfig.SectionParameters, String>> parameterSetters = new HashMap<>();
                     parameterSetters.put(paramPrefix + ".fieldFixedLengths", ConversionConfig.SectionParameters::setFieldFixedLengths);
@@ -52,7 +52,7 @@ public class ConfigurationTransformer {
         }
 
         for (GenericProperty property : communicationChannel.getAdapterSpecificAttribute()) {
-            String trimmedPropertyValue = CommonUtils.isBlank(property.getPropertyValue().getValue()) ? "" : property.getPropertyValue().getValue().trim();
+            String trimmedPropertyValue = StringUtils.isBlank(property.getPropertyValue().getValue()) ? "" : property.getPropertyValue().getValue().trim();
             switch (property.getName()) {
                 case "xml.documentName":
                     conversionConfig.setDocumentName(trimmedPropertyValue);
@@ -77,7 +77,7 @@ public class ConfigurationTransformer {
     }
 
     private static void validateRecordsetStructure(String value) {
-        if (CommonUtils.isBlank(value)) {
+        if (StringUtils.isBlank(value)) {
             throw new IllegalArgumentException("recordsetStructure shouldn't be empty");
         }
     }
