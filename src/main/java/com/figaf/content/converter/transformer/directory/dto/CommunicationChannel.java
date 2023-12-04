@@ -1,6 +1,6 @@
-package com.figaf.content.converter.directory.dto;
+package com.figaf.content.converter.transformer.directory.dto;
 
-import com.figaf.content.converter.directory.dto.global.LONGDescription;
+import com.figaf.content.converter.transformer.directory.dto.global.LONGDescription;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 

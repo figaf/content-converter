@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 sourceCompatibility = '1.8'
@@ -43,6 +44,7 @@ dependencies {
 
     api "javax.xml.bind:jaxb-api:$jaxbApi"
     api "org.slf4j:slf4j-api:$slf4jVersion"
+    api "org.apache.commons:commons-lang3:$commonsLang"
 
     testImplementation "org.apache.commons:commons-lang3:$commonsLang"
     testImplementation "org.assertj:assertj-core:$assertjCoreVersion"
@@ -50,7 +52,7 @@ dependencies {
     testImplementation "org.mockito:mockito-junit-jupiter:$mockitoJUnitJupiterVersion"
     testImplementation "ch.qos.logback:logback-classic:$logbackClassicVersion"
     testImplementation "org.junit.jupiter:junit-jupiter:$junitJupiterVersion"
-    testImplementation  "commons-io:commons-io:$commonsIoVersion"
+    testImplementation "commons-io:commons-io:$commonsIoVersion"
 }
 
 publishing {
@@ -60,6 +62,43 @@ publishing {
         }
     }
 }
+
+tasks.register('copyLicenses', Copy) {
+
+    into("$buildDir/META-INF")
+    from('.') {
+        include 'LICENSE'
+    }
+
+    // Process dependencies
+    configurations.runtimeClasspath.forEach { dependency ->
+        if (dependency.name.contains("jaxb-api")) {
+            from(zipTree(dependency)) {
+                include 'META-INF/LICENSE.txt'
+                include 'META-INF/NOTICE.txt'
+                into "jaxb-api.META-INF"
+            }
+        } else if (dependency.name.contains("commons-lang3")) {
+            from(zipTree(dependency)) {
+                include 'META-INF/LICENSE.txt'
+                include 'META-INF/NOTICE.txt'
+                into "commons-lang3.META-INF"
+            }
+        }
+    }
+}
+
+
+tasks.shadowJar.dependsOn copyLicenses
+
+shadowJar {
+    from("$buildDir/META-INF") {
+        into 'META-INF'
+    }
+    exclude 'META-INF/LICENSE.txt'
+    exclude 'META-INF/NOTICE.txt'
+}
+
 
 test {
     useJUnitPlatform()
