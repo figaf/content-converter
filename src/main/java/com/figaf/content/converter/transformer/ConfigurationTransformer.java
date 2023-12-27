@@ -40,6 +40,11 @@ public class ConfigurationTransformer {
                     parameterSetters.put(paramPrefix + ".fieldNames", ConversionConfig.SectionParameters::setFieldNames);
                     parameterSetters.put(paramPrefix + ".keyFieldValue", ConversionConfig.SectionParameters::setKeyFieldValue);
                     parameterSetters.put(paramPrefix + ".fieldSeparator", ConversionConfig.SectionParameters::setFieldSeparator);
+                    parameterSetters.put(paramPrefix + ".addHeaderLine", ConversionConfig.SectionParameters::setAddHeaderLine);
+                    parameterSetters.put(paramPrefix + ".headerLine", ConversionConfig.SectionParameters::setHeaderLine);
+                    parameterSetters.put(paramPrefix + ".fixedLengthTooShortHandling", ConversionConfig.SectionParameters::setFixedLengthTooShortHandling);
+                    parameterSetters.put(paramPrefix + ".beginSeparator", ConversionConfig.SectionParameters::setBeginSeparator);
+                    parameterSetters.put(paramPrefix + ".endSeparator", ConversionConfig.SectionParameters::setEndSeparator);
                     if (parameterSetters.containsKey(addConvParamNameValue)) {
                         parameterSetters.get(addConvParamNameValue).accept(sectionParameters, addConvParamValue);
                         sectionParametersMap.put(paramPrefix, sectionParameters);
@@ -61,6 +66,7 @@ public class ConfigurationTransformer {
                     conversionConfig.setDocumentNamespace(trimmedPropertyValue);
                     break;
                 case "xml.recordsetStructure":
+                case "file.recordsetStructure":
                     validateRecordsetStructure(trimmedPropertyValue);
                     conversionConfig.setRecordsetStructure(trimmedPropertyValue);
                     break;
@@ -69,6 +75,9 @@ public class ConfigurationTransformer {
                     break;
                 case "xml.recordsetNamespace":
                     conversionConfig.setRecordsetNamespace(trimmedPropertyValue);
+                    break;
+                case "file.targetFileName":
+                    conversionConfig.setTargetFileName(trimmedPropertyValue);
                     break;
             }
         }

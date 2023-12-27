@@ -27,3 +27,4 @@ nbdist/
 .nb-gradle/
 
 actual-output.xml
+actual-output.txt
