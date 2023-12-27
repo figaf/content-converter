@@ -13,33 +13,21 @@ import java.util.stream.Stream;
  * @author Kostas Charalambous
  */
 @Slf4j
-public class FlatToXmlConversionTestDataArgumentsProvider implements ArgumentsProvider {
+public class XmToFlatConversionTestDataArgumentsProvider implements ArgumentsProvider {
 
-    protected static final String TEST_DATA = "src/test/resources/testdata/flat-to-xml/";
+    protected static final String TEST_DATA = "src/test/resources/testdata/xml-to-flat/";
 
     @Override
     public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
         return Stream.of(
             Arguments.of(buildConversionTestData(
-                Paths.get("csv-to-xml"), true
+                Paths.get("multiple-recordset-elements-to-txt"), true
             )),
             Arguments.of(buildConversionTestData(
-                Paths.get("csv-to-xml-minified"), false
+                Paths.get("header-line-without-fieldSeparator-to-txt"), true
             )),
             Arguments.of(buildConversionTestData(
-                Paths.get("mixed-to-xml"), true
-            )),
-            Arguments.of(buildConversionTestData(
-                Paths.get("txt-to-xml-fixed"), true
-            )),
-            Arguments.of(buildConversionTestData(
-                Paths.get("txt-to-xml-fixed-no-recordset"), true
-            )),
-            Arguments.of(buildConversionTestData(
-                Paths.get("more-than-one-recordset-to-xml"), true
-            )),
-            Arguments.of(buildConversionTestData(
-                Paths.get("csv-with-quotes"), true
+                Paths.get("header-line-with-fieldSeparator-to-txt"), true
             ))
         );
     }
