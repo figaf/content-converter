@@ -1,0 +1,27 @@
+<root>
+  <nameA>
+    <value1>value</value1>
+    <value2>value</value2>
+    <value3>value</value3>
+  </nameA>
+  <nameB>
+    <value4>value</value4>
+  </nameB>
+  <nameB>
+    <value4>value</value4>
+  </nameB>
+  <nameB>
+    <value4>value</value4>
+    <value5>value5</value5>
+  </nameB>
+  <nameC>
+    <value1>value</value1>
+    <value2>value</value2>
+    <value3>value</value3>
+  </nameC>
+  <nameC>
+    <value1>value12321312</value1>
+    <value2>value421421</value2>
+    <value3>value32532</value3>
+  </nameC>
+</root>

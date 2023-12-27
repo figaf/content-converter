@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Slf4j
@@ -44,8 +45,9 @@ public class FlatToXmlContentConverterTest {
     // it's enough to test only one dataset because it provides the full coverage of String processing
     @Test
     void test_convert_withStringInput() {
+        Path csvToXmlPath = Paths.get("csv-to-xml");
         ConversionTestData conversionTestData = FlatToXmlConversionTestDataArgumentsProvider.buildConversionTestData(
-            Paths.get("csv-to-xml"),
+            csvToXmlPath,
             true
         );
 
