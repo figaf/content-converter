@@ -2,6 +2,7 @@ package com.figaf.content.converter.transformer;
 
 
 import com.figaf.content.converter.ConversionConfig;
+import com.figaf.content.converter.enumaration.ContentConversionType;
 import com.figaf.content.converter.transformer.directory.IntegrationDirectoryUtils;
 import com.figaf.content.converter.transformer.directory.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -66,9 +67,12 @@ public class ConfigurationTransformer {
                     conversionConfig.setDocumentNamespace(trimmedPropertyValue);
                     break;
                 case "xml.recordsetStructure":
+                    conversionConfig.setContentConversionType(ContentConversionType.FLAT_TO_XML);
+                    processRecordsetStructure(trimmedPropertyValue, conversionConfig);
+                    break;
                 case "file.recordsetStructure":
-                    validateRecordsetStructure(trimmedPropertyValue);
-                    conversionConfig.setRecordsetStructure(trimmedPropertyValue);
+                    conversionConfig.setContentConversionType(ContentConversionType.XML_TO_FLAT);
+                    processRecordsetStructure(trimmedPropertyValue, conversionConfig);
                     break;
                 case "xml.recordsetName":
                     conversionConfig.setRecordsetName(trimmedPropertyValue);
@@ -83,6 +87,11 @@ public class ConfigurationTransformer {
         }
 
         return conversionConfig;
+    }
+
+    private static void processRecordsetStructure(String trimmedPropertyValue, ConversionConfig conversionConfig) {
+        validateRecordsetStructure(trimmedPropertyValue);
+        conversionConfig.setRecordsetStructure(trimmedPropertyValue);
     }
 
     private static void validateRecordsetStructure(String value) {
