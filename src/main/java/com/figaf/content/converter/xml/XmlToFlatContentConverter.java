@@ -54,7 +54,7 @@ public class XmlToFlatContentConverter implements ContentConverter {
         Document inputXml,
         ConversionConfig conversionConfig
     ) {
-        log.debug("#convert:conversionConfig={}", conversionConfig);
+        log.debug("#convert: conversionConfig={}", conversionConfig);
 
         StringBuilder txtOutput = new StringBuilder();
         Element root = inputXml.getDocumentElement();
