@@ -37,6 +37,11 @@ public class ConversionConfig {
     private String recordsetNamespace;
 
     /**
+     * The target file name in case output its not xml
+     */
+    private String targetFileName;
+
+    /**
      * The namespace added to the name of the document.
      */
     private String documentNamespace;
@@ -84,5 +89,44 @@ public class ConversionConfig {
          * The character string used as a separator between the individual columns.
          */
         private String fieldSeparator;
+
+        /**
+         * This parameter is set to control whether the generated text file will include a header line with column names,
+         * and if so, how it is formatted. The parameter can take several values:
+         * 0 – No header line is included in the text file.
+         * 1 – A header line with column names from the XML document is included.
+         * 2 – Similar to 1, but followed by a blank line.
+         * 3 – A header line is specified as NameA.headerLine in the configuration and applied to the file.
+         * 4 – Similar to 3, but followed by a blank line.
+         */
+        private String addHeaderLine;
+
+        /**
+         * Specify the header line that is generated in the text file if NameA.addHeaderLine has the value 3 or 4
+         */
+        private String headerLine;
+
+        /**
+         * NameA.fixedLengthTooShortHandling
+         * Specify how you want the system to respond when column widths in the actual document exceed those defined in NameA.fieldFixedLengths.
+         * The following values are permitted:
+         * Error
+         * Document processing is cancelled.
+         * Cut
+         * The value is cut to the maximum permitted length.
+         * Ignore
+         * The value is accepted even though its length exceeds the permitted value. Subsequent columns are moved accordingly.
+         */
+        private String fixedLengthTooShortHandling;
+
+        /**
+         * If you specify a character string here, the system places it before the first column
+         */
+        private String beginSeparator;
+
+        /**
+         * If you enter a character string here, the system adds it to the last column as a closing character.
+         */
+        private String endSeparator;
     }
 }
