@@ -924,7 +924,6 @@ public ConversionConfig createConversionConfig() {
     
     ConversionConfig.SectionParameters sectionA = new ConversionConfig.SectionParameters();
     sectionA.setFieldFixedLengths("10,5,3");
-    sectionA.setFieldSeparator(null); // assuming null is intentional
     sectionA.setAddHeaderLine(1);
     sectionA.setFixedLengthTooShortHandling("Cut");
     sections.put("nameA", sectionA);
