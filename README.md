@@ -13,6 +13,10 @@ transition, mitigating the need for additional development efforts.
 1. Add a library to classpath by adding it as resource to IFlow and create a groovy script that executes conversion
 2. In the groovy script create and configure `ConversionConfig` (see examples below)
 3. Initialize the instance of `ContentConverter` and execute conversion of the flat document:
+
+There are 3 ways of initializing the converter :
+
+1.Direct initialization with the 'Flat to XML Content' converter.
 ```
 ConversionConfig config = ...; // configure conversion config
 
@@ -25,6 +29,30 @@ byte[] convertedXml = converter.convert(flatDocument, config);
 String flatDocument = ...; // take it from message
 ContentConverter converter = new FlatToXmlContentConverter();
 String convertedXml = converter.convert(flatDocument, config);
+```
+
+2.Direct initialization with the 'XML to Flat Content' converter.
+```
+ConversionConfig config = ...; // configure conversion config
+
+// for documents as byte arrays
+byte[] flatDocument = ...; // take it from message
+ContentConverter converter = new XmlToFlatContentConverter();
+byte[] convertedTxt = converter.convert(flatDocument, config);
+
+// for documents as strings
+String flatDocument = ...; // take it from message
+ContentConverter converter = new XmlToFlatContentConverter();
+String convertedTxt = converter.convert(flatDocument, config);
+```
+
+3.Dynamic initialization of converters based on the converter types specified in the ConversionConfig object.
+```
+ConversionConfig config = ...; // configure conversion config, make sure that ConversionConfig has ContentConversionType(XML_TO_FLAT or FLAT_TO_XML)
+
+byte[] flatDocument = ...; // take it from message
+ContentConverter converter = ContentConverterFactory.initializeContentConverter(config.getContentConversionType());
+byte[] convertedDocument = converter.convert(flatDocument, config);
 ```
 
 ## Supported Content Conversion Use Cases
