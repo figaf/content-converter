@@ -826,8 +826,8 @@ Input xml document:
 
 - **Recordset Structure**: nameA
     - nameA:
-      - Field addHeaderLine: 1
-      - Field fieldSeparator: ;
+      -  addHeaderLine: 1
+      -  fieldSeparator: ;
 ---
 
 Java Configuration Object:
@@ -926,7 +926,6 @@ public ConversionConfig createConversionConfig() {
     sectionA.setFieldFixedLengths("10,5,3");
     sectionA.setFieldSeparator(null); // assuming null is intentional
     sectionA.setAddHeaderLine(1);
-    sectionA.setFixedLengthTooShortHandling("Cut");
     sections.put("nameA", sectionA);
     
     ConversionConfig.SectionParameters sectionB = new ConversionConfig.SectionParameters();
