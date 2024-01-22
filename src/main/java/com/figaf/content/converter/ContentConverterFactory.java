@@ -11,7 +11,7 @@ public class ContentConverterFactory {
 
         switch (contentConversionType) {
             case FLAT_TO_XML: {
-                return new FlatToXmlContentConverter(new NodeCreationStrategy());
+                return new FlatToXmlContentConverter();
             }
             case XML_TO_FLAT: {
                 return new XmlToFlatContentConverter();

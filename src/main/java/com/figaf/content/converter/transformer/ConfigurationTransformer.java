@@ -3,6 +3,7 @@ package com.figaf.content.converter.transformer;
 
 import com.figaf.content.converter.ConversionConfig;
 import com.figaf.content.converter.enumaration.ContentConversionType;
+import com.figaf.content.converter.enumaration.LineEnding;
 import com.figaf.content.converter.transformer.directory.IntegrationDirectoryUtils;
 import com.figaf.content.converter.transformer.directory.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -10,19 +11,28 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiConsumer;
+
+import static com.figaf.content.converter.transformer.directory.dto.CommunicationChannelDirection.SENDER;
 
 @Slf4j
 public class ConfigurationTransformer {
 
-    public ConversionConfig createConversionConfigFromCommunicationChannel(byte[] communicationChannelFile) {
+    public ConversionConfig createConversionConfigFromCommunicationChannel(byte[] communicationChannelFile, LineEnding lineEnding) {
         CommunicationChannel communicationChannel = IntegrationDirectoryUtils.deserializeCommunicationChannel(communicationChannelFile);
         log.debug("#createConversionConfigFromCommunicationChannel: communicationChannelID ={}", communicationChannel.getCommunicationChannelID());
-        return createConversionConfigDto(communicationChannel);
+        return createConversionConfigDto(communicationChannel, lineEnding);
     }
 
-    private static ConversionConfig createConversionConfigDto(CommunicationChannel communicationChannel) {
+    private static ConversionConfig createConversionConfigDto(CommunicationChannel communicationChannel, LineEnding lineEnding) {
         ConversionConfig conversionConfig = new ConversionConfig();
+        if (SENDER.equals(communicationChannel.getDirection())) {
+            conversionConfig.setContentConversionType(ContentConversionType.FLAT_TO_XML);
+        } else {
+            conversionConfig.setContentConversionType(ContentConversionType.XML_TO_FLAT);
+        }
+        conversionConfig.setLineEnding(Optional.ofNullable(lineEnding).isPresent() ? lineEnding : LineEnding.AUTO);
         for (GenericPropertyTable table : communicationChannel.getAdapterSpecificTableAttribute()) {
             if ("file.conversionParameters".equals(table.getName())) {
                 Map<String, ConversionConfig.SectionParameters> sectionParametersMap = new HashMap<>();
@@ -67,11 +77,7 @@ public class ConfigurationTransformer {
                     conversionConfig.setDocumentNamespace(trimmedPropertyValue);
                     break;
                 case "xml.recordsetStructure":
-                    conversionConfig.setContentConversionType(ContentConversionType.FLAT_TO_XML);
-                    processRecordsetStructure(trimmedPropertyValue, conversionConfig);
-                    break;
                 case "file.recordsetStructure":
-                    conversionConfig.setContentConversionType(ContentConversionType.XML_TO_FLAT);
                     processRecordsetStructure(trimmedPropertyValue, conversionConfig);
                     break;
                 case "xml.recordsetName":

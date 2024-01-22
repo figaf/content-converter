@@ -1,6 +1,7 @@
 package com.figaf.content.converter;
 
 import com.figaf.content.converter.enumaration.ContentConversionType;
+import com.figaf.content.converter.enumaration.LineEnding;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -66,6 +67,15 @@ public class ConversionConfig {
      * identification field for choosing conversion implementation.
      */
     private ContentConversionType contentConversionType;
+
+    /**
+     *  Different supported line breaks.Has effect only for XML->Flat conversion
+     *  1.LF,
+     *  2.CRLF,
+     *  3.CR,
+     *  4.AUTO
+     */
+    private LineEnding lineEnding;
     /**
      * Represents the parameters for a specified recordset structure.
      */

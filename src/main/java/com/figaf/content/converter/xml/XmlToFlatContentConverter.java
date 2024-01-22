@@ -3,6 +3,7 @@ package com.figaf.content.converter.xml;
 import com.figaf.content.converter.ContentConversionException;
 import com.figaf.content.converter.ContentConverter;
 import com.figaf.content.converter.ConversionConfig;
+import com.figaf.content.converter.enumaration.LineEnding;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.*;
@@ -68,7 +69,6 @@ public class XmlToFlatContentConverter implements ContentConverter {
         Element root = inputXml.getDocumentElement();
         boolean hasComputedHeader = false;
 
-
         boolean structureContainsSingleElement = conversionConfig.getSectionParameters().size() == 1;
         NodeList children = calculateNodeList(root, inputXml);
         int lastElementIndex = findLastElementIndex(children);
@@ -93,7 +93,14 @@ public class XmlToFlatContentConverter implements ContentConverter {
                 }
 
                 boolean isLastElement = (i == lastElementIndex);
-                processElement(element, params, txtOutput, fixedLengths, isLastElement);
+                processElement(
+                    element,
+                    params,
+                    conversionConfig.getLineEnding(),
+                    txtOutput,
+                    fixedLengths,
+                    isLastElement
+                );
             }
         }
         return txtOutput.toString();
@@ -121,6 +128,7 @@ public class XmlToFlatContentConverter implements ContentConverter {
     private void processElement(
         Element element,
         ConversionConfig.SectionParameters params,
+        LineEnding lineEnding,
         StringBuilder txtOutput,
         String[] fixedLengths,
         boolean isLastElement
@@ -136,7 +144,7 @@ public class XmlToFlatContentConverter implements ContentConverter {
 
         setBeginSeparator(params, txtOutput);
         appendFormattedChildElements(children, fixedLengths, params, txtOutput);
-        setEndSeparator(params, txtOutput, isLastElement);
+        setEndSeparator(params, lineEnding, txtOutput, isLastElement);
     }
 
     private void appendFormattedChildElements(NodeList children, String[] fixedLengths, ConversionConfig.SectionParameters params, StringBuilder txtOutput) {
@@ -165,13 +173,18 @@ public class XmlToFlatContentConverter implements ContentConverter {
         }
     }
 
-    private void setEndSeparator(ConversionConfig.SectionParameters params, StringBuilder txtOutput, boolean isLastElement) {
-        String finalEndSeparator = StringUtils.isNotBlank(params.getEndSeparator()) ? params.getEndSeparator() : createDefaultEndSeparator(isLastElement);
+    private void setEndSeparator(
+        ConversionConfig.SectionParameters params,
+        LineEnding lineEnding,
+        StringBuilder txtOutput,
+        boolean isLastElement
+    ) {
+        String finalEndSeparator = StringUtils.isNotBlank(params.getEndSeparator()) ? params.getEndSeparator() : createDefaultEndSeparator(isLastElement, lineEnding);
         txtOutput.append(finalEndSeparator);
     }
 
-    private String createDefaultEndSeparator(boolean isLastElement) {
-        return isLastElement ? StringUtils.EMPTY : System.lineSeparator();
+    private String createDefaultEndSeparator(boolean isLastElement, LineEnding lineEnding) {
+        return isLastElement ? StringUtils.EMPTY : lineEnding.getSeparator();
     }
 
     private void computeHeaderLine(ConversionConfig.SectionParameters params, NodeList children, String[] fixedLengths, StringBuilder result) {
