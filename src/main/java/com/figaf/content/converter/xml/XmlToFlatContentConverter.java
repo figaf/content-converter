@@ -3,7 +3,7 @@ package com.figaf.content.converter.xml;
 import com.figaf.content.converter.ContentConversionException;
 import com.figaf.content.converter.ContentConverter;
 import com.figaf.content.converter.ConversionConfig;
-import com.figaf.content.converter.enumaration.LineEnding;
+import com.figaf.content.converter.enumeration.LineEnding;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.*;

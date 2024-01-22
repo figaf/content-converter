@@ -1,7 +1,7 @@
 package com.figaf.content.converter;
 
-import com.figaf.content.converter.enumaration.ContentConversionType;
-import com.figaf.content.converter.enumaration.LineEnding;
+import com.figaf.content.converter.enumeration.ContentConversionType;
+import com.figaf.content.converter.enumeration.LineEnding;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,8 +1,7 @@
 package com.figaf.content.converter;
 
-import com.figaf.content.converter.enumaration.ContentConversionType;
+import com.figaf.content.converter.enumeration.ContentConversionType;
 import com.figaf.content.converter.xml.FlatToXmlContentConverter;
-import com.figaf.content.converter.xml.NodeCreationStrategy;
 import com.figaf.content.converter.xml.XmlToFlatContentConverter;
 
 public class ContentConverterFactory {

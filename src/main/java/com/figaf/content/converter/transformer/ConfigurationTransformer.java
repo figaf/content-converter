@@ -2,8 +2,8 @@ package com.figaf.content.converter.transformer;
 
 
 import com.figaf.content.converter.ConversionConfig;
-import com.figaf.content.converter.enumaration.ContentConversionType;
-import com.figaf.content.converter.enumaration.LineEnding;
+import com.figaf.content.converter.enumeration.ContentConversionType;
+import com.figaf.content.converter.enumeration.LineEnding;
 import com.figaf.content.converter.transformer.directory.IntegrationDirectoryUtils;
 import com.figaf.content.converter.transformer.directory.dto.*;
 import lombok.extern.slf4j.Slf4j;

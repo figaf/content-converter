@@ -1,4 +1,4 @@
-package com.figaf.content.converter.enumaration;
+package com.figaf.content.converter.enumeration;
 
 public enum ContentConversionType {
 
