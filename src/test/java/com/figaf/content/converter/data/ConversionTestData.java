@@ -1,6 +1,7 @@
 package com.figaf.content.converter.data;
 
 import com.figaf.content.converter.ConversionConfig;
+import com.figaf.content.converter.enumeration.LineEnding;
 import com.figaf.content.converter.transformer.ConfigurationTransformer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,7 +48,7 @@ public class ConversionTestData {
                             conversionTestData.setExpectedConvertedDocument(Files.readAllBytes((testFile)));
                         } else if (fileName.equals("channel.xml")) {
                             ConfigurationTransformer configurationTransformer = new ConfigurationTransformer();
-                            conversionTestData.setConversionConfig(configurationTransformer.createConversionConfigFromCommunicationChannel(Files.readAllBytes((testFile))));
+                            conversionTestData.setConversionConfig(configurationTransformer.createConversionConfigFromCommunicationChannel(Files.readAllBytes((testFile)), LineEnding.AUTO));
                         }
                     } catch (IOException e) {
                         throw new RuntimeException(e);

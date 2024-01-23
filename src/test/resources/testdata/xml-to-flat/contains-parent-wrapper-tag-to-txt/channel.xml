@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CommunicationChannel xmlns:ns2="http://sap.com/xi/BASIS">
+  <MasterLanguage>EN</MasterLanguage>
+  <AdministrativeData>
+    <ResponsibleUserAccountID>daniel</ResponsibleUserAccountID>
+    <LastChangeUserAccountID>irtagentuser</LastChangeUserAccountID>
+    <LastChangeDateTime>2024-01-16T16:52:41.831+01:00</LastChangeDateTime>
+    <FolderPathID>/</FolderPathID>
+  </AdministrativeData>
+  <CommunicationChannelID>
+    <PartyID />
+    <ComponentID>FileCCReceiver</ComponentID>
+    <ChannelID>FilexContentConversionEndtoEnd</ChannelID>
+  </CommunicationChannelID>
+  <AdapterMetadata>
+    <Name>File</Name>
+    <Namespace>http://sap.com/xi/XI/System</Namespace>
+    <SoftwareComponentVersionID>0050568f-0aac-1ed4-a6e5-6926325e2eb3</SoftwareComponentVersionID>
+  </AdapterMetadata>
+  <Direction>Receiver</Direction>
+  <TransportProtocol>File</TransportProtocol>
+  <TransportProtocolVersion />
+  <MessageProtocol>FileCSV</MessageProtocol>
+  <MessageProtocolVersion>3.0.0527</MessageProtocolVersion>
+  <AdapterEngineName />
+  <AdapterSpecificAttribute>
+    <Name>file.targetDir</Name>
+    <Namespace />
+    <Value>E:\SAPPIFile\D75\fileccReceiver\f1</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>createTargetDirectory</Name>
+    <Namespace />
+    <Value>1</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.targetFileName</Name>
+    <Namespace />
+    <Value>xi_output.txt</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.writeMode</Name>
+    <Namespace />
+    <Value>create</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.overwrite</Name>
+    <Namespace />
+    <Value>1</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.writeDirectly</Name>
+    <Namespace />
+    <Value>YES</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>tempFileNameScheme</Name>
+    <Namespace />
+    <Value />
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>emptyMessageHandling</Name>
+    <Namespace />
+    <Value>process</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>maximumConcurrency</Name>
+    <Namespace />
+    <Value>1</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.type</Name>
+    <Namespace />
+    <Value>bin</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.encoding</Name>
+    <Namespace />
+    <Value />
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.counterSeparator</Name>
+    <Namespace />
+    <Value />
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.counterFormat</Name>
+    <Namespace />
+    <Value>00000</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.counterStep</Name>
+    <Namespace />
+    <Value>1</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.counterMode</Name>
+    <Namespace />
+    <Value>immediately</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.preprocess.execute</Name>
+    <Namespace />
+    <Value />
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.preprocess.executeTimeout</Name>
+    <Namespace />
+    <Value />
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.preprocess.executeTerminateAfterTimeout</Name>
+    <Namespace />
+    <Value>0</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.execute</Name>
+    <Namespace />
+    <Value />
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.executeTimeout</Name>
+    <Namespace />
+    <Value />
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.executeTerminateAfterTimeout</Name>
+    <Namespace />
+    <Value>0</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.varSubstitution</Name>
+    <Namespace />
+    <Value>0</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.varSubstitutionDisableSecurity</Name>
+    <Namespace />
+    <Value>0</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>enableDynConfigReceiver</Name>
+    <Namespace />
+    <Value>0</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>dynConfigFailOnMissingProperties</Name>
+    <Namespace />
+    <Value>1</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>dynConfigFileName</Name>
+    <Namespace />
+    <Value>1</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>dynConfigDirectory</Name>
+    <Namespace />
+    <Value>0</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>dynConfigFileType</Name>
+    <Namespace />
+    <Value>0</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>dynConfigFileEncoding</Name>
+    <Namespace />
+    <Value>0</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>dynConfigTargetTempFileName</Name>
+    <Namespace />
+    <Value>0</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.recordsetStructure</Name>
+    <Namespace />
+    <Value>HR,PR,LI</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.adapterStatus</Name>
+    <Namespace />
+    <Value>active</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificAttribute>
+    <Name>file.advanced</Name>
+    <Namespace />
+    <Value>1</Value>
+  </AdapterSpecificAttribute>
+  <AdapterSpecificTableAttribute>
+    <Name>file.varSubstitutionParams</Name>
+    <Namespace />
+  </AdapterSpecificTableAttribute>
+  <AdapterSpecificTableAttribute>
+    <Name>file.conversionParameters</Name>
+    <Namespace />
+    <ValueTableRow>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamName</ColumnName>
+        <Value>HR.addHeaderLine</Value>
+      </ValueTableCell>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamValue</ColumnName>
+        <Value>1</Value>
+      </ValueTableCell>
+    </ValueTableRow>
+    <ValueTableRow>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamName</ColumnName>
+        <Value>HR.fieldFixedLengths</Value>
+      </ValueTableCell>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamValue</ColumnName>
+        <Value>10,5,3</Value>
+      </ValueTableCell>
+    </ValueTableRow>
+    <ValueTableRow>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamName</ColumnName>
+        <Value>HR.fixedLengthTooShortHandling</Value>
+      </ValueTableCell>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamValue</ColumnName>
+        <Value>Cut</Value>
+      </ValueTableCell>
+    </ValueTableRow>
+    <ValueTableRow>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamName</ColumnName>
+        <Value>PR.addHeaderLine</Value>
+      </ValueTableCell>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamValue</ColumnName>
+        <Value>2</Value>
+      </ValueTableCell>
+    </ValueTableRow>
+    <ValueTableRow>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamName</ColumnName>
+        <Value>PR.fieldSeparator</Value>
+      </ValueTableCell>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamValue</ColumnName>
+        <Value>;</Value>
+      </ValueTableCell>
+    </ValueTableRow>
+    <ValueTableRow>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamName</ColumnName>
+        <Value>LI.fieldSeparator</Value>
+      </ValueTableCell>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamValue</ColumnName>
+        <Value>,</Value>
+      </ValueTableCell>
+    </ValueTableRow>
+    <ValueTableRow>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamName</ColumnName>
+        <Value>LI.beginSeparator</Value>
+      </ValueTableCell>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamValue</ColumnName>
+        <Value>'</Value>
+      </ValueTableCell>
+    </ValueTableRow>
+    <ValueTableRow>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamName</ColumnName>
+        <Value>LI.endSeparator</Value>
+      </ValueTableCell>
+      <ValueTableCell>
+        <ColumnName>file.addConvParamValue</ColumnName>
+        <Value>'</Value>
+      </ValueTableCell>
+    </ValueTableRow>
+  </AdapterSpecificTableAttribute>
+  <AdapterSpecificTableAttribute>
+    <Name>file.addParameterParams</Name>
+    <Namespace />
+    <ValueTableRow>
+      <ValueTableCell>
+        <ColumnName>file.addParameterParamName</ColumnName>
+        <Value>messageLog</Value>
+      </ValueTableCell>
+      <ValueTableCell>
+        <ColumnName>file.addParameterParamValue</ColumnName>
+        <Value>true</Value>
+      </ValueTableCell>
+    </ValueTableRow>
+  </AdapterSpecificTableAttribute>
+  <ModuleProcess>
+    <ProcessStep>
+      <ModuleName>localejbs/AF_Modules/MessageLoggerBean</ModuleName>
+      <ModuleType>Local Enterprise Bean</ModuleType>
+      <ParameterGroupID>irtLogStage2</ParameterGroupID>
+    </ProcessStep>
+    <ProcessStep>
+      <ModuleName>CallSapAdapter</ModuleName>
+      <ModuleType>Local Enterprise Bean</ModuleType>
+      <ParameterGroupID>0</ParameterGroupID>
+    </ProcessStep>
+    <ParameterGroup>
+      <ParameterGroupID>irtLogStage2</ParameterGroupID>
+      <Parameter>
+        <Name>log.location</Name>
+        <Value>irtLogStage2</Value>
+      </Parameter>
+      <Parameter>
+        <Name>log.condition</Name>
+        <Value>1</Value>
+      </Parameter>
+    </ParameterGroup>
+  </ModuleProcess>
+  <SenderIdentifier schemeID="" schemeAgencyID="" />
+  <ReceiverIdentifier schemeID="" schemeAgencyID="" />
+</ns2:CommunicationChannel>

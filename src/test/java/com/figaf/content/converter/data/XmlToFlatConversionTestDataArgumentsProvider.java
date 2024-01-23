@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  * @author Kostas Charalambous
  */
 @Slf4j
-public class XmToFlatConversionTestDataArgumentsProvider implements ArgumentsProvider {
+public class XmlToFlatConversionTestDataArgumentsProvider implements ArgumentsProvider {
 
     protected static final String TEST_DATA = "src/test/resources/testdata/xml-to-flat/";
 
@@ -28,6 +28,9 @@ public class XmToFlatConversionTestDataArgumentsProvider implements ArgumentsPro
             )),
             Arguments.of(buildConversionTestData(
                 Paths.get("header-line-with-fieldSeparator-to-txt"), true
+            )),
+            Arguments.of(buildConversionTestData(
+                Paths.get("contains-parent-wrapper-tag-to-txt"), true
             ))
         );
     }

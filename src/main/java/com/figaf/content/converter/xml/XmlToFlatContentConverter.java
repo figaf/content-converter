@@ -3,9 +3,9 @@ package com.figaf.content.converter.xml;
 import com.figaf.content.converter.ContentConversionException;
 import com.figaf.content.converter.ContentConverter;
 import com.figaf.content.converter.ConversionConfig;
+import com.figaf.content.converter.enumeration.LineEnding;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -20,6 +20,15 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 
+/**
+ * Supported Data Conversion Scenarios for XML to Text:
+ * <ul>
+ *   <li>XML with Parent Wrapper to Text: Converts XML data with a parent wrapper tag into text format.</li>
+ *   <li>Header Line with Field Separator to Text: Transforms data with a header line and a specified field separator into text format.</li>
+ *   <li>Header Line without Field Separator to Text: Converts data with a header line but no field separator into text format.</li>
+ *   <li>Multiple Recordset Elements to Text: Transforms data with multiple recordset elements (e.g., nameA, nameB, nameC) into text format.</li>
+ * </ul>
+ */
 @Slf4j
 public class XmlToFlatContentConverter implements ContentConverter {
 
@@ -60,10 +69,9 @@ public class XmlToFlatContentConverter implements ContentConverter {
         Element root = inputXml.getDocumentElement();
         boolean hasComputedHeader = false;
 
-        NodeList children = root.getChildNodes();
         boolean structureContainsSingleElement = conversionConfig.getSectionParameters().size() == 1;
+        NodeList children = calculateNodeList(root, inputXml);
         int lastElementIndex = findLastElementIndex(children);
-
         for (int i = 0; i < children.getLength(); i++) {
             if (children.item(i) instanceof Element) {
                 Element element = (Element) children.item(i);
@@ -85,10 +93,28 @@ public class XmlToFlatContentConverter implements ContentConverter {
                 }
 
                 boolean isLastElement = (i == lastElementIndex);
-                processElement(element, params, txtOutput, fixedLengths, isLastElement);
+                processElement(
+                    element,
+                    params,
+                    conversionConfig.getLineEnding(),
+                    txtOutput,
+                    fixedLengths,
+                    isLastElement
+                );
             }
         }
         return txtOutput.toString();
+    }
+
+    private NodeList calculateNodeList(Element root, Document document) {
+        NodeList children = root.getChildNodes();
+
+        NodeList recordset = document.getElementsByTagName("Recordset");
+        if (recordset.getLength() > 0) {
+            Node recordsetNode = recordset.item(0);
+            children = recordsetNode.getChildNodes();
+        }
+        return children;
     }
 
     private int findLastElementIndex(NodeList nodeList) {
@@ -102,6 +128,7 @@ public class XmlToFlatContentConverter implements ContentConverter {
     private void processElement(
         Element element,
         ConversionConfig.SectionParameters params,
+        LineEnding lineEnding,
         StringBuilder txtOutput,
         String[] fixedLengths,
         boolean isLastElement
@@ -117,7 +144,7 @@ public class XmlToFlatContentConverter implements ContentConverter {
 
         setBeginSeparator(params, txtOutput);
         appendFormattedChildElements(children, fixedLengths, params, txtOutput);
-        setEndSeparator(params, txtOutput, isLastElement);
+        setEndSeparator(params, lineEnding, txtOutput, isLastElement);
     }
 
     private void appendFormattedChildElements(NodeList children, String[] fixedLengths, ConversionConfig.SectionParameters params, StringBuilder txtOutput) {
@@ -140,33 +167,24 @@ public class XmlToFlatContentConverter implements ContentConverter {
         }
     }
 
-    private void setHeaderLine(
-        ConversionConfig.SectionParameters params,
-        NodeList children,
-        MutableBoolean hasComputedHeader,
-        boolean structureContainsSingleElement,
-        String[] fixedLengths,
-        StringBuilder txtOutput
-    ) {
-        if (structureContainsSingleElement && !hasComputedHeader.booleanValue()) {
-            computeHeaderLine(params, children, fixedLengths, txtOutput);
-            hasComputedHeader.setTrue();
-        }
-    }
-
     private void setBeginSeparator(ConversionConfig.SectionParameters params, StringBuilder txtOutput) {
         if (StringUtils.isNotBlank(params.getBeginSeparator())) {
             txtOutput.append(params.getBeginSeparator());
         }
     }
 
-    private void setEndSeparator(ConversionConfig.SectionParameters params, StringBuilder txtOutput, boolean isLastElement) {
-        String finalEndSeparator = StringUtils.isNotBlank(params.getEndSeparator()) ? params.getEndSeparator() : createDefaultEndSeparator(isLastElement);
+    private void setEndSeparator(
+        ConversionConfig.SectionParameters params,
+        LineEnding lineEnding,
+        StringBuilder txtOutput,
+        boolean isLastElement
+    ) {
+        String finalEndSeparator = StringUtils.isNotBlank(params.getEndSeparator()) ? params.getEndSeparator() : createDefaultEndSeparator(isLastElement, lineEnding);
         txtOutput.append(finalEndSeparator);
     }
 
-    private String createDefaultEndSeparator(boolean isLastElement) {
-        return isLastElement ? StringUtils.EMPTY : System.lineSeparator();
+    private String createDefaultEndSeparator(boolean isLastElement, LineEnding lineEnding) {
+        return isLastElement ? StringUtils.EMPTY : lineEnding.getSeparator();
     }
 
     private void computeHeaderLine(ConversionConfig.SectionParameters params, NodeList children, String[] fixedLengths, StringBuilder result) {
@@ -256,6 +274,7 @@ public class XmlToFlatContentConverter implements ContentConverter {
      */
     public Document byteArrayToDocument(byte[] flatDocument) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
 
         try (ByteArrayInputStream input = new ByteArrayInputStream(flatDocument)) {

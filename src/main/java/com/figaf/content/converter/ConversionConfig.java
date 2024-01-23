@@ -1,5 +1,7 @@
 package com.figaf.content.converter;
 
+import com.figaf.content.converter.enumeration.ContentConversionType;
+import com.figaf.content.converter.enumeration.LineEnding;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,7 +29,7 @@ public class ConversionConfig {
     private String documentName;
 
     /**
-     * The name of the recordset, included in the XML schema.
+     * The name of the recordset, included in the XML schema.Has effect only for Flat->XML conversion
      */
     private String recordsetName;
 
@@ -37,7 +39,7 @@ public class ConversionConfig {
     private String recordsetNamespace;
 
     /**
-     * The target file name in case output its not xml
+     * The target file name in case output its not xml.Has effect only for XML->Flat conversion
      */
     private String targetFileName;
 
@@ -47,7 +49,7 @@ public class ConversionConfig {
     private String documentNamespace;
 
     /**
-     * If set to true, the Recordset element is not inserted in the XML structure.
+     * If set to true, the Recordset element is not inserted in the XML structure.Has effect only for Flat->XML conversion
      */
     private boolean ignoreRecordsetName;
 
@@ -61,6 +63,19 @@ public class ConversionConfig {
      */
     private boolean beautifyOutput;
 
+    /**
+     * identification field for choosing conversion implementation.
+     */
+    private ContentConversionType contentConversionType;
+
+    /**
+     *  Different supported line breaks.Has effect only for XML->Flat conversion
+     *  1.LF,
+     *  2.CRLF,
+     *  3.CR,
+     *  4.AUTO
+     */
+    private LineEnding lineEnding;
     /**
      * Represents the parameters for a specified recordset structure.
      */
@@ -76,12 +91,12 @@ public class ConversionConfig {
         private String fieldFixedLengths;
 
         /**
-         * Names of the structure columns.
+         * Names of the structure columns.Has effect only for Flat->XML conversion
          */
         private String fieldNames;
 
         /**
-         * The value of the key field for the structure.
+         * The value of the key field for the structure.Has effect only for Flat->XML conversion
          */
         private String keyFieldValue;
 
@@ -98,15 +113,18 @@ public class ConversionConfig {
          * 2 – Similar to 1, but followed by a blank line.
          * 3 – A header line is specified as NameA.headerLine in the configuration and applied to the file.
          * 4 – Similar to 3, but followed by a blank line.
+         * Has effect only for XML->Flat conversion
          */
         private String addHeaderLine;
 
         /**
          * Specify the header line that is generated in the text file if NameA.addHeaderLine has the value 3 or 4
+         * Has effect only for XML->Flat conversion
          */
         private String headerLine;
 
         /**
+         *
          * NameA.fixedLengthTooShortHandling
          * Specify how you want the system to respond when column widths in the actual document exceed those defined in NameA.fieldFixedLengths.
          * The following values are permitted:
@@ -116,16 +134,17 @@ public class ConversionConfig {
          * The value is cut to the maximum permitted length.
          * Ignore
          * The value is accepted even though its length exceeds the permitted value. Subsequent columns are moved accordingly.
+         * Has effect only for XML->Flat conversion
          */
         private String fixedLengthTooShortHandling;
 
         /**
-         * If you specify a character string here, the system places it before the first column
+         * If you specify a character string here, the system places it before the first column.Has effect only for XML->Flat conversion
          */
         private String beginSeparator;
 
         /**
-         * If you enter a character string here, the system adds it to the last column as a closing character.
+         * If you enter a character string here, the system adds it to the last column as a closing character.Has effect only for XML->Flat conversion
          */
         private String endSeparator;
     }

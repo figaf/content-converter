@@ -13,6 +13,10 @@ transition, mitigating the need for additional development efforts.
 1. Add a library to classpath by adding it as resource to IFlow and create a groovy script that executes conversion
 2. In the groovy script create and configure `ConversionConfig` (see examples below)
 3. Initialize the instance of `ContentConverter` and execute conversion of the flat document:
+
+There are 3 ways of initializing the converter :
+
+1.Direct initialization with the 'Flat to XML Content' converter.
 ```
 ConversionConfig config = ...; // configure conversion config
 
@@ -25,6 +29,30 @@ byte[] convertedXml = converter.convert(flatDocument, config);
 String flatDocument = ...; // take it from message
 ContentConverter converter = new FlatToXmlContentConverter();
 String convertedXml = converter.convert(flatDocument, config);
+```
+
+2.Direct initialization with the 'XML to Flat Content' converter.
+```
+ConversionConfig config = ...; // configure conversion config
+
+// for documents as byte arrays
+byte[] flatDocument = ...; // take it from message
+ContentConverter converter = new XmlToFlatContentConverter();
+byte[] convertedTxt = converter.convert(flatDocument, config);
+
+// for documents as strings
+String flatDocument = ...; // take it from message
+ContentConverter converter = new XmlToFlatContentConverter();
+String convertedTxt = converter.convert(flatDocument, config);
+```
+
+3.Dynamic initialization of converters based on the converter types specified in the ConversionConfig object.
+```
+ConversionConfig config = ...; // configure conversion config, make sure that ConversionConfig has ContentConversionType(XML_TO_FLAT or FLAT_TO_XML)
+
+byte[] flatDocument = ...; // take it from message
+ContentConverter converter = ContentConverterFactory.initializeContentConverter(config.getContentConversionType());
+byte[] convertedDocument = converter.convert(flatDocument, config);
 ```
 
 ## Supported Content Conversion Use Cases
@@ -782,4 +810,176 @@ Result:
         </LI>
     </Recordset>
 </ns:CPIListFixed>
+```
+6.**HeaderLine with field separator XML to txt**:Transforms XML into txt.
+
+**Example:**
+
+Input xml document:
+```
+<root>
+<nameA>
+<value1>value</value1>
+<value2>value</value2>
+<value3>value</value3>
+</nameA>
+<nameA>
+<value1>valuekldshfaiosdljfio</value1>
+<value2>valuesafjoæ</value2>
+<value3>value23fdasd</value3>
+</nameA>
+
+<nameA>
+<value1>value3423</value1>
+<value2>value</value2>
+<value3>valuefsdfs</value3>
+</nameA>
+
+<nameA>
+<value1>value</value1>
+<value2>value</value2>
+<value3>value</value3>
+</nameA>
+
+<nameA>
+<value1>value</value1>
+<value2>value</value2>
+<value3>value</value3>
+</nameA>
+
+</root>
+```
+
+**The above XML is transformed to txt using the following configuration:**
+
+- **Recordset Structure**: nameA
+    - nameA:
+      -  addHeaderLine: 1
+      -  fieldSeparator: ;
+---
+
+Java Configuration Object:
+```java
+
+ public ConversionConfig createConversionConfig() {
+    ConversionConfig config = new ConversionConfig();
+    config.setRecordsetStructure("nameA");
+    config.setTargetFileName("xi_output.txt");
+
+    Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+    ConversionConfig.SectionParameters sectionParameters = new ConversionConfig.SectionParameters();
+    
+    sectionParameters.setFieldSeparator(";");
+    sectionParameters.setAddHeaderLine(1);
+    sections.put("nameA", sectionParameters);
+    config.setSectionParameters(sections);
+    return config;
+}
+ ```
+
+Result:
+```txt
+value1;value2;value3
+value;value;value
+valuekldshfaiosdljfio;valuesafjoæ;value23fdasd
+value3423;value;valuefsdfs
+value;value;value
+value;value;value
+```
+
+7.**Multiple recordset elements XML to txt**:Transforms XML into txt.
+
+**Example:**
+
+Input xml document:
+```
+<root>
+  <nameA>
+    <value1>value</value1>
+    <value2>value</value2>
+    <value3>value</value3>
+  </nameA>
+  <nameB>
+    <value4>value</value4>
+  </nameB>
+  <nameB>
+    <value4>value</value4>
+  </nameB>
+  <nameB>
+    <value4>value</value4>
+    <value5>value5</value5>
+  </nameB>
+  <nameC>
+    <value1>value</value1>
+    <value2>value</value2>
+    <value3>value</value3>
+  </nameC>
+  <nameC>
+    <value1>value12321312</value1>
+    <value2>value421421</value2>
+    <value3>value32532</value3>
+  </nameC>
+</root>
+```
+
+**The above XML is transformed to txt using the following configuration:**
+
+- **Recordset Structure**: nameA,nameB,nameC
+    - nameA:
+        -  fieldFixedLengths: 10,5,3
+        -  fixedLengthTooShortHandling: Cut
+        -  addHeaderLine: 1
+    - nameB:
+        -  fieldSeparator: ;
+        -  addHeaderLine: 2
+    - nameC:
+        -  addHeaderLine: 3
+        -  headerLine: name1-value1
+        -  fieldSeparator: ,
+        -  beginSeparator: '
+        -  endSeparator: '
+---
+
+Java Configuration Object:
+```java
+
+public ConversionConfig createConversionConfig() {
+    ConversionConfig config = new ConversionConfig();
+    config.setRecordsetStructure("nameA,nameB,nameC");
+    config.setTargetFileName("xi_output.txt");
+    
+    Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+    
+    ConversionConfig.SectionParameters sectionA = new ConversionConfig.SectionParameters();
+    sectionA.setFieldFixedLengths("10,5,3");
+    sectionA.setFieldSeparator(null); // assuming null is intentional
+    sectionA.setAddHeaderLine(1);
+    sections.put("nameA", sectionA);
+    
+    ConversionConfig.SectionParameters sectionB = new ConversionConfig.SectionParameters();
+    sectionB.setFieldSeparator(";");
+    sectionB.setAddHeaderLine(2);
+    sections.put("nameB", sectionB);
+    
+    ConversionConfig.SectionParameters sectionC = new ConversionConfig.SectionParameters();
+    sectionC.setFieldSeparator(",");
+    sectionC.setAddHeaderLine(3);
+    sectionC.setHeaderLine("name1-value1");
+    sectionC.setBeginSeparator("'");
+    sectionC.setEndSeparator("'");
+    sections.put("nameC", sectionC);
+
+    config.setSectionParameters(sections);
+
+    return config;
+}
+ ```
+
+Result:
+```txt
+value     valueval
+value
+value
+value;value5
+'value,value,value''value12321312,value421421,value32532'
 ```

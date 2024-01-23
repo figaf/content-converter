@@ -1,8 +1,7 @@
 package com.figaf.content.converter;
 
 import com.figaf.content.converter.data.ConversionTestData;
-import com.figaf.content.converter.data.XmToFlatConversionTestDataArgumentsProvider;
-import com.figaf.content.converter.xml.XmlToFlatContentConverter;
+import com.figaf.content.converter.data.XmlToFlatConversionTestDataArgumentsProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,11 +16,11 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 public class XmlToFlatContentConverterTest {
 
     @ParameterizedTest
-    @ArgumentsSource(XmToFlatConversionTestDataArgumentsProvider.class)
+    @ArgumentsSource(XmlToFlatConversionTestDataArgumentsProvider.class)
     void test_convert_withByteArrayInput(ConversionTestData conversionTestData) throws IOException {
         log.debug("#test_convert_withByteArrayInput: conversionTestData={}", conversionTestData);
 
-        ContentConverter contentConverter = new XmlToFlatContentConverter();
+        ContentConverter contentConverter = ContentConverterFactory.initializeContentConverter(conversionTestData.getConversionConfig().getContentConversionType());
         byte[] actualConvertedFile = contentConverter.convert(
             conversionTestData.getInputDocument(),
             conversionTestData.getConversionConfig()

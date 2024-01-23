@@ -23,9 +23,9 @@ public class FlatToXmlContentConverterTest {
     @ParameterizedTest
     @ArgumentsSource(FlatToXmlConversionTestDataArgumentsProvider.class)
     void test_convert_withByteArrayInput(ConversionTestData conversionTestData) throws IOException {
-        log.debug("#testMessageMappingConverter: conversionTestData={}", conversionTestData);
+        log.debug("#test_convert_withByteArrayInput: conversionTestData={}", conversionTestData);
 
-        ContentConverter contentConverter = new FlatToXmlContentConverter();
+        ContentConverter contentConverter = ContentConverterFactory.initializeContentConverter(conversionTestData.getConversionConfig().getContentConversionType());
         byte[] actualConvertedFile = contentConverter.convert(
             conversionTestData.getInputDocument(),
             conversionTestData.getConversionConfig()
