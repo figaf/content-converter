@@ -31,6 +31,47 @@ ContentConverter converter = new FlatToXmlContentConverter();
 String convertedXml = converter.convert(flatDocument, config);
 ```
 
+Example invocation of FlatToXmlContentConverter with groovy script :
+```
+import com.sap.gateway.ip.core.customdev.util.Message;
+import java.util.HashMap;
+import com.figaf.content.converter.xml.*;
+import com.figaf.content.converter.ConversionConfig;
+import com.figaf.content.converter.ContentConverter;
+
+def Message processData(Message message) {
+    def conversionConfig = createConversionConfig()
+
+    def inputStream = message.getBody()
+    byte[] inputByteArray = inputStream.bytes
+
+    ContentConverter converter = new FlatToXmlContentConverter()
+    byte[] flatFileByteArray = converter.convert(inputByteArray, conversionConfig)
+    String flatFileString = new String(flatFileByteArray, "UTF-8")
+
+    def headers = new HashMap()
+    message.setHeaders(headers)
+    message.setBody(flatFileString)
+    return message
+} 
+
+
+public ConversionConfig createConversionConfig() {
+    ConversionConfig config = new ConversionConfig();
+    config.setDocumentName("CPIList");
+    config.setDocumentNamespace("http://figaf.com/CPILIST");
+    config.setRecordsetStructure("row,*");
+    Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+    ConversionConfig.SectionParameters section = new ConversionConfig.SectionParameters();
+    section.setFieldNames("StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
+    section.setFieldSeparator(";");
+    sections.put("row", section);
+    config.setSectionParameters(sections);
+
+    return config;
+}
+```
+
 2.Direct initialization with the 'XML to Flat Content' converter.
 ```
 ConversionConfig config = ...; // configure conversion config
@@ -44,6 +85,64 @@ byte[] convertedTxt = converter.convert(flatDocument, config);
 String flatDocument = ...; // take it from message
 ContentConverter converter = new XmlToFlatContentConverter();
 String convertedTxt = converter.convert(flatDocument, config);
+```
+
+Example invocation of XmlToFlatContentConverter with groovy script :
+(Ensure that all components utilized within the method bodies are also included in the import section of your script. For instance, verify the inclusion of com.figaf.content.converter.enumeration.LineEnding when creating configurations.)
+```
+import com.sap.gateway.ip.core.customdev.util.Message;
+import java.util.HashMap;
+import com.figaf.content.converter.xml.*;
+import com.figaf.content.converter.ConversionConfig;
+import com.figaf.content.converter.ContentConverter;
+import com.figaf.content.converter.enumeration.LineEnding;
+
+def Message processData(Message message) {
+    def conversionConfig = createConversionConfig()
+
+    def inputStream = message.getBody()
+    byte[] inputByteArray = inputStream.bytes
+
+    ContentConverter converter = new XmlToFlatContentConverter()
+    byte[] flatFileByteArray = converter.convert(inputByteArray, conversionConfig)
+    String flatFileString = new String(flatFileByteArray, "UTF-8")
+
+    def headers = new HashMap()
+    message.setHeaders(headers)
+    message.setBody(flatFileString)
+    return message
+} 
+
+
+public ConversionConfig createConversionConfig() {
+    ConversionConfig config = new ConversionConfig();
+    config.setRecordsetStructure("nameA,nameB,nameC");
+    config.setTargetFileName("xi_output.txt");
+    config.setLineEnding(LineEnding.AUTO);
+    
+    Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+    ConversionConfig.SectionParameters sectionA = new ConversionConfig.SectionParameters();
+    sectionA.setFieldFixedLengths("10,5,3");
+   sectionA.setFixedLengthTooShortHandling("CUT");
+    sectionA.setAddHeaderLine("1");
+    sections.put("nameA", sectionA);
+    
+    ConversionConfig.SectionParameters sectionB = new ConversionConfig.SectionParameters();
+    sectionB.setFieldSeparator(";");
+    sectionB.setAddHeaderLine("2");
+    sections.put("nameB", sectionB);
+    
+    ConversionConfig.SectionParameters sectionC = new ConversionConfig.SectionParameters();
+    sectionC.setFieldSeparator(",");
+    sectionC.setAddHeaderLine("3");
+    sectionC.setHeaderLine("name1-value1");
+    sectionC.setBeginSeparator("'");
+    sectionC.setEndSeparator("'");
+    sections.put("nameC", sectionC);
+    config.setSectionParameters(sections);
+
+    return config;
+}  
 ```
 
 3.Dynamic initialization of converters based on the converter types specified in the ConversionConfig object.
@@ -171,7 +270,18 @@ T;1
 "D","bir,thday","10,06"
 "D","shoe","10,06"
 T;1
-...
+"H","","Any","ANyo,Man"
+T;1
+"H","","Hans","John,Hans"
+"D","bir,thday","10,06"
+"D","shoe","42"
+"D","bir,thday","10,06"
+"D","shoe","42"
+"D","bir,thday","10,06"
+"D","shoe","42"
+"D","bir,thday","10,06"
+"D","shoe","42"
+T;1
 ```
 
 **The above Structured Text is transformed into xml using the below configuration:**
@@ -193,36 +303,43 @@ Java Configuration Object:
 ```java
 public ConversionConfig createConversionConfig() {
     ConversionConfig config = new ConversionConfig();
+
+    // Set the main attributes of the config
     config.setDocumentName("Employees");
     config.setDocumentNamespace("http://figaf.com/2");
     config.setRecordsetName("Employee");
     config.setRecordsetNamespace("http://figaf.com/daniel");
     config.setRecordsetStructure("H,1,D,*,T,1");
-    
+    config.setIgnoreRecordsetName(false);
+
+    // Create and set the section parameters
     Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
-    
+
     // Section for H
     ConversionConfig.SectionParameters sectionH = new ConversionConfig.SectionParameters();
     sectionH.setFieldNames("TYPE,Dummy,Name,FullName");
+    sectionH.setKeyFieldValue("\"H\"");  // Escaping the double quotes
     sectionH.setFieldSeparator(",");
     sections.put("H", sectionH);
 
     // Section for D
     ConversionConfig.SectionParameters sectionD = new ConversionConfig.SectionParameters();
     sectionD.setFieldNames("TYPE,Qualifier,Num");
+    sectionD.setKeyFieldValue("\"D\"");  // Escaping the double quotes
     sectionD.setFieldSeparator(",");
     sections.put("D", sectionD);
 
     // Section for T
     ConversionConfig.SectionParameters sectionT = new ConversionConfig.SectionParameters();
     sectionT.setFieldNames("TYPE,Status");
-    sectionT.setFieldSeparator(",");
+    sectionT.setKeyFieldValue("T");  // No need for quotes here as T is not enclosed in double quotes in your example
+    sectionT.setFieldSeparator(";");
     sections.put("T", sectionT);
 
     config.setSectionParameters(sections);
 
     return config;
-}
+    }
 ```
 Result:
 ```xml
@@ -260,14 +377,16 @@ Result:
 
 Input flat document:
 ```
-"HD2130003"
-"PRAG123532DANIEL"
-"PRBE214312SAP"
-"LI42003.9"
-"LI41003.1"
-"LI49023.2"
-"KK;11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;"
-"KK;11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2;;;"
+HD2130003
+PRAG123532DANIEL
+PRBE214312SAP
+LI42003.9
+LI41003.1
+LI49023.2
+KK;11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;
+KK;11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2;;;
+KK;10/10/2022 15:27:12;1 s 330 ms;GetCustomersOrder2_Uiveri5;AGNEHbBvEL56maMnwe-LVTjPhWKR;AGNEHbBYwOzaDVkf7bxbtN9cb8Qv;6188940;;COMPLETED;sender2;receiver2;;;
+KK;10/10/2022 15:27:09;2 s 96 ms;GetCustomersOrder2_Uiveri5;AGNEHa2VekzovJ5db3uS7XiMIWAT;AGNEHa3dNy2oHXrP2_e3Hadm6ptK;6188939;;COMPLETED;sender2;receiver2;;;
  ```
 
 **The above Mixed Content is transformed into xml using the below configuration:**
@@ -301,44 +420,50 @@ Input flat document:
        
 Java Configuration Object:
 ```java
-public ConversionConfig createConversionConfig() {
+ public ConversionConfig createConversionConfig() {
     ConversionConfig config = new ConversionConfig();
     // Set the main attributes of the config
     config.setDocumentName("CPIListFixed");
     config.setDocumentNamespace("http://figaf.com/CPIListFixed");
+    config.setRecordsetName("");
+    config.setRecordsetNamespace("");
     config.setRecordsetStructure("HR,1,PR,*,LI,*,KK,*");
+    config.setIgnoreRecordsetName(false);
 
     // Create and set the section parameters
     Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
-
     // Section for HR
     ConversionConfig.SectionParameters sectionHR = new ConversionConfig.SectionParameters();
     sectionHR.setFieldNames("KEY,ID1,Doc");
     sectionHR.setFieldFixedLengths("2,3,4");
+    sectionHR.setKeyFieldValue("HD"); // HD key identifies HR recordset structure
     sections.put("HR", sectionHR);
 
     // Section for PR
     ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
     sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
     sectionPR.setFieldFixedLengths("2,2,5,6");
+    sectionPR.setKeyFieldValue("PR");
     sections.put("PR", sectionPR);
 
     // Section for LI
     ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
     sectionLI.setFieldNames("KEY,LINE,AMOUNT");
     sectionLI.setFieldFixedLengths("2,2,6");
+    sectionLI.setKeyFieldValue("LI");
     sections.put("LI", sectionLI);
 
     // Section for KK
     ConversionConfig.SectionParameters sectionKK = new ConversionConfig.SectionParameters();
-    sectionKK.setFieldSperator(";");
+    sectionKK.setFieldSeparator(";");
     sectionKK.setFieldNames("KEY,StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
+    sectionKK.setKeyFieldValue("KK");
     sections.put("KK", sectionKK);
 
     config.setSectionParameters(sections);
 
     return config;
-}
+    }
  ```
 Result:
 ```xml
@@ -426,23 +551,24 @@ Result:
 
 Input flat document:
 ```
-  HD2130003  ------ 1 iteration of recordsetStructure
-  PRAG123532DANIEL
-  PRBE214312SAP
-  LI42003.9
-  LI41003.1
-  LI49023.2
-  KK;11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;
-  KK;11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2
-  KK;10/10/2022 15:27:12;1 s 330 ms;GetCustomersOrder2_Uiveri5;AGNEHbBvEL56maMnwe-LVTjPhWKR;AGNEHbBYwOzaDVkf7bxbtN9cb8Qv;6188940;;COMPLETED;sender2;receiver2;;;
-  KK;10/10/2022 15:27:09;2 s 96 ms;GetCustomersOrder2_Uiveri5;AGNEHa2VekzovJ5db3uS7XiMIWAT;AGNEHa3dNy2oHXrP2_e3Hadm6ptK;6188939;;COMPLETED;sender2;receiver2;;;
-  HD2130003 ------ 2 iteration of recordsetStructure
-  PRAG123532DANIEL
-  PRBE214312SAP
-  KK;11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;
-  KK;11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2;;;
-  KK;10/10/2022 15:27:12;1 s 330 ms;GetCustomersOrder2_Uiveri5;AGNEHbBvEL56maMnwe-LVTjPhWKR;AGNEHbBYwOzaDVkf7bxbtN9cb8Qv;6188940;;COMPLETED;sender2;receiver2;;;
-  KK;10/10/2022 15:27:09;2 s 96 ms;GetCustomersOrder2_Uiveri5;AGNEHa2VekzovJ5db3uS7XiMIWAT;AGNEHa3dNy2oHXrP2_e3Hadm6ptK;6188939;;COMPLETED;sender2;receiver2;;;
+HD2130003
+PRAG123532DANIEL
+PRBE214312SAP
+LI42003.9
+LI41003.1
+LI49023.2
+KK;11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;
+KK;11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2
+KK;10/10/2022 15:27:12;1 s 330 ms;GetCustomersOrder2_Uiveri5;AGNEHbBvEL56maMnwe-LVTjPhWKR;AGNEHbBYwOzaDVkf7bxbtN9cb8Qv;6188940;;COMPLETED;sender2;receiver2;;;
+KK;10/10/2022 15:27:09;2 s 96 ms;GetCustomersOrder2_Uiveri5;AGNEHa2VekzovJ5db3uS7XiMIWAT;AGNEHa3dNy2oHXrP2_e3Hadm6ptK;6188939;;COMPLETED;sender2;receiver2;;;
+HD2130003
+PRAG123532DANIEL
+PRBE214312SAP
+KK;11/10/2022 15:12:32;1 s 334 ms;GetCustomersOrder2_Uiveri5;AGNFa8BD00KAOwctLiGjAxtPpB5t;AGNFa8Aw7xxwyqoZJ_HK1UMj1Eax;6188950;;COMPLETED;sender2;receiver2;;;
+KK;11/10/2022 15:12:29;2 s 163 ms;GetCustomersOrder2_Uiveri5;AGNFa73d5tZgqem97vMzpZ537dSk;AGNFa71CLLER0rg-BatTpOe5zU6u;6188949;;COMPLETED;sender2;receiver2;;;
+KK;10/10/2022 15:27:12;1 s 330 ms;GetCustomersOrder2_Uiveri5;AGNEHbBvEL56maMnwe-LVTjPhWKR;AGNEHbBYwOzaDVkf7bxbtN9cb8Qv;6188940;;COMPLETED;sender2;receiver2;;;
+KK;10/10/2022 15:27:09;2 s 96 ms;GetCustomersOrder2_Uiveri5;AGNEHa2VekzovJ5db3uS7XiMIWAT;AGNEHa3dNy2oHXrP2_e3Hadm6ptK;6188939;;COMPLETED;sender2;receiver2;;;
+
 ```
 
 **The mixed content transformed into XML using the following configuration:**
@@ -484,11 +610,11 @@ public ConversionConfig createConversionConfig() {
     ConversionConfig config = new ConversionConfig();
     // Set the main attributes of the config
     config.setDocumentName("CPIListFixed");
-    config.setDocumentNamespace("http://figaf.com/daniel");
+    config.setDocumentNamespace("http://figaf.com/CPIListFixed");
     config.setRecordsetName("DANIELRecordSEt");
     config.setRecordsetStructure("HR,1,PR,*,LI,*,KK,*");
     config.setIgnoreRecordsetName(false);
-
+    config.setRecordsetNamespace("http://figaf.com/daniel");
     // Create and set the section parameters
     Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
 
@@ -501,6 +627,7 @@ public ConversionConfig createConversionConfig() {
 
     // Section for PR
     ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
+    sectionPR.setKeyFieldValue("PR");
     sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
     sectionPR.setFieldFixedLengths("2,2,5,6");
     sections.put("PR", sectionPR);
@@ -509,18 +636,20 @@ public ConversionConfig createConversionConfig() {
     ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
     sectionLI.setFieldNames("KEY,LINE,AMOUNT");
     sectionLI.setFieldFixedLengths("2,2,6");
+    sectionLI.setKeyFieldValue("LI");
     sections.put("LI", sectionLI);
 
     // Section for KK
     ConversionConfig.SectionParameters sectionKK = new ConversionConfig.SectionParameters();
-    sectionKK.setFieldSperator(";");
+    sectionKK.setKeyFieldValue("KK3");
+    sectionKK.setFieldSeparator(";");
     sectionKK.setFieldNames("KEY,StartTime,Duration,IFlow,MessageID,CorrelationID,ApplicationMessageID,ApplicationMessageType,Status,Sender,Receiver,DOC,ORDERNR,Vendor");
     sections.put("KK", sectionKK);
 
     config.setSectionParameters(sections);
 
     return config;
-}
+    }
  ```
 Result:
 ```xml
@@ -742,7 +871,7 @@ LI49023.2
 
 Java Configuration Object:
 ```java
-public ConversionConfig createConversionConfig() {
+  public ConversionConfig createConversionConfig() {
     ConversionConfig config = new ConversionConfig();
     config.setDocumentName("CPIListFixed");
     config.setDocumentNamespace("http://figaf.com/CPIListFixed");
@@ -759,6 +888,7 @@ public ConversionConfig createConversionConfig() {
     ConversionConfig.SectionParameters sectionPR = new ConversionConfig.SectionParameters();
     sectionPR.setFieldNames("KEY,TYPE,ID,NAME");
     sectionPR.setFieldFixedLengths("2,2,5,6");
+    sectionPR.setKeyFieldValue("PR");
     sections.put("PR", sectionPR);
 
     ConversionConfig.SectionParameters sectionLI = new ConversionConfig.SectionParameters();
@@ -769,7 +899,7 @@ public ConversionConfig createConversionConfig() {
     config.setSectionParameters(sections);
 
     return config;
-}
+    }
  ```
 Result:
 ```xml
@@ -865,12 +995,12 @@ Java Configuration Object:
     ConversionConfig config = new ConversionConfig();
     config.setRecordsetStructure("nameA");
     config.setTargetFileName("xi_output.txt");
-
+    config.setLineEnding(LineEnding.AUTO);
     Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
     ConversionConfig.SectionParameters sectionParameters = new ConversionConfig.SectionParameters();
     
     sectionParameters.setFieldSeparator(";");
-    sectionParameters.setAddHeaderLine(1);
+    sectionParameters.setAddHeaderLine("1");
     sections.put("nameA", sectionParameters);
     config.setSectionParameters(sections);
     return config;
@@ -947,23 +1077,23 @@ public ConversionConfig createConversionConfig() {
     ConversionConfig config = new ConversionConfig();
     config.setRecordsetStructure("nameA,nameB,nameC");
     config.setTargetFileName("xi_output.txt");
-    
+    config.setLineEnding(LineEnding.AUTO);
     Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
-    
+
     ConversionConfig.SectionParameters sectionA = new ConversionConfig.SectionParameters();
     sectionA.setFieldFixedLengths("10,5,3");
-    sectionA.setFieldSeparator(null); // assuming null is intentional
-    sectionA.setAddHeaderLine(1);
+    sectionA.setFixedLengthTooShortHandling("Cut");
+    sectionA.setAddHeaderLine("1");
     sections.put("nameA", sectionA);
-    
+
     ConversionConfig.SectionParameters sectionB = new ConversionConfig.SectionParameters();
     sectionB.setFieldSeparator(";");
-    sectionB.setAddHeaderLine(2);
+    sectionB.setAddHeaderLine("2");
     sections.put("nameB", sectionB);
-    
+
     ConversionConfig.SectionParameters sectionC = new ConversionConfig.SectionParameters();
     sectionC.setFieldSeparator(",");
-    sectionC.setAddHeaderLine(3);
+    sectionC.setAddHeaderLine("3");
     sectionC.setHeaderLine("name1-value1");
     sectionC.setBeginSeparator("'");
     sectionC.setEndSeparator("'");
@@ -972,7 +1102,7 @@ public ConversionConfig createConversionConfig() {
     config.setSectionParameters(sections);
 
     return config;
-}
+}  
  ```
 
 Result:
