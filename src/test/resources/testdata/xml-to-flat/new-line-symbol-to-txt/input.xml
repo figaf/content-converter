@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SALESTRACE>
+  <Record>
+    <DistributorNumber>TEST-VANT</DistributorNumber>
+    <DistributorBranch/>
+    <DistributorDEA/>
+    <DistributorHIN/>
+    <DistributorGLN/>
+    <DistributorCustomerShipto>M5014</DistributorCustomerShipto>
+    <DistributorInvoice>056974842</DistributorInvoice>
+    <DistributorMaterial>65355S</DistributorMaterial>
+    <DistributorInvoiceItem/>
+    <DistributorInvoiceDate>06/03/2024</DistributorInvoiceDate>
+    <DistributorQuantitySold>15</DistributorQuantitySold>
+    <DistributorUOM>EA</DistributorUOM>
+    <DistributorSoldtoPrice>28.195</DistributorSoldtoPrice>
+  </Record>
+  <Record>
+    <DistributorNumber>TEST-VANT</DistributorNumber>
+    <DistributorBranch/>
+    <DistributorDEA/>
+    <DistributorHIN/>
+    <DistributorGLN/>
+    <DistributorCustomerShipto>P3529</DistributorCustomerShipto>
+    <DistributorInvoice>0456975493</DistributorInvoice>
+    <DistributorMaterial>0470017</DistributorMaterial>
+    <DistributorInvoiceItem/>
+    <DistributorInvoiceDate>06/03/2024</DistributorInvoiceDate>
+    <DistributorQuantitySold>7</DistributorQuantitySold>
+    <DistributorUOM>EA</DistributorUOM>
+    <DistributorSoldtoPrice>20.47</DistributorSoldtoPrice>
+  </Record>
+</SALESTRACE>

@@ -32,6 +32,7 @@ import java.util.stream.IntStream;
 @Slf4j
 public class XmlToFlatContentConverter implements ContentConverter {
 
+    private static final String NL_TOKEN = "'nl'";
 
     @Override
     public byte[] convert(
@@ -179,8 +180,17 @@ public class XmlToFlatContentConverter implements ContentConverter {
         StringBuilder txtOutput,
         boolean isLastElement
     ) {
-        String finalEndSeparator = StringUtils.isNotBlank(params.getEndSeparator()) ? params.getEndSeparator() : createDefaultEndSeparator(isLastElement, lineEnding);
-        txtOutput.append(finalEndSeparator);
+        String sep = StringUtils.defaultIfBlank(
+            params.getEndSeparator(),
+            createDefaultEndSeparator(isLastElement, lineEnding)
+        );
+        boolean isNlSep = NL_TOKEN.equals(sep);
+        if (!(isNlSep && isLastElement)) {
+            txtOutput.append(isNlSep
+                ? System.lineSeparator()
+                : sep
+            );
+        }
     }
 
     private String createDefaultEndSeparator(boolean isLastElement, LineEnding lineEnding) {
