@@ -31,6 +31,9 @@ public class XmlToFlatConversionTestDataArgumentsProvider implements ArgumentsPr
             )),
             Arguments.of(buildConversionTestData(
                 Paths.get("contains-parent-wrapper-tag-to-txt"), true
+            )),
+            Arguments.of(buildConversionTestData(
+                Paths.get("new-line-symbol-to-txt"), true
             ))
         );
     }
