@@ -30,8 +30,6 @@ configurations.all {
 group = 'com.github.figaf'
 version = '2.1.1'
 
-
-
 repositories {
     mavenLocal()
     mavenCentral()
