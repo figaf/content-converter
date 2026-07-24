@@ -54,6 +54,8 @@ public class ConfigurationTransformer {
                     parameterSetters.put(paramPrefix + ".addHeaderLine", ConversionConfig.SectionParameters::setAddHeaderLine);
                     parameterSetters.put(paramPrefix + ".headerLine", ConversionConfig.SectionParameters::setHeaderLine);
                     parameterSetters.put(paramPrefix + ".fixedLengthTooShortHandling", ConversionConfig.SectionParameters::setFixedLengthTooShortHandling);
+                    parameterSetters.put(paramPrefix + ".missingLastFields", ConversionConfig.SectionParameters::setMissingLastFields);
+                    parameterSetters.put(paramPrefix + ".additionalLastFields", ConversionConfig.SectionParameters::setAdditionalLastFields);
                     parameterSetters.put(paramPrefix + ".beginSeparator", ConversionConfig.SectionParameters::setBeginSeparator);
                     parameterSetters.put(paramPrefix + ".endSeparator", ConversionConfig.SectionParameters::setEndSeparator);
                     if (parameterSetters.containsKey(addConvParamNameValue)) {
@@ -85,6 +87,9 @@ public class ConfigurationTransformer {
                     break;
                 case "xml.recordsetNamespace":
                     conversionConfig.setRecordsetNamespace(trimmedPropertyValue);
+                    break;
+                case "xml.keyfieldName":
+                    conversionConfig.setKeyFieldName(trimmedPropertyValue);
                     break;
                 case "file.targetFileName":
                     conversionConfig.setTargetFileName(trimmedPropertyValue);

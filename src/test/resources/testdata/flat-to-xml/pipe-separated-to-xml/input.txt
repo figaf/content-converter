@@ -1,0 +1,3 @@
+DE01|EMP10001|maria.mueller@example.com|Frau|Maria|Mueller|Hauptstrasse 12||Berlin||DE|ES|DE|10010010|1002003001|||12345678-9|U
+DE01|EMP10002|hans.schmidt@example.com|Herr|Hans|Schmidt|Bahnhofstrasse 5, Haus 2||Muenchen||DE|DE|DE|20020020|2003004002|||23456789-0|U
+CL08|1700000003|pedro.gomez@example.com|Herr|Pedro|Gomez|Avenida Central 5273||Santiago||CL|ES|CL|30030030|3004005003|||34567890-1|U

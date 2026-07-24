@@ -13,6 +13,7 @@ import org.w3c.dom.Element;
 import javax.xml.parsers.ParserConfigurationException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static com.figaf.content.converter.utils.XMLUtils.writeDocumentToByteArray;
 import static java.lang.String.format;
@@ -135,14 +136,28 @@ public class FlatToXmlContentConverter implements ContentConverter {
 
         for (String inputLine : fileInputLines) {
             Map<String, ConversionConfig.SectionParameters> keyRecordToSectionParameters = determineKeyRecordToSectionParameters(inputLine, conversionConfig, singleKeyMapping);
+            if (keyRecordToSectionParameters.isEmpty()) {
+                if (conversionConfig.isSkipUnmatchedLines()) {
+                    log.warn("Skipping line '{}': the line matches no substructure (keyFieldName={})",
+                        inputLine,
+                        conversionConfig.getKeyFieldName()
+                    );
+                    continue;
+                }
+                throw new IllegalArgumentException(format(
+                    "Cannot determine the record type of the line '%s': the line matches no substructure (keyFieldName=%s)",
+                    inputLine,
+                    conversionConfig.getKeyFieldName()
+                ));
+            }
 
             if (nodeCreationStrategy.shouldCreateNewRecordsetForMultipleKeyRecords(
                 conversionConfig,
                 singleKeyMapping,
                 keyRecordToSectionParameters,
                 firstKeyRecord
-            ) && !isFirstKeyRecordEncounter) {
-
+            ) && !isFirstKeyRecordEncounter
+            ) {
                 String recordsetNamespace = StringUtils.isEmpty(conversionConfig.getRecordsetNamespace()) ? "" : conversionConfig.getRecordsetNamespace();
                 String recordSetName = StringUtils.isEmpty(conversionConfig.getRecordsetName()) ? "Recordset" : conversionConfig.getRecordsetName();
                 recordSetTag = XMLUtils.createElement(document, recordsetNamespace, recordSetName);
@@ -159,13 +174,68 @@ public class FlatToXmlContentConverter implements ContentConverter {
             return conversionConfig.getSectionParameters();
         }
 
+        boolean keyFieldNameProvided = StringUtils.isNotBlank(conversionConfig.getKeyFieldName());
+        if (keyFieldNameProvided) {
+            for (Map.Entry<String, ConversionConfig.SectionParameters> keyToSectionParameters : conversionConfig.getSectionParameters().entrySet()) {
+                String actualKeyFieldValue = extractKeyFieldValue(inputFileLine, keyToSectionParameters.getValue(), conversionConfig.getKeyFieldName());
+                if (actualKeyFieldValue != null && actualKeyFieldValue.trim().equals(keyToSectionParameters.getValue().getKeyFieldValue())) {
+                    return Collections.singletonMap(keyToSectionParameters.getKey(), keyToSectionParameters.getValue());
+                }
+            }
+        }
+
+        // legacy matching for configs created before keyFieldName support: works only when the key field is the first field of the line.
+        // When keyFieldName is provided and didn't match, only the section-name prefix is still honored (deliberate legacy
+        // convention where lines are prefixed with the structure name); matching by keyFieldValue prefix is skipped because
+        // a short marker like "H" can accidentally match the beginning of an unrelated line and misclassify it
         for (Map.Entry<String, ConversionConfig.SectionParameters> keyToSectionParameters : conversionConfig.getSectionParameters().entrySet()) {
-            if (inputFileLine.startsWith(keyToSectionParameters.getKey()) || inputFileLine.startsWith(keyToSectionParameters.getValue().getKeyFieldValue())) {
+            if (inputFileLine.startsWith(keyToSectionParameters.getKey())
+                || (!keyFieldNameProvided && keyToSectionParameters.getValue().getKeyFieldValue() != null && inputFileLine.startsWith(keyToSectionParameters.getValue().getKeyFieldValue()))) {
                 return Collections.singletonMap(keyToSectionParameters.getKey(), keyToSectionParameters.getValue());
             }
         }
 
         return Collections.emptyMap();
+    }
+
+    private String extractKeyFieldValue(String inputFileLine, ConversionConfig.SectionParameters sectionParameters, String keyFieldName) {
+        if (StringUtils.isBlank(sectionParameters.getFieldNames())) {
+            return null;
+        }
+        String[] fieldNames = sectionParameters.getFieldNames().split(",");
+        int keyFieldIndex = -1;
+        for (int i = 0; i < fieldNames.length; i++) {
+            if (fieldNames[i].trim().equals(keyFieldName)) {
+                keyFieldIndex = i;
+                break;
+            }
+        }
+        if (keyFieldIndex == -1) {
+            return null;
+        }
+
+        if (StringUtils.isNotEmpty(sectionParameters.getFieldSeparator())) {
+            String[] fieldValues = inputFileLine.split(Pattern.quote(sectionParameters.getFieldSeparator()), -1);
+            return keyFieldIndex < fieldValues.length ? fieldValues[keyFieldIndex] : null;
+        }
+
+        if (StringUtils.isBlank(sectionParameters.getFieldFixedLengths())) {
+            return null;
+        }
+        int[] fieldLengths = Arrays.stream(sectionParameters.getFieldFixedLengths().split(","))
+            .mapToInt(fieldLength -> Integer.parseInt(fieldLength.trim()))
+            .toArray();
+        if (keyFieldIndex >= fieldLengths.length) {
+            return null;
+        }
+        int keyFieldStart = 0;
+        for (int i = 0; i < keyFieldIndex; i++) {
+            keyFieldStart += fieldLengths[i];
+        }
+        if (keyFieldStart >= inputFileLine.length()) {
+            return null;
+        }
+        return inputFileLine.substring(keyFieldStart, Math.min(keyFieldStart + fieldLengths[keyFieldIndex], inputFileLine.length()));
     }
 
     private Map<String, String> parseRecordsetStructure(String recordsetStructure) {

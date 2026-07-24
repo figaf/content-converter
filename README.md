@@ -941,7 +941,145 @@ Result:
     </Recordset>
 </ns:CPIListFixed>
 ```
-6.**HeaderLine with field separator XML to txt**:Transforms XML into txt.
+6.**Key Field Not in First Position to XML**:Transforms fixed-length text where the key field identifying the record type is not the first field of the line.
+
+Set `keyFieldName` on the `ConversionConfig` (it corresponds to the `xml.keyfieldName` parameter of a PI File sender channel). When it is set,
+the converter locates the key field inside each substructure via its `fieldNames`/`fieldFixedLengths` (or `fieldSeparator`), extracts its value
+from the line and compares it with the substructure's `keyFieldValue` — exactly like SAP PI does. The key field may therefore sit at a different
+position in each substructure. When `keyFieldName` is not set, the record type is determined by matching the beginning of the line against the
+substructure name or its `keyFieldValue` (legacy behavior, works only when the key field is the first field of the line).
+
+A line that matches no substructure (its key field value corresponds to no `keyFieldValue` and it starts with no substructure name) terminates the
+conversion with an error by default, so malformed input is detected instead of being silently dropped. Set `skipUnmatchedLines` to `true` on the
+`ConversionConfig` to skip such lines with a warning instead, mirroring the SAP PI sender FCC behavior which silently ignores lines whose key field
+value is not configured.
+
+**Example:**
+
+Input flat document (the key field `SRTYPE` is the third field of each line — `H`/`P` stands at character position 6, after `SORG` (4 chars) and `SITYPE` (1 char)):
+```
+AA01OHZZZ      1234567890123       1234567890123       12                             TEST-00000000120250101        20250101
+BB01OP4012345000001     00000024000PC R0000001000001
+BB01OP4012345000002     00000024000PC R0000001000002
+```
+
+**The above text is transformed into XML using the following configuration:**
+
+- **Document Name**: MT_OrderData_Test
+- **Document Namespace**: urn:test:sorders:anonymous
+- **Recordset Name**: Record
+- **Recordset Structure**: Header,1,Positions,\*
+- **Key Field Name**: SRTYPE
+    - Header:
+        - Field Names: SORG, SITYPE, SRTYPE, SOTYPE, SOREAS, SESC, SCUST1, SCUST2, SCUST3, SCPO, SEDTE, SODTE, SRDTE, SNDES1, STERM
+        - Field Fixed Lengths: 4,1,1,4,3,2,20,20,10,35,8,8,8,100,4
+        - Key Field Value: H
+    - Positions:
+        - Field Names: SORG, SITYPE, SRTYPE, SPROD, SQORD, SGRAN, STYPE, SPRICE
+        - Field Fixed Lengths: 4,1,1,18,11,3,1,13
+        - Key Field Value: P
+---
+
+Java Configuration Object:
+```java
+public ConversionConfig createConversionConfig() {
+    ConversionConfig config = new ConversionConfig();
+    config.setDocumentName("MT_OrderData_Test");
+    config.setDocumentNamespace("urn:test:sorders:anonymous");
+    config.setRecordsetName("Record");
+    config.setRecordsetStructure("Header,1,Positions,*");
+    config.setKeyFieldName("SRTYPE"); // the record type is taken from the SRTYPE field of each substructure
+
+    Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+    ConversionConfig.SectionParameters sectionHeader = new ConversionConfig.SectionParameters();
+    sectionHeader.setFieldNames("SORG,SITYPE,SRTYPE,SOTYPE,SOREAS,SESC,SCUST1,SCUST2,SCUST3,SCPO,SEDTE,SODTE,SRDTE,SNDES1,STERM");
+    sectionHeader.setFieldFixedLengths("4,1,1,4,3,2,20,20,10,35,8,8,8,100,4");
+    sectionHeader.setKeyFieldValue("H"); // SRTYPE = H identifies the Header substructure
+    sections.put("Header", sectionHeader);
+
+    ConversionConfig.SectionParameters sectionPositions = new ConversionConfig.SectionParameters();
+    sectionPositions.setFieldNames("SORG,SITYPE,SRTYPE,SPROD,SQORD,SGRAN,STYPE,SPRICE");
+    sectionPositions.setFieldFixedLengths("4,1,1,18,11,3,1,13");
+    sectionPositions.setKeyFieldValue("P"); // SRTYPE = P identifies the Positions substructure
+    sections.put("Positions", sectionPositions);
+
+    config.setSectionParameters(sections);
+
+    return config;
+}
+```
+A substructure may also control how fixed-length lines whose length deviates from the declared structure are handled, with the same semantics as the
+corresponding SAP PI channel parameters:
+
+- `missingLastFields` (`NameA.missingLastFields`) — the line is **shorter** than the declared structure:
+    - `add` (default) — all configured fields are created, the missing ones are empty
+    - `ignore` — the missing fields are omitted from the XML
+    - `error` — the conversion is terminated
+- `additionalLastFields` (`NameA.additionalLastFields`) — the line is **longer** than the declared structure:
+    - `ignore` (default) — the surplus content after the last declared field is skipped
+    - `error` — the conversion is terminated
+
+SAP recommends configuring both parameters together for well-defined handling of variable record lengths:
+
+```java
+ConversionConfig.SectionParameters sectionHeader = new ConversionConfig.SectionParameters();
+sectionHeader.setFieldNames("SORG,SITYPE,SRTYPE,SOTYPE,SOREAS,SESC,SCUST1,SCUST2,SCUST3,SCPO,SEDTE,SODTE,SRDTE,SNDES1,STERM");
+sectionHeader.setFieldFixedLengths("4,1,1,4,3,2,20,20,10,35,8,8,8,100,4");
+sectionHeader.setKeyFieldValue("H");
+sectionHeader.setMissingLastFields("add");      // header line may end early: create the remaining fields as empty elements
+sectionHeader.setAdditionalLastFields("error"); // header line longer than 228 characters indicates a malformed file
+```
+
+When neither parameter is set the converter is lenient in both directions (`add`/`ignore`), so documents produced by earlier versions of the library
+convert identically after an upgrade.
+
+Result (fixed-length values are trimmed):
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ns:MT_OrderData_Test xmlns:ns="urn:test:sorders:anonymous">
+    <Record>
+        <Header>
+            <SORG>AA01</SORG>
+            <SITYPE>O</SITYPE>
+            <SRTYPE>H</SRTYPE>
+            <SOTYPE>ZZZ</SOTYPE>
+            <SOREAS/>
+            <SESC/>
+            <SCUST1>1234567890123</SCUST1>
+            <SCUST2>1234567890123</SCUST2>
+            <SCUST3>12</SCUST3>
+            <SCPO>TEST-000000001</SCPO>
+            <SEDTE>20250101</SEDTE>
+            <SODTE/>
+            <SRDTE>20250101</SRDTE>
+            <SNDES1/>
+            <STERM/>
+        </Header>
+        <Positions>
+            <SORG>BB01</SORG>
+            <SITYPE>O</SITYPE>
+            <SRTYPE>P</SRTYPE>
+            <SPROD>4012345000001</SPROD>
+            <SQORD>00000024000</SQORD>
+            <SGRAN>PC</SGRAN>
+            <STYPE>R</STYPE>
+            <SPRICE>0000001000001</SPRICE>
+        </Positions>
+        <Positions>
+            <SORG>BB01</SORG>
+            <SITYPE>O</SITYPE>
+            <SRTYPE>P</SRTYPE>
+            <SPROD>4012345000002</SPROD>
+            <SQORD>00000024000</SQORD>
+            <SGRAN>PC</SGRAN>
+            <STYPE>R</STYPE>
+            <SPRICE>0000001000002</SPRICE>
+        </Positions>
+    </Record>
+</ns:MT_OrderData_Test>
+```
+
+7.**HeaderLine with field separator XML to txt**:Transforms XML into txt.
 
 **Example:**
 
@@ -1017,7 +1155,7 @@ value;value;value
 value;value;value
 ```
 
-7.**Multiple recordset elements XML to txt**:Transforms XML into txt.
+8.**Multiple recordset elements XML to txt**:Transforms XML into txt.
 
 **Example:**
 

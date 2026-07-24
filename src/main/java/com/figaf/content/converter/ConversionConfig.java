@@ -54,6 +54,23 @@ public class ConversionConfig {
     private boolean ignoreRecordsetName;
 
     /**
+     * Specifies how a line that matches no substructure (its key field value corresponds to no keyFieldValue and
+     * it starts with no substructure name) is handled.
+     * If set to false (default), the conversion is terminated with an error describing the line, so malformed
+     * input is detected instead of being silently dropped.
+     * If set to true, the line is skipped with a warning, mirroring the SAP PI sender FCC behavior which
+     * silently ignores lines whose key field value is not configured. Has effect only for Flat->XML conversion
+     */
+    private boolean skipUnmatchedLines;
+
+    /**
+     * The name of the key field which holds the record type marker. The key field position is resolved
+     * per substructure via its fieldNames/fieldFixedLengths (or fieldSeparator), and the extracted value
+     * is compared with the substructure's keyFieldValue. Has effect only for Flat->XML conversion
+     */
+    private String keyFieldName;
+
+    /**
      * A map containing parameters for each specified recordset structure.
      */
     private Map<String, SectionParameters> sectionParameters;
@@ -69,13 +86,14 @@ public class ConversionConfig {
     private ContentConversionType contentConversionType;
 
     /**
-     *  Different supported line breaks.Has effect only for XML->Flat conversion
-     *  1.LF,
-     *  2.CRLF,
-     *  3.CR,
-     *  4.AUTO
+     * Different supported line breaks.Has effect only for XML->Flat conversion
+     * 1.LF,
+     * 2.CRLF,
+     * 3.CR,
+     * 4.AUTO
      */
     private LineEnding lineEnding;
+
     /**
      * Represents the parameters for a specified recordset structure.
      */
@@ -137,6 +155,34 @@ public class ConversionConfig {
          * Has effect only for XML->Flat conversion
          */
         private String fixedLengthTooShortHandling;
+
+        /**
+         * NameA.missingLastFields
+         * Specify how the XML outbound structure is created when a fixed-length line contains fewer fields
+         * than declared in NameA.fieldFixedLengths.
+         * The following values are permitted:
+         * ignore
+         * Outbound structure only contains the fields present in the line.
+         * add (default)
+         * Outbound structure contains all configured fields; the fields missing in the line are empty.
+         * error
+         * Conversion is terminated due to the incomplete inbound structure.
+         * Has effect only for Flat->XML conversion
+         */
+        private String missingLastFields;
+
+        /**
+         * NameA.additionalLastFields
+         * Specify how the system responds when a fixed-length line is longer than the structure
+         * declared in NameA.fieldFixedLengths.
+         * The following values are permitted:
+         * ignore (default)
+         * The surplus content after the last declared field is not read.
+         * error
+         * Conversion is terminated due to the surplus content.
+         * Has effect only for Flat->XML conversion
+         */
+        private String additionalLastFields;
 
         /**
          * If you specify a character string here, the system places it before the first column.Has effect only for XML->Flat conversion
