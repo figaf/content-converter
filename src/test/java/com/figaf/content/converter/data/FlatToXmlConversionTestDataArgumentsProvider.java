@@ -40,6 +40,9 @@ public class FlatToXmlConversionTestDataArgumentsProvider implements ArgumentsPr
             )),
             Arguments.of(buildConversionTestData(
                 Paths.get("csv-with-quotes"), true
+            )),
+            Arguments.of(buildConversionTestData(
+                Paths.get("pipe-separated-to-xml"), true
             ))
         );
     }
