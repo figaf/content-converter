@@ -952,7 +952,7 @@ substructure name or its `keyFieldValue` (legacy behavior, works only when the k
 A line that matches no substructure (its key field value corresponds to no `keyFieldValue` and it starts with no substructure name) terminates the
 conversion with an error by default, so malformed input is detected instead of being silently dropped. Set `skipUnmatchedLines` to `true` on the
 `ConversionConfig` to skip such lines with a warning instead, mirroring the SAP PI sender FCC behavior which silently ignores lines whose key field
-value is not configured.
+value is not configured. Blank lines (empty or whitespace-only) carry no data and are always ignored, regardless of `skipUnmatchedLines`.
 
 **Example:**
 

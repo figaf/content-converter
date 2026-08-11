@@ -224,6 +224,25 @@ public class FlatToXmlContentConverterTest {
     }
 
     @Test
+    void test_convert_withBlankLinesIgnoredInStrictMode() {
+        ConversionTestData conversionTestData = FlatToXmlConversionTestDataArgumentsProvider.buildConversionTestData(
+            Paths.get("txt-to-xml-fixed-key-field-not-first"),
+            true
+        );
+        String inputWithBlankLines = new String(conversionTestData.getInputDocument(), UTF_8)
+            .replaceFirst("\r\n", "\r\n\r\n   \r\n") + "\r\n";
+
+        ContentConverter contentConverter = new FlatToXmlContentConverter();
+        String actualConvertedFile = contentConverter.convert(inputWithBlankLines, conversionTestData.getConversionConfig());
+
+        assertEquals(
+            new String(conversionTestData.getExpectedConvertedDocument(), UTF_8),
+            actualConvertedFile,
+            "Empty and whitespace-only lines must be ignored even with skipUnmatchedLines disabled."
+        );
+    }
+
+    @Test
     void test_convert_withMissingLastFieldsErrorOnPositions() {
         ConversionTestData conversionTestData = FlatToXmlConversionTestDataArgumentsProvider.buildConversionTestData(
             Paths.get("txt-to-xml-fixed-key-field-not-first"),

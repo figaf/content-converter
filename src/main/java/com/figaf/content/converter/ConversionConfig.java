@@ -59,7 +59,9 @@ public class ConversionConfig {
      * If set to false (default), the conversion is terminated with an error describing the line, so malformed
      * input is detected instead of being silently dropped.
      * If set to true, the line is skipped with a warning, mirroring the SAP PI sender FCC behavior which
-     * silently ignores lines whose key field value is not configured. Has effect only for Flat->XML conversion
+     * silently ignores lines whose key field value is not configured.
+     * Blank lines are not affected by this setting: they carry no data and are always ignored.
+     * Has effect only for Flat->XML conversion
      */
     private boolean skipUnmatchedLines;
 

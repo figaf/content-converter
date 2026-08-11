@@ -135,6 +135,12 @@ public class FlatToXmlContentConverter implements ContentConverter {
         boolean singleKeyMapping = parseRecordsetStructure.size() == 1;
 
         for (String inputLine : fileInputLines) {
+            // blank lines carry no data and can never match a substructure (their key field value is blank),
+            // so they are always ignored regardless of skipUnmatchedLines, mirroring the SAP PI sender FCC behavior
+            if (StringUtils.isBlank(inputLine)) {
+                log.debug("Ignoring a blank line");
+                continue;
+            }
             Map<String, ConversionConfig.SectionParameters> keyRecordToSectionParameters = determineKeyRecordToSectionParameters(inputLine, conversionConfig, singleKeyMapping);
             if (keyRecordToSectionParameters.isEmpty()) {
                 if (conversionConfig.isSkipUnmatchedLines()) {
