@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ns:MT_Employee xmlns:ns="urn:figaf:demo:employee">
+  <Record>
+    <BUKRS>DE01</BUKRS>
+    <PNR>EMP10001</PNR>
+    <EMAIL>maria.mueller@example.com</EMAIL>
+    <ANREDE>Frau</ANREDE>
+    <VNAME>Maria</VNAME>
+    <NNAME>Mueller</NNAME>
+    <STR>Hauptstrasse 12</STR>
+    <PLZ/>
+    <ORT>Berlin</ORT>
+    <REGION/>
+    <LAND>DE</LAND>
+    <KOMMUNIKAT>ES</KOMMUNIKAT>
+    <BANKLAND>DE</BANKLAND>
+    <BANKLZ>10010010</BANKLZ>
+    <BANKKONTO>1002003001</BANKKONTO>
+    <BIC/>
+    <IBAN/>
+    <STEUERNR>12345678-9</STEUERNR>
+    <ID_A>U</ID_A>
+  </Record>
+  <Record>
+    <BUKRS>DE01</BUKRS>
+    <PNR>EMP10002</PNR>
+    <EMAIL>hans.schmidt@example.com</EMAIL>
+    <ANREDE>Herr</ANREDE>
+    <VNAME>Hans</VNAME>
+    <NNAME>Schmidt</NNAME>
+    <STR>Bahnhofstrasse 5, Haus 2</STR>
+    <PLZ/>
+    <ORT>Muenchen</ORT>
+    <REGION/>
+    <LAND>DE</LAND>
+    <KOMMUNIKAT>DE</KOMMUNIKAT>
+    <BANKLAND>DE</BANKLAND>
+    <BANKLZ>20020020</BANKLZ>
+    <BANKKONTO>2003004002</BANKKONTO>
+    <BIC/>
+    <IBAN/>
+    <STEUERNR>23456789-0</STEUERNR>
+    <ID_A>U</ID_A>
+  </Record>
+  <Record>
+    <BUKRS>CL08</BUKRS>
+    <PNR>1700000003</PNR>
+    <EMAIL>pedro.gomez@example.com</EMAIL>
+    <ANREDE>Herr</ANREDE>
+    <VNAME>Pedro</VNAME>
+    <NNAME>Gomez</NNAME>
+    <STR>Avenida Central 5273</STR>
+    <PLZ/>
+    <ORT>Santiago</ORT>
+    <REGION/>
+    <LAND>CL</LAND>
+    <KOMMUNIKAT>ES</KOMMUNIKAT>
+    <BANKLAND>CL</BANKLAND>
+    <BANKLZ>30030030</BANKLZ>
+    <BANKKONTO>3004005003</BANKKONTO>
+    <BIC/>
+    <IBAN/>
+    <STEUERNR>34567890-1</STEUERNR>
+    <ID_A>U</ID_A>
+  </Record>
+</ns:MT_Employee>

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class NodeCreationStrategy {
@@ -70,7 +71,7 @@ public class NodeCreationStrategy {
     }
 
     private void populateElementWithSeparator(Document doc, Element recordElement, String line, String[] fieldNames, String fieldSeparator) {
-        String[] fieldValues = line.split(fieldSeparator);
+        String[] fieldValues = line.split(Pattern.quote(fieldSeparator));
         boolean anyElementContainsQuotes = Arrays.stream(fieldValues)
             .anyMatch(value -> value.contains(DOUBLE_QUOTE));
         if (anyElementContainsQuotes) {
