@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ns:FormattingNothing xmlns:ns="http://figaf.com/test">
+  <Record>
+    <HR>
+      <KEY>HR</KEY>
+      <Name> ABC  </Name>
+    </HR>
+    <IT>
+      <KEY>IT</KEY>
+      <Name>  x  </Name>
+    </IT>
+    <IT>
+      <KEY>IT</KEY>
+      <Name> y </Name>
+    </IT>
+  </Record>
+</ns:FormattingNothing>

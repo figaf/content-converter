@@ -947,12 +947,14 @@ Set `keyFieldName` on the `ConversionConfig` (it corresponds to the `xml.keyfiel
 the converter locates the key field inside each substructure via its `fieldNames`/`fieldFixedLengths` (or `fieldSeparator`), extracts its value
 from the line and compares it with the substructure's `keyFieldValue` — exactly like SAP PI does. The key field may therefore sit at a different
 position in each substructure. When `keyFieldName` is not set, the record type is determined by matching the beginning of the line against the
-substructure name or its `keyFieldValue` (legacy behavior, works only when the key field is the first field of the line).
+substructure name or its `keyFieldValue` (legacy behavior, works only when the key field is the first field of the line). The legacy matching also
+stays active when `keyFieldName` names no field of any substructure — such a configuration carries no information and is reported with a warning.
 
-A line that matches no substructure (its key field value corresponds to no `keyFieldValue` and it starts with no substructure name) terminates the
-conversion with an error by default, so malformed input is detected instead of being silently dropped. Set `skipUnmatchedLines` to `true` on the
-`ConversionConfig` to skip such lines with a warning instead, mirroring the SAP PI sender FCC behavior which silently ignores lines whose key field
-value is not configured. Blank lines (empty or whitespace-only) carry no data and are always ignored, regardless of `skipUnmatchedLines`.
+A line that matches no substructure (its key field value corresponds to no `keyFieldValue` and it starts with no substructure name) is skipped
+with a warning by default, mirroring the SAP PI sender FCC behavior which silently ignores lines whose key field value is not configured. Set
+`failOnUnmatchedLines` to `true` on the `ConversionConfig` to terminate the conversion with an error describing the line instead, so malformed
+input is detected instead of being silently dropped (this strict mode has no SAP counterpart). Blank lines (empty or whitespace-only) carry no
+data and are always ignored, regardless of `failOnUnmatchedLines`.
 
 **Example:**
 
@@ -1008,16 +1010,26 @@ public ConversionConfig createConversionConfig() {
     return config;
 }
 ```
-A substructure may also control how fixed-length lines whose length deviates from the declared structure are handled, with the same semantics as the
-corresponding SAP PI channel parameters:
+A substructure may also control how lines that deviate from the declared structure are handled, with the same semantics as the corresponding
+SAP PI channel parameters. Both parameters work for fixed-length substructures (measured in characters) and for separator-based substructures
+(measured in fields):
 
-- `missingLastFields` (`NameA.missingLastFields`) — the line is **shorter** than the declared structure:
+- `missingLastFields` (`NameA.missingLastFields`) — the line has **fewer fields** than declared (a declared field is completely
+  absent from the line):
     - `add` (default) — all configured fields are created, the missing ones are empty
     - `ignore` — the missing fields are omitted from the XML
-    - `error` — the conversion is terminated
+    - `error` — the conversion is terminated. A last field that is present but shorter than declared does not count as
+      missing — it is kept as it is (the SAP parameter for that case, `NameA.keepIncompleteFields`, is not implemented).
 - `additionalLastFields` (`NameA.additionalLastFields`) — the line is **longer** than the declared structure:
     - `ignore` (default) — the surplus content after the last declared field is skipped
-    - `error` — the conversion is terminated
+    - `error` — the conversion is terminated. Trailing blanks in a fixed-length line are treated as padding, not as surplus
+      content, so a line padded to a fixed record width does not fail.
+
+In a separator-based substructure, a trailing empty field (a line ending with the separator) counts as a present field — it is neither missing
+nor surplus.
+
+Note one difference from SAP: when `fieldFixedLengths` is defined, SAP defaults `additionalLastFields` to `error`. This library keeps `ignore`
+as the default, so files that converted with version 2.1.1 continue to convert.
 
 SAP recommends configuring both parameters together for well-defined handling of variable record lengths:
 
@@ -1030,8 +1042,32 @@ sectionHeader.setMissingLastFields("add");      // header line may end early: cr
 sectionHeader.setAdditionalLastFields("error"); // header line longer than 228 characters indicates a malformed file
 ```
 
-When neither parameter is set the converter is lenient in both directions (`add`/`ignore`), so documents produced by earlier versions of the library
-convert identically after an upgrade.
+When neither parameter is set the converter is lenient in both directions (`add`/`ignore`).
+
+A substructure may also control how the field values are formatted and how enclosed values are read:
+
+- `fieldContentFormatting` (`NameA.fieldContentFormatting`) — formatting of the field values in the XML output, with the same semantics as in SAP:
+    - `trim` (default) — leading and trailing blanks are removed from the field value
+    - `nothing` — the field value is left unaltered
+- `enclosureSign` (`NameA.enclosureSign`) — the character string that encloses field values in a separator-based structure. Separators inside an
+  enclosed value are treated as part of the value, and the enclosure signs are removed from the value. When not set, a double quote (`"`) is assumed.
+- `enclosureSignEnd` (`NameA.enclosureSignEnd`) — the character string that closes an enclosed value. When not set, `enclosureSign` is used.
+
+The enclosure handling covers the common SAP case (enclosed values are protected from splitting, the signs are removed on output). Known
+differences from SAP: `NameA.enclosureConversion=NO` (keep the signs) and the escape signs (`NameA.enclosureSignEscape`,
+`NameA.enclosureSignEndEscape`) are not implemented; the signs are removed everywhere in a value, not only at its borders (an unescaped sign
+inside a value — like the apostrophe in `'O'Brien'` with `enclosureSign='` — is removed; SAP expects such a sign to be escaped); an enclosure
+that is never closed runs to the end of the line, like in common CSV parsers; and when `enclosureSign` is not set this library still assumes
+a double quote, while SAP applies no enclosure handling at all (kept this way for backward compatibility with earlier versions of this library).
+
+The key field value is extracted with the same enclosure handling as the field values, so a separator inside an enclosed value does not shift
+the position of the key field. Before the comparison, the enclosure signs are removed from both the extracted value and the configured
+`keyFieldValue`. So for the line `"H","Smith"` with `keyFieldName=TYPE`, a `keyFieldValue` of `H` and of `"H"` both match — real PI channels
+exist with either spelling.
+
+Note for upgrades from version 2.1.1 or earlier: field values are now trimmed by default (set `fieldContentFormatting` to `nothing` to keep the
+old separator-based behavior; the fixed-length paths of 2.1.1 and earlier kept the padding, which did not match SAP), and blank lines no longer
+produce a record with empty fields. Both changes align the output with SAP PI, but they can change the XML produced by an existing configuration.
 
 Result (fixed-length values are trimmed):
 ```xml

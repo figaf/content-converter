@@ -51,6 +51,18 @@ public class FlatToXmlConversionTestDataArgumentsProvider implements ArgumentsPr
                 Paths.get("csv-with-quotes"), true
             )),
             Arguments.of(buildConversionTestData(
+                Paths.get("csv-with-quotes-key-field-not-first"), true
+            )),
+            Arguments.of(buildConversionTestData(
+                Paths.get("csv-with-custom-enclosure-sign"), true
+            )),
+            Arguments.of(buildConversionTestData(
+                Paths.get("field-content-formatting-nothing-to-xml"), true
+            )),
+            Arguments.of(buildConversionTestData(
+                Paths.get("txt-to-xml-fixed-unmatched-line-skipped"), true
+            )),
+            Arguments.of(buildConversionTestData(
                 Paths.get("pipe-separated-to-xml"), true
             ))
         );

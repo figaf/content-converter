@@ -13,7 +13,6 @@ import org.w3c.dom.Element;
 import javax.xml.parsers.ParserConfigurationException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import static com.figaf.content.converter.utils.XMLUtils.writeDocumentToByteArray;
 import static java.lang.String.format;
@@ -78,6 +77,7 @@ public class FlatToXmlContentConverter implements ContentConverter {
     ) throws ParserConfigurationException {
         log.debug("#convert: conversionConfig={}", conversionConfig);
         validateInputArgs(flatFileLines, conversionConfig);
+        warnIfKeyFieldNameMatchesNoField(conversionConfig);
         return createXMLDocumentFromFlattenedInput(flatFileLines, conversionConfig);
     }
 
@@ -88,6 +88,8 @@ public class FlatToXmlContentConverter implements ContentConverter {
         Document document = initializeDocument(conversionConfig);
         Element root = document.getDocumentElement();
         Map<String, String> parseRecordsetStructure = parseRecordsetStructure(conversionConfig.getRecordsetStructure());
+        Map<String, ConversionConfig.SectionParameters> orderedSectionParameters =
+            orderSectionParameters(conversionConfig.getSectionParameters(), parseRecordsetStructure.keySet());
         Element recordSetTag = determineRecordSetTag(document, conversionConfig, parseRecordsetStructure.size() == 1);
 
         if (recordSetTag != null) {
@@ -100,6 +102,7 @@ public class FlatToXmlContentConverter implements ContentConverter {
             root,
             conversionConfig,
             parseRecordsetStructure,
+            orderedSectionParameters,
             recordSetTag
         );
 
@@ -128,6 +131,7 @@ public class FlatToXmlContentConverter implements ContentConverter {
         Element root,
         ConversionConfig conversionConfig,
         Map<String, String> parseRecordsetStructure,
+        Map<String, ConversionConfig.SectionParameters> orderedSectionParameters,
         Element recordSetTag
     ) {
         String firstKeyRecord = parseRecordsetStructure.keySet().iterator().next();
@@ -135,26 +139,26 @@ public class FlatToXmlContentConverter implements ContentConverter {
         boolean singleKeyMapping = parseRecordsetStructure.size() == 1;
 
         for (String inputLine : fileInputLines) {
-            // blank lines carry no data and can never match a substructure (their key field value is blank),
-            // so they are always ignored regardless of skipUnmatchedLines, mirroring the SAP PI sender FCC behavior
+            // blank lines carry no data and can never match a substructure, so they are always ignored
+            // regardless of failOnUnmatchedLines (SAP does not document blank line handling)
             if (StringUtils.isBlank(inputLine)) {
-                log.debug("Ignoring a blank line");
+                log.warn("Ignoring a blank line");
                 continue;
             }
-            Map<String, ConversionConfig.SectionParameters> keyRecordToSectionParameters = determineKeyRecordToSectionParameters(inputLine, conversionConfig, singleKeyMapping);
+            Map<String, ConversionConfig.SectionParameters> keyRecordToSectionParameters = determineKeyRecordToSectionParameters(inputLine, conversionConfig, orderedSectionParameters, singleKeyMapping);
             if (keyRecordToSectionParameters.isEmpty()) {
-                if (conversionConfig.isSkipUnmatchedLines()) {
-                    log.warn("Skipping line '{}': the line matches no substructure (keyFieldName={})",
+                if (conversionConfig.isFailOnUnmatchedLines()) {
+                    throw new IllegalArgumentException(format(
+                        "Cannot determine the record type of the line '%s': the line matches no substructure (keyFieldName=%s)",
                         inputLine,
                         conversionConfig.getKeyFieldName()
-                    );
-                    continue;
+                    ));
                 }
-                throw new IllegalArgumentException(format(
-                    "Cannot determine the record type of the line '%s': the line matches no substructure (keyFieldName=%s)",
+                log.warn("Skipping line '{}': the line matches no substructure (keyFieldName={})",
                     inputLine,
                     conversionConfig.getKeyFieldName()
-                ));
+                );
+                continue;
             }
 
             if (nodeCreationStrategy.shouldCreateNewRecordsetForMultipleKeyRecords(
@@ -175,33 +179,75 @@ public class FlatToXmlContentConverter implements ContentConverter {
         }
     }
 
-    private Map<String, ConversionConfig.SectionParameters> determineKeyRecordToSectionParameters(String inputFileLine, ConversionConfig conversionConfig, boolean singleKeyMapping) {
+    private Map<String, ConversionConfig.SectionParameters> determineKeyRecordToSectionParameters(
+        String inputFileLine,
+        ConversionConfig conversionConfig,
+        Map<String, ConversionConfig.SectionParameters> orderedSectionParameters,
+        boolean singleKeyMapping
+    ) {
         if (singleKeyMapping) {
-            return conversionConfig.getSectionParameters();
+            return orderedSectionParameters;
         }
 
         boolean keyFieldNameProvided = StringUtils.isNotBlank(conversionConfig.getKeyFieldName());
+        Set<String> keysWithExtractedValue = new HashSet<>();
         if (keyFieldNameProvided) {
-            for (Map.Entry<String, ConversionConfig.SectionParameters> keyToSectionParameters : conversionConfig.getSectionParameters().entrySet()) {
+            for (Map.Entry<String, ConversionConfig.SectionParameters> keyToSectionParameters : orderedSectionParameters.entrySet()) {
                 String actualKeyFieldValue = extractKeyFieldValue(inputFileLine, keyToSectionParameters.getValue(), conversionConfig.getKeyFieldName());
-                if (actualKeyFieldValue != null && actualKeyFieldValue.trim().equals(keyToSectionParameters.getValue().getKeyFieldValue())) {
+                if (actualKeyFieldValue == null) {
+                    continue;
+                }
+                keysWithExtractedValue.add(keyToSectionParameters.getKey());
+                String keyFieldValue = keyToSectionParameters.getValue().getKeyFieldValue();
+                if (keyFieldValue != null && StringUtils.isNotEmpty(keyToSectionParameters.getValue().getFieldSeparator())) {
+                    // separator structures: the extracted value has the enclosure signs already removed, so they
+                    // are removed from the configured keyFieldValue too — a real PI channel may store "H" or H.
+                    // A fixed-length extraction keeps the line content as is, so the configured value must too
+                    keyFieldValue = NodeCreationStrategy.removeEnclosureSigns(keyFieldValue, keyToSectionParameters.getValue()).trim();
+                }
+                if (keyFieldValue != null && actualKeyFieldValue.trim().equals(keyFieldValue)) {
                     return Collections.singletonMap(keyToSectionParameters.getKey(), keyToSectionParameters.getValue());
                 }
             }
         }
 
-        // legacy matching for configs created before keyFieldName support: works only when the key field is the first field of the line.
-        // When keyFieldName is provided and didn't match, only the section-name prefix is still honored (deliberate legacy
-        // convention where lines are prefixed with the structure name); matching by keyFieldValue prefix is skipped because
-        // a short marker like "H" can accidentally match the beginning of an unrelated line and misclassify it
-        for (Map.Entry<String, ConversionConfig.SectionParameters> keyToSectionParameters : conversionConfig.getSectionParameters().entrySet()) {
+        // legacy matching for configs created before keyFieldName support (works only when the key field starts the line).
+        // The keyFieldValue prefix is skipped for a substructure whose extracted key field value didn't match — a short
+        // marker like "H" could match the start of an unrelated line. The section-NAME prefix stays active even then:
+        // real channels exist whose configured keyFieldValue contradicts the data and whose lines are identified by the
+        // structure name, like on 2.1.1 (see the KK/KK3 substructure of the more-than-one-recordset-to-xml fixture)
+        for (Map.Entry<String, ConversionConfig.SectionParameters> keyToSectionParameters : orderedSectionParameters.entrySet()) {
             if (inputFileLine.startsWith(keyToSectionParameters.getKey())
-                || (!keyFieldNameProvided && keyToSectionParameters.getValue().getKeyFieldValue() != null && inputFileLine.startsWith(keyToSectionParameters.getValue().getKeyFieldValue()))) {
+                || (!keysWithExtractedValue.contains(keyToSectionParameters.getKey())
+                    && keyToSectionParameters.getValue().getKeyFieldValue() != null
+                    && inputFileLine.startsWith(keyToSectionParameters.getValue().getKeyFieldValue()))) {
                 return Collections.singletonMap(keyToSectionParameters.getKey(), keyToSectionParameters.getValue());
             }
         }
 
         return Collections.emptyMap();
+    }
+
+    /**
+     * Orders the configured substructures by their position in recordsetStructure, so that record type
+     * matching never depends on the accidental iteration order of the configured section map. Sections
+     * that are not part of recordsetStructure keep their original relative order at the end.
+     */
+    private Map<String, ConversionConfig.SectionParameters> orderSectionParameters(
+        Map<String, ConversionConfig.SectionParameters> sectionParameters,
+        Set<String> recordsetStructureKeys
+    ) {
+        Map<String, ConversionConfig.SectionParameters> orderedSectionParameters = new LinkedHashMap<>();
+        for (String key : recordsetStructureKeys) {
+            ConversionConfig.SectionParameters parameters = sectionParameters.get(key);
+            if (parameters != null) {
+                orderedSectionParameters.put(key, parameters);
+            }
+        }
+        for (Map.Entry<String, ConversionConfig.SectionParameters> entry : sectionParameters.entrySet()) {
+            orderedSectionParameters.putIfAbsent(entry.getKey(), entry.getValue());
+        }
+        return orderedSectionParameters;
     }
 
     private String extractKeyFieldValue(String inputFileLine, ConversionConfig.SectionParameters sectionParameters, String keyFieldName) {
@@ -221,7 +267,8 @@ public class FlatToXmlContentConverter implements ContentConverter {
         }
 
         if (StringUtils.isNotEmpty(sectionParameters.getFieldSeparator())) {
-            String[] fieldValues = inputFileLine.split(Pattern.quote(sectionParameters.getFieldSeparator()), -1);
+            // same splitting as the field-filling path: an enclosed separator must not shift the key field index
+            String[] fieldValues = NodeCreationStrategy.splitLineIntoFieldValues(inputFileLine, sectionParameters);
             return keyFieldIndex < fieldValues.length ? fieldValues[keyFieldIndex] : null;
         }
 
@@ -259,6 +306,24 @@ public class FlatToXmlContentConverter implements ContentConverter {
         }
 
         return tagToOccurrence;
+    }
+
+    private void warnIfKeyFieldNameMatchesNoField(ConversionConfig conversionConfig) {
+        if (StringUtils.isBlank(conversionConfig.getKeyFieldName()) || conversionConfig.getSectionParameters() == null) {
+            return;
+        }
+        for (ConversionConfig.SectionParameters sectionParameters : conversionConfig.getSectionParameters().values()) {
+            if (StringUtils.isBlank(sectionParameters.getFieldNames())) {
+                continue;
+            }
+            for (String fieldName : sectionParameters.getFieldNames().split(",")) {
+                if (fieldName.trim().equals(conversionConfig.getKeyFieldName())) {
+                    return;
+                }
+            }
+        }
+        log.warn("keyFieldName '{}' is not a field name in any substructure; "
+            + "record types will fall back to prefix matching", conversionConfig.getKeyFieldName());
     }
 
     private void validateInputArgs(List<String> flatFileLines, ConversionConfig conversionConfig) {

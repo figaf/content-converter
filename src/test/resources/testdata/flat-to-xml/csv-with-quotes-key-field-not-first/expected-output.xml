@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ns:QuotesKeyNotFirst xmlns:ns="http://figaf.com/test">
+  <Record>
+    <H>
+      <Name>Graversen,Daniel</Name>
+      <TYPE>H</TYPE>
+      <Num>1</Num>
+    </H>
+    <D>
+      <Name>shoe, black</Name>
+      <TYPE>D</TYPE>
+      <Num>43</Num>
+    </D>
+    <D>
+      <Name>hat</Name>
+      <TYPE>D</TYPE>
+      <Num>7</Num>
+    </D>
+  </Record>
+</ns:QuotesKeyNotFirst>

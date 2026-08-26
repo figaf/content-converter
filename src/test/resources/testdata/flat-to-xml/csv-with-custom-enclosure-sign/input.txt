@@ -1,0 +1,3 @@
+'H','Header, text'
+'D','Detail "quoted" text'
+'D','Plain'

@@ -51,6 +51,9 @@ public class ConfigurationTransformer {
                     parameterSetters.put(paramPrefix + ".fieldNames", ConversionConfig.SectionParameters::setFieldNames);
                     parameterSetters.put(paramPrefix + ".keyFieldValue", ConversionConfig.SectionParameters::setKeyFieldValue);
                     parameterSetters.put(paramPrefix + ".fieldSeparator", ConversionConfig.SectionParameters::setFieldSeparator);
+                    parameterSetters.put(paramPrefix + ".enclosureSign", ConversionConfig.SectionParameters::setEnclosureSign);
+                    parameterSetters.put(paramPrefix + ".enclosureSignEnd", ConversionConfig.SectionParameters::setEnclosureSignEnd);
+                    parameterSetters.put(paramPrefix + ".fieldContentFormatting", ConversionConfig.SectionParameters::setFieldContentFormatting);
                     parameterSetters.put(paramPrefix + ".addHeaderLine", ConversionConfig.SectionParameters::setAddHeaderLine);
                     parameterSetters.put(paramPrefix + ".headerLine", ConversionConfig.SectionParameters::setHeaderLine);
                     parameterSetters.put(paramPrefix + ".fixedLengthTooShortHandling", ConversionConfig.SectionParameters::setFixedLengthTooShortHandling);

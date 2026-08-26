@@ -1,0 +1,3 @@
+"Graversen,Daniel","H","1"
+"shoe, black","D","43"
+"hat","D","7"
