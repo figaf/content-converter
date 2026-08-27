@@ -32,6 +32,12 @@ import static java.lang.String.format;
 @Slf4j
 public class FlatToXmlContentConverter implements ContentConverter {
 
+    // allowed values of the enum-like substructure parameters; anything else silently behaves as the
+    // default, so it is reported once per conversion, like an unresolvable keyFieldName
+    private static final List<String> MISSING_LAST_FIELDS_VALUES = Arrays.asList("add", "ignore", "error");
+    private static final List<String> ADDITIONAL_LAST_FIELDS_VALUES = Arrays.asList("ignore", "error");
+    private static final List<String> FIELD_CONTENT_FORMATTING_VALUES = Arrays.asList("trim", "nothing");
+
     private final NodeCreationStrategy nodeCreationStrategy;
 
     public FlatToXmlContentConverter() {
@@ -78,6 +84,7 @@ public class FlatToXmlContentConverter implements ContentConverter {
         log.debug("#convert: conversionConfig={}", conversionConfig);
         validateInputArgs(flatFileLines, conversionConfig);
         warnIfKeyFieldNameMatchesNoField(conversionConfig);
+        warnOnUnrecognizedSectionParameterValues(conversionConfig);
         return createXMLDocumentFromFlattenedInput(flatFileLines, conversionConfig);
     }
 
@@ -199,23 +206,30 @@ public class FlatToXmlContentConverter implements ContentConverter {
                 }
                 keysWithExtractedValue.add(keyToSectionParameters.getKey());
                 String keyFieldValue = keyToSectionParameters.getValue().getKeyFieldValue();
-                if (keyFieldValue != null && StringUtils.isNotEmpty(keyToSectionParameters.getValue().getFieldSeparator())) {
+                // a substructure without keyFieldValue can never match by key field
+                if (keyFieldValue == null) {
+                    continue;
+                }
+                if (StringUtils.isNotEmpty(keyToSectionParameters.getValue().getFieldSeparator())) {
                     // separator structures: the extracted value has the enclosure signs already removed, so they
                     // are removed from the configured keyFieldValue too — a real PI channel may store "H" or H.
                     // A fixed-length extraction keeps the line content as is, so the configured value must too
                     keyFieldValue = NodeCreationStrategy.removeEnclosureSigns(keyFieldValue, keyToSectionParameters.getValue()).trim();
                 }
-                if (keyFieldValue != null && actualKeyFieldValue.trim().equals(keyFieldValue)) {
+                if (actualKeyFieldValue.trim().equals(keyFieldValue)) {
                     return Collections.singletonMap(keyToSectionParameters.getKey(), keyToSectionParameters.getValue());
                 }
             }
         }
 
-        // legacy matching for configs created before keyFieldName support (works only when the key field starts the line).
-        // The keyFieldValue prefix is skipped for a substructure whose extracted key field value didn't match — a short
-        // marker like "H" could match the start of an unrelated line. The section-NAME prefix stays active even then:
-        // real channels exist whose configured keyFieldValue contradicts the data and whose lines are identified by the
-        // structure name, like on 2.1.1 (see the KK/KK3 substructure of the more-than-one-recordset-to-xml fixture)
+        // Legacy prefix matching, kept for configs created before keyFieldName support. It runs even when
+        // keyFieldName is set, so key-field matching is NOT exclusive: a line whose key field value matched
+        // nothing can still get a record type here. Two rules:
+        // 1. keyFieldValue prefix: skipped for a substructure whose key field value was read but did not match
+        //    (a short marker like "H" could match an unrelated line). Kept for a substructure whose key field
+        //    could not be read at all, so a keyFieldName typo cannot break a config that works without it.
+        // 2. Section-NAME prefix: always active — real channels rely on it even with a contradicting
+        //    keyFieldValue (see the KK/KK3 substructure of the more-than-one-recordset-to-xml fixture)
         for (Map.Entry<String, ConversionConfig.SectionParameters> keyToSectionParameters : orderedSectionParameters.entrySet()) {
             if (inputFileLine.startsWith(keyToSectionParameters.getKey())
                 || (!keysWithExtractedValue.contains(keyToSectionParameters.getKey())
@@ -324,6 +338,31 @@ public class FlatToXmlContentConverter implements ContentConverter {
         }
         log.warn("keyFieldName '{}' is not a field name in any substructure; "
             + "record types will fall back to prefix matching", conversionConfig.getKeyFieldName());
+    }
+
+    private void warnOnUnrecognizedSectionParameterValues(ConversionConfig conversionConfig) {
+        if (conversionConfig.getSectionParameters() == null) {
+            return;
+        }
+        for (Map.Entry<String, ConversionConfig.SectionParameters> entry : conversionConfig.getSectionParameters().entrySet()) {
+            ConversionConfig.SectionParameters sectionParameters = entry.getValue();
+            warnOnUnrecognizedValue(entry.getKey(), "missingLastFields", sectionParameters.getMissingLastFields(), MISSING_LAST_FIELDS_VALUES, "add");
+            warnOnUnrecognizedValue(entry.getKey(), "additionalLastFields", sectionParameters.getAdditionalLastFields(), ADDITIONAL_LAST_FIELDS_VALUES, "ignore");
+            warnOnUnrecognizedValue(entry.getKey(), "fieldContentFormatting", sectionParameters.getFieldContentFormatting(), FIELD_CONTENT_FORMATTING_VALUES, "trim");
+        }
+    }
+
+    private void warnOnUnrecognizedValue(String sectionKey, String parameterName, String value, List<String> allowedValues, String appliedDefault) {
+        if (StringUtils.isBlank(value)) {
+            return;
+        }
+        for (String allowedValue : allowedValues) {
+            if (allowedValue.equalsIgnoreCase(value)) {
+                return;
+            }
+        }
+        log.warn("{} '{}' of substructure '{}' is not one of {}; it behaves as the default '{}'",
+            parameterName, value, sectionKey, allowedValues, appliedDefault);
     }
 
     private void validateInputArgs(List<String> flatFileLines, ConversionConfig conversionConfig) {

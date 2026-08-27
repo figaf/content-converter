@@ -950,6 +950,19 @@ position in each substructure. When `keyFieldName` is not set, the record type i
 substructure name or its `keyFieldValue` (legacy behavior, works only when the key field is the first field of the line). The legacy matching also
 stays active when `keyFieldName` names no field of any substructure — such a configuration carries no information and is reported with a warning.
 
+When `keyFieldName` is set, the legacy matching is reduced per substructure — an intentional compatibility decision, since SAP PI has no
+prefix matching at all. A substructure whose key field value was extracted from the line but did not match its `keyFieldValue` loses the
+`keyFieldValue`-prefix fallback: the extracted data already answered "no", and a short marker such as `H` could otherwise match the beginning
+of an unrelated line. A substructure whose key field could not be read at all (its `fieldNames` does not contain `keyFieldName`, or the line
+is too short) keeps the fallback and behaves exactly as before `keyFieldName` support existed — so a `keyFieldName` typo cannot break a
+configuration that converts fine without it. The substructure-name prefix always stays active, even when the key field is resolvable in every
+substructure, because real channels exist whose configured `keyFieldValue` contradicts the data and whose lines are identified by the
+structure name.
+
+Note that setting `keyFieldName` therefore does not make the key-field matching exclusive: a line whose key field value matches no
+`keyFieldValue` can still receive a record type from the legacy rules (the substructure-name prefix, or the `keyFieldValue` prefix of a
+substructure that could not read the key field). SAP PI would ignore such a line instead.
+
 A line that matches no substructure (its key field value corresponds to no `keyFieldValue` and it starts with no substructure name) is skipped
 with a warning by default, mirroring the SAP PI sender FCC behavior which silently ignores lines whose key field value is not configured. Set
 `failOnUnmatchedLines` to `true` on the `ConversionConfig` to terminate the conversion with an error describing the line instead, so malformed
@@ -1042,7 +1055,9 @@ sectionHeader.setMissingLastFields("add");      // header line may end early: cr
 sectionHeader.setAdditionalLastFields("error"); // header line longer than 228 characters indicates a malformed file
 ```
 
-When neither parameter is set the converter is lenient in both directions (`add`/`ignore`).
+When neither parameter is set the converter is lenient in both directions (`add`/`ignore`). An unrecognized value of `missingLastFields`,
+`additionalLastFields` or `fieldContentFormatting` (described below) — for example a typo like `eror` — behaves as the default and is
+reported with a warning once per conversion.
 
 A substructure may also control how the field values are formatted and how enclosed values are read:
 
