@@ -28,7 +28,7 @@ configurations.all {
 }
 
 group = 'com.github.figaf'
-version = '2.1.1'
+version = '2.2.0-SNAPSHOT'
 
 repositories {
     mavenLocal()
@@ -59,6 +59,32 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+
+            pom {
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                        distribution = 'repo'
+                    }
+                }
+            }
+        }
+    }
+
+    // nexusUrl, nexusUsername and nexusPassword come from ~/.gradle/gradle.properties — this
+    // repository is public, so they are never part of the repository itself. They are needed
+    // only by the publish task; every other task works without them
+    repositories {
+        maven {
+            def releasesRepoUrl = "${nexusUrl}/content/repositories/releases"
+            def snapshotsRepoUrl = "${nexusUrl}/content/repositories/snapshots"
+            url version.endsWith("-SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+            allowInsecureProtocol true
+            credentials {
+                username nexusUsername
+                password nexusPassword
+            }
         }
     }
 }

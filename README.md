@@ -941,7 +941,196 @@ Result:
     </Recordset>
 </ns:CPIListFixed>
 ```
-6.**HeaderLine with field separator XML to txt**:Transforms XML into txt.
+6.**Key Field Not in First Position to XML**:Transforms fixed-length text where the key field identifying the record type is not the first field of the line.
+
+Set `keyFieldName` on the `ConversionConfig` (it corresponds to the `xml.keyfieldName` parameter of a PI File sender channel). When it is set,
+the converter locates the key field inside each substructure via its `fieldNames`/`fieldFixedLengths` (or `fieldSeparator`), extracts its value
+from the line and compares it with the substructure's `keyFieldValue` — exactly like SAP PI does. The key field may therefore sit at a different
+position in each substructure. When `keyFieldName` is not set, the record type is determined by matching the beginning of the line against the
+substructure name or its `keyFieldValue` (legacy behavior, works only when the key field is the first field of the line). The legacy matching also
+stays active when `keyFieldName` names no field of any substructure — such a configuration carries no information and is reported with a warning.
+
+When `keyFieldName` is set, the legacy matching is reduced per substructure — an intentional compatibility decision, since SAP PI has no
+prefix matching at all. A substructure whose key field value was extracted from the line but did not match its `keyFieldValue` loses the
+`keyFieldValue`-prefix fallback: the extracted data already answered "no", and a short marker such as `H` could otherwise match the beginning
+of an unrelated line. A substructure whose key field could not be read at all (its `fieldNames` does not contain `keyFieldName`, or the line
+is too short) keeps the fallback and behaves exactly as before `keyFieldName` support existed — so a `keyFieldName` typo cannot break a
+configuration that converts fine without it. The substructure-name prefix always stays active, even when the key field is resolvable in every
+substructure, because real channels exist whose configured `keyFieldValue` contradicts the data and whose lines are identified by the
+structure name.
+
+Note that setting `keyFieldName` therefore does not make the key-field matching exclusive: a line whose key field value matches no
+`keyFieldValue` can still receive a record type from the legacy rules (the substructure-name prefix, or the `keyFieldValue` prefix of a
+substructure that could not read the key field). SAP PI would ignore such a line instead.
+
+A line that matches no substructure (its key field value corresponds to no `keyFieldValue` and it starts with no substructure name) is skipped
+with a warning by default, mirroring the SAP PI sender FCC behavior which silently ignores lines whose key field value is not configured. Set
+`failOnUnmatchedLines` to `true` on the `ConversionConfig` to terminate the conversion with an error describing the line instead, so malformed
+input is detected instead of being silently dropped (this strict mode has no SAP counterpart). Blank lines (empty or whitespace-only) carry no
+data and are always ignored, regardless of `failOnUnmatchedLines`.
+
+**Example:**
+
+Input flat document (the key field `SRTYPE` is the third field of each line — `H`/`P` stands at character position 6, after `SORG` (4 chars) and `SITYPE` (1 char)):
+```
+AA01OHZZZ      1234567890123       1234567890123       12                             TEST-00000000120250101        20250101
+BB01OP4012345000001     00000024000PC R0000001000001
+BB01OP4012345000002     00000024000PC R0000001000002
+```
+
+**The above text is transformed into XML using the following configuration:**
+
+- **Document Name**: MT_OrderData_Test
+- **Document Namespace**: urn:test:sorders:anonymous
+- **Recordset Name**: Record
+- **Recordset Structure**: Header,1,Positions,\*
+- **Key Field Name**: SRTYPE
+    - Header:
+        - Field Names: SORG, SITYPE, SRTYPE, SOTYPE, SOREAS, SESC, SCUST1, SCUST2, SCUST3, SCPO, SEDTE, SODTE, SRDTE, SNDES1, STERM
+        - Field Fixed Lengths: 4,1,1,4,3,2,20,20,10,35,8,8,8,100,4
+        - Key Field Value: H
+    - Positions:
+        - Field Names: SORG, SITYPE, SRTYPE, SPROD, SQORD, SGRAN, STYPE, SPRICE
+        - Field Fixed Lengths: 4,1,1,18,11,3,1,13
+        - Key Field Value: P
+---
+
+Java Configuration Object:
+```java
+public ConversionConfig createConversionConfig() {
+    ConversionConfig config = new ConversionConfig();
+    config.setDocumentName("MT_OrderData_Test");
+    config.setDocumentNamespace("urn:test:sorders:anonymous");
+    config.setRecordsetName("Record");
+    config.setRecordsetStructure("Header,1,Positions,*");
+    config.setKeyFieldName("SRTYPE"); // the record type is taken from the SRTYPE field of each substructure
+
+    Map<String, ConversionConfig.SectionParameters> sections = new HashMap<>();
+    ConversionConfig.SectionParameters sectionHeader = new ConversionConfig.SectionParameters();
+    sectionHeader.setFieldNames("SORG,SITYPE,SRTYPE,SOTYPE,SOREAS,SESC,SCUST1,SCUST2,SCUST3,SCPO,SEDTE,SODTE,SRDTE,SNDES1,STERM");
+    sectionHeader.setFieldFixedLengths("4,1,1,4,3,2,20,20,10,35,8,8,8,100,4");
+    sectionHeader.setKeyFieldValue("H"); // SRTYPE = H identifies the Header substructure
+    sections.put("Header", sectionHeader);
+
+    ConversionConfig.SectionParameters sectionPositions = new ConversionConfig.SectionParameters();
+    sectionPositions.setFieldNames("SORG,SITYPE,SRTYPE,SPROD,SQORD,SGRAN,STYPE,SPRICE");
+    sectionPositions.setFieldFixedLengths("4,1,1,18,11,3,1,13");
+    sectionPositions.setKeyFieldValue("P"); // SRTYPE = P identifies the Positions substructure
+    sections.put("Positions", sectionPositions);
+
+    config.setSectionParameters(sections);
+
+    return config;
+}
+```
+A substructure may also control how lines that deviate from the declared structure are handled, with the same semantics as the corresponding
+SAP PI channel parameters. Both parameters work for fixed-length substructures (measured in characters) and for separator-based substructures
+(measured in fields):
+
+- `missingLastFields` (`NameA.missingLastFields`) — the line has **fewer fields** than declared (a declared field is completely
+  absent from the line):
+    - `add` (default) — all configured fields are created, the missing ones are empty
+    - `ignore` — the missing fields are omitted from the XML
+    - `error` — the conversion is terminated. A last field that is present but shorter than declared does not count as
+      missing — it is kept as it is (the SAP parameter for that case, `NameA.keepIncompleteFields`, is not implemented).
+- `additionalLastFields` (`NameA.additionalLastFields`) — the line is **longer** than the declared structure:
+    - `ignore` (default) — the surplus content after the last declared field is skipped
+    - `error` — the conversion is terminated. Trailing blanks in a fixed-length line are treated as padding, not as surplus
+      content, so a line padded to a fixed record width does not fail.
+
+In a separator-based substructure, a trailing empty field (a line ending with the separator) counts as a present field — it is neither missing
+nor surplus.
+
+Note one difference from SAP: when `fieldFixedLengths` is defined, SAP defaults `additionalLastFields` to `error`. This library keeps `ignore`
+as the default, so files that converted with version 2.1.1 continue to convert.
+
+SAP recommends configuring both parameters together for well-defined handling of variable record lengths:
+
+```java
+ConversionConfig.SectionParameters sectionHeader = new ConversionConfig.SectionParameters();
+sectionHeader.setFieldNames("SORG,SITYPE,SRTYPE,SOTYPE,SOREAS,SESC,SCUST1,SCUST2,SCUST3,SCPO,SEDTE,SODTE,SRDTE,SNDES1,STERM");
+sectionHeader.setFieldFixedLengths("4,1,1,4,3,2,20,20,10,35,8,8,8,100,4");
+sectionHeader.setKeyFieldValue("H");
+sectionHeader.setMissingLastFields("add");      // header line may end early: create the remaining fields as empty elements
+sectionHeader.setAdditionalLastFields("error"); // header line longer than 228 characters indicates a malformed file
+```
+
+When neither parameter is set the converter is lenient in both directions (`add`/`ignore`). An unrecognized value of `missingLastFields`,
+`additionalLastFields` or `fieldContentFormatting` (described below) — for example a typo like `eror` — behaves as the default and is
+reported with a warning once per conversion.
+
+A substructure may also control how the field values are formatted and how enclosed values are read:
+
+- `fieldContentFormatting` (`NameA.fieldContentFormatting`) — formatting of the field values in the XML output, with the same semantics as in SAP:
+    - `trim` (default) — leading and trailing blanks are removed from the field value
+    - `nothing` — the field value is left unaltered
+- `enclosureSign` (`NameA.enclosureSign`) — the character string that encloses field values in a separator-based structure. Separators inside an
+  enclosed value are treated as part of the value, and the enclosure signs are removed from the value. When not set, a double quote (`"`) is assumed.
+- `enclosureSignEnd` (`NameA.enclosureSignEnd`) — the character string that closes an enclosed value. When not set, `enclosureSign` is used.
+
+The enclosure handling covers the common SAP case (enclosed values are protected from splitting, the signs are removed on output). Known
+differences from SAP: `NameA.enclosureConversion=NO` (keep the signs) and the escape signs (`NameA.enclosureSignEscape`,
+`NameA.enclosureSignEndEscape`) are not implemented; the signs are removed everywhere in a value, not only at its borders (an unescaped sign
+inside a value — like the apostrophe in `'O'Brien'` with `enclosureSign='` — is removed; SAP expects such a sign to be escaped); an enclosure
+that is never closed runs to the end of the line, like in common CSV parsers; and when `enclosureSign` is not set this library still assumes
+a double quote, while SAP applies no enclosure handling at all (kept this way for backward compatibility with earlier versions of this library).
+
+The key field value is extracted with the same enclosure handling as the field values, so a separator inside an enclosed value does not shift
+the position of the key field. Before the comparison, the enclosure signs are removed from both the extracted value and the configured
+`keyFieldValue`. So for the line `"H","Smith"` with `keyFieldName=TYPE`, a `keyFieldValue` of `H` and of `"H"` both match — real PI channels
+exist with either spelling.
+
+Note for upgrades from version 2.1.1 or earlier: field values are now trimmed by default (set `fieldContentFormatting` to `nothing` to keep the
+old separator-based behavior; the fixed-length paths of 2.1.1 and earlier kept the padding, which did not match SAP), and blank lines no longer
+produce a record with empty fields. Both changes align the output with SAP PI, but they can change the XML produced by an existing configuration.
+
+Result (fixed-length values are trimmed):
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ns:MT_OrderData_Test xmlns:ns="urn:test:sorders:anonymous">
+    <Record>
+        <Header>
+            <SORG>AA01</SORG>
+            <SITYPE>O</SITYPE>
+            <SRTYPE>H</SRTYPE>
+            <SOTYPE>ZZZ</SOTYPE>
+            <SOREAS/>
+            <SESC/>
+            <SCUST1>1234567890123</SCUST1>
+            <SCUST2>1234567890123</SCUST2>
+            <SCUST3>12</SCUST3>
+            <SCPO>TEST-000000001</SCPO>
+            <SEDTE>20250101</SEDTE>
+            <SODTE/>
+            <SRDTE>20250101</SRDTE>
+            <SNDES1/>
+            <STERM/>
+        </Header>
+        <Positions>
+            <SORG>BB01</SORG>
+            <SITYPE>O</SITYPE>
+            <SRTYPE>P</SRTYPE>
+            <SPROD>4012345000001</SPROD>
+            <SQORD>00000024000</SQORD>
+            <SGRAN>PC</SGRAN>
+            <STYPE>R</STYPE>
+            <SPRICE>0000001000001</SPRICE>
+        </Positions>
+        <Positions>
+            <SORG>BB01</SORG>
+            <SITYPE>O</SITYPE>
+            <SRTYPE>P</SRTYPE>
+            <SPROD>4012345000002</SPROD>
+            <SQORD>00000024000</SQORD>
+            <SGRAN>PC</SGRAN>
+            <STYPE>R</STYPE>
+            <SPRICE>0000001000002</SPRICE>
+        </Positions>
+    </Record>
+</ns:MT_OrderData_Test>
+```
+
+7.**HeaderLine with field separator XML to txt**:Transforms XML into txt.
 
 **Example:**
 
@@ -1017,7 +1206,7 @@ value;value;value
 value;value;value
 ```
 
-7.**Multiple recordset elements XML to txt**:Transforms XML into txt.
+8.**Multiple recordset elements XML to txt**:Transforms XML into txt.
 
 **Example:**
 

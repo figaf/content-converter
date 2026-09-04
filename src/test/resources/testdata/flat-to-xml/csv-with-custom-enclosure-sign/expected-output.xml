@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ns:CustomEnclosure xmlns:ns="http://figaf.com/test">
+  <Record>
+    <H>
+      <TYPE>H</TYPE>
+      <Text>Header, text</Text>
+    </H>
+    <D>
+      <TYPE>D</TYPE>
+      <Text>Detail "quoted" text</Text>
+    </D>
+    <D>
+      <TYPE>D</TYPE>
+      <Text>Plain</Text>
+    </D>
+  </Record>
+</ns:CustomEnclosure>

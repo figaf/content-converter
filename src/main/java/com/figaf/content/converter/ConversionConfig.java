@@ -54,6 +54,20 @@ public class ConversionConfig {
     private boolean ignoreRecordsetName;
 
     /**
+     * If false (default), a line that matches no substructure is skipped with a warning, like the SAP PI
+     * sender FCC does. If true, the conversion fails with an error describing the line (strict mode,
+     * no SAP counterpart). Blank lines are always ignored. Has effect only for Flat->XML conversion
+     */
+    private boolean failOnUnmatchedLines;
+
+    /**
+     * The name of the key field which holds the record type marker. The key field position is resolved
+     * per substructure via its fieldNames/fieldFixedLengths (or fieldSeparator), and the extracted value
+     * is compared with the substructure's keyFieldValue. Has effect only for Flat->XML conversion
+     */
+    private String keyFieldName;
+
+    /**
      * A map containing parameters for each specified recordset structure.
      */
     private Map<String, SectionParameters> sectionParameters;
@@ -69,13 +83,14 @@ public class ConversionConfig {
     private ContentConversionType contentConversionType;
 
     /**
-     *  Different supported line breaks.Has effect only for XML->Flat conversion
-     *  1.LF,
-     *  2.CRLF,
-     *  3.CR,
-     *  4.AUTO
+     * Different supported line breaks.Has effect only for XML->Flat conversion
+     * 1.LF,
+     * 2.CRLF,
+     * 3.CR,
+     * 4.AUTO
      */
     private LineEnding lineEnding;
+
     /**
      * Represents the parameters for a specified recordset structure.
      */
@@ -96,7 +111,9 @@ public class ConversionConfig {
         private String fieldNames;
 
         /**
-         * The value of the key field for the structure.Has effect only for Flat->XML conversion
+         * The value of the key field for the structure. May be stored with or without the enclosure signs
+         * ("H" or H) — real PI channels exist with either spelling, both match.
+         * Has effect only for Flat->XML conversion
          */
         private String keyFieldValue;
 
@@ -104,6 +121,29 @@ public class ConversionConfig {
          * The character string used as a separator between the individual columns.
          */
         private String fieldSeparator;
+
+        /**
+         * NameA.enclosureSign
+         * Encloses field values: separators inside an enclosed value do not split it, the signs are removed
+         * from the value. When not set, a double quote is assumed (historical behavior of this library;
+         * SAP applies no enclosure handling then). enclosureConversion and the escape signs are not
+         * implemented — see README. Has effect only for Flat->XML conversion
+         */
+        private String enclosureSign;
+
+        /**
+         * NameA.enclosureSignEnd
+         * The character string that closes an enclosed field value. When not set, enclosureSign is used.
+         * Has effect only for Flat->XML conversion
+         */
+        private String enclosureSignEnd;
+
+        /**
+         * NameA.fieldContentFormatting
+         * trim (default) — leading and trailing blanks are removed from the field values;
+         * nothing — the values are left unaltered. Has effect only for Flat->XML conversion
+         */
+        private String fieldContentFormatting;
 
         /**
          * This parameter is set to control whether the generated text file will include a header line with column names,
@@ -137,6 +177,26 @@ public class ConversionConfig {
          * Has effect only for XML->Flat conversion
          */
         private String fixedLengthTooShortHandling;
+
+        /**
+         * NameA.missingLastFields
+         * How to respond when a line contains fewer fields than declared (by fieldFixedLengths or fieldNames):
+         * ignore — the missing fields are left out of the XML; add (default) — they become empty elements;
+         * error — the conversion is terminated. Has effect only for Flat->XML conversion
+         */
+        private String missingLastFields;
+
+        /**
+         * NameA.additionalLastFields
+         * How to respond when a line is longer than the declared structure (more characters than the
+         * fieldFixedLengths total, or more fields than fieldNames declares):
+         * ignore (default) — the surplus is not read; error — the conversion is terminated.
+         * Trailing blanks in a fixed-length line count as padding, never as surplus content.
+         * SAP defaults this parameter to error when fieldFixedLengths is defined; this library keeps
+         * ignore so that files converted by versions up to 2.1.1 keep converting.
+         * Has effect only for Flat->XML conversion
+         */
+        private String additionalLastFields;
 
         /**
          * If you specify a character string here, the system places it before the first column.Has effect only for XML->Flat conversion

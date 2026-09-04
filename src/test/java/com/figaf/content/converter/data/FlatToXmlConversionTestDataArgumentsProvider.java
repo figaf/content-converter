@@ -39,7 +39,28 @@ public class FlatToXmlConversionTestDataArgumentsProvider implements ArgumentsPr
                 Paths.get("more-than-one-recordset-to-xml"), true
             )),
             Arguments.of(buildConversionTestData(
+                Paths.get("more-than-one-recordset-to-xml-key-field"), true
+            )),
+            Arguments.of(buildConversionTestData(
+                Paths.get("txt-to-xml-fixed-key-field-not-first"), true
+            )),
+            Arguments.of(buildConversionTestData(
+                Paths.get("txt-to-xml-fixed-missing-last-fields-ignore"), true
+            )),
+            Arguments.of(buildConversionTestData(
                 Paths.get("csv-with-quotes"), true
+            )),
+            Arguments.of(buildConversionTestData(
+                Paths.get("csv-with-quotes-key-field-not-first"), true
+            )),
+            Arguments.of(buildConversionTestData(
+                Paths.get("csv-with-custom-enclosure-sign"), true
+            )),
+            Arguments.of(buildConversionTestData(
+                Paths.get("field-content-formatting-nothing-to-xml"), true
+            )),
+            Arguments.of(buildConversionTestData(
+                Paths.get("txt-to-xml-fixed-unmatched-line-skipped"), true
             )),
             Arguments.of(buildConversionTestData(
                 Paths.get("pipe-separated-to-xml"), true
