@@ -2,13 +2,16 @@ package com.figaf.content.converter.xml;
 
 import com.figaf.content.converter.ConversionConfig;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Unit tests for the enclosure sign handling used both for filling the fields and for extracting
+ * Unit tests for the line splitting used both for filling the fields and for extracting
  * the key field value: the same line must be read the same way in both places.
+ * Covers the literal handling of the field separator and the enclosure sign handling.
  */
 class NodeCreationStrategyTest {
 
@@ -19,6 +22,29 @@ class NodeCreationStrategyTest {
         assertArrayEquals(
             new String[]{"a", "b", "c"},
             NodeCreationStrategy.splitLineIntoFieldValues("a,b,c", sectionParameters(",", null, null))
+        );
+    }
+
+    // IRT-5890: the separator is literal text, never a regular expression. Every regex metacharacter
+    // must split the same way as ";" — with the old String.split(fieldSeparator) a lone "|" cut the line
+    // after every character and "*" or "+" threw a PatternSyntaxException. Multi-character separators
+    // are included because they were not just wrong but a regex error before the fix.
+    @ParameterizedTest
+    @ValueSource(strings = {"|", ".", "*", "+", "?", "(", ")", "[", "]", "{", "}", "^", "$", "\\", "||", "|*", ".*"})
+    void splitLineIntoFieldValues_regexSpecialSeparator_isTreatedAsLiteralText(String separator) {
+        String line = "a" + separator + "b" + separator + "c";
+        assertArrayEquals(
+            new String[]{"a", "b", "c"},
+            NodeCreationStrategy.splitLineIntoFieldValues(line, sectionParameters(separator, null, null))
+        );
+    }
+
+    @Test
+    void splitLineIntoFieldValues_regexSpecialSeparatorInsideEnclosure_isKeptLiterally() {
+        // the enclosure path joins the parts back with the separator: it must append the plain separator too
+        assertArrayEquals(
+            new String[]{"a", "b|c", "d"},
+            NodeCreationStrategy.splitLineIntoFieldValues("a|\"b|c\"|d", sectionParameters("|", null, null))
         );
     }
 
