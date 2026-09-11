@@ -28,7 +28,7 @@ configurations.all {
 }
 
 group = 'com.github.figaf'
-version = '2.2.0-rev2-SNAPSHOT'
+version = '2.2.0'
 
 repositories {
     mavenLocal()
