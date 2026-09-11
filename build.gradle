@@ -8,6 +8,11 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 ext {
+    enableSnapshotsForDependencyResolutionAndPublishing = project.findProperty('enableSnapshots') ?: 'false'
+    snapshotsRepoUrl = project.findProperty('snapshotsRepoUrl') ?: ''
+    snapshotsRepoUsername = project.findProperty('snapshotsRepoUsername') ?: ''
+    snapshotsRepoPassword = project.findProperty('snapshotsRepoPassword') ?: ''
+
     lombokVersion = '1.18.22'
     slf4jVersion = '1.7.25'
     gsonVersion = '2.10'
@@ -28,11 +33,21 @@ configurations.all {
 }
 
 group = 'com.github.figaf'
-version = '2.2'
+version = '2.2.1'
 
 repositories {
     mavenLocal()
     mavenCentral()
+    if (enableSnapshotsForDependencyResolutionAndPublishing == 'true') {
+        maven {
+            url "$snapshotsRepoUrl/content/groups/public/"
+            allowInsecureProtocol true
+            credentials {
+                username "$snapshotsRepoUsername"
+                password "$snapshotsRepoPassword"
+            }
+        }
+    }
     maven { url "https://jitpack.io" }
 }
 
@@ -72,19 +87,28 @@ publishing {
         }
     }
 
-    // nexusUrl, nexusUsername and nexusPassword come from ~/.gradle/gradle.properties — this
-    // repository is public, so they are never part of the repository itself. They are needed
-    // only by the publish task; every other task works without them
     repositories {
         maven {
-            def releasesRepoUrl = "${nexusUrl}/content/repositories/releases"
-            def snapshotsRepoUrl = "${nexusUrl}/content/repositories/snapshots"
-            url version.endsWith("-SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+            def snapshotsRepoUrl = "$snapshotsRepoUrl/content/repositories/snapshots"
+            url snapshotsRepoUrl
             allowInsecureProtocol true
             credentials {
-                username nexusUsername
-                password nexusPassword
+                username snapshotsRepoUsername
+                password snapshotsRepoPassword
             }
+        }
+    }
+}
+
+tasks.withType(PublishToMavenRepository).configureEach {
+    doFirst {
+        if (enableSnapshotsForDependencyResolutionAndPublishing != 'true') {
+            throw new GradleException("It's not possible to perform publishing because property 'enableSnapshots' " +
+                "is not configured or set to 'false'")
+        }
+        // Prevent release publishing
+        if (!version.endsWith("-SNAPSHOT")) {
+            throw new GradleException("Release publishing is not allowed, it's done by JitPack")
         }
     }
 }
